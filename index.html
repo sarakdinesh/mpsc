@@ -2393,7 +2393,7 @@ function vPractice(){
   <button class="tile" data-s="mix" style="--c:#142a6e"><b>मिश्र 25</b><small>सर्व विषय</small></button>
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
   <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button></div>
-  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">2018, 2019, 2022 व 2026 च्या गट-क पूर्वपरीक्षेतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
+  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) व मुख्य परीक्षा (2023, सामान्य अध्ययन) यांतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
   <div class="grid">${SUB.map(s=>[s,pyqAll().filter(q=>q.s===s.id&&!q.c).length]).filter(x=>x[1]).map(([s,c])=>`<button class="tile" data-s="py-${s.id}" style="--c:${s.c}"><b>PYQ: ${s.name}</b><small>${c} मूळ प्रश्न</small></button>`).join("")}</div>
   <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
   <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
@@ -2473,7 +2473,7 @@ function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.ge
   <p class="small">प्रत्येक चाचणी 25 प्रश्न · 20 मिनिटे · −0.25. एका विषयाच्या चाचण्यांत धडे आलटून-पालटून येतात.</p>
   ${Object.entries(TESTS).map(([s,c])=>`<h3>${SN[s].name} <small>(${c})</small></h3>${setBtns("st-"+s+"-",c)}`).join("")}
   ${yrs.length?`<h2>मागील वर्षांच्या प्रश्नपत्रिका</h2><p class="small">मूळ प्रश्नपत्रिकेतील जे प्रश्न ॲपमध्ये आहेत ते मूळ क्रमांकाच्या क्रमाने, वेळेसह (प्रति प्रश्न 36 सेकंद). आयोगाने रद्द केलेले प्रश्न वगळले. ✓ उत्तरतालिका असलेली उत्तरे आयोगाच्या अंतिम उत्तरतालिकेशी जुळवलेली आहेत.</p>
-  <div class="grid">${yrs.map(y=>{const qs=yearPaper(y),k=qs.filter(q=>q.v==="k").length,r=ss["yp"+y];return `<button class="tile" data-set="yp${y}" style="--c:#142a6e"><b>${y}</b><small>${qs.length} मूळ प्रश्न${k?" · "+k+" ✓ उत्तरतालिका":" · उत्तरतालिका नाही"}${r?" · मागील: "+fmt(r.sc)+"/"+r.n:""}</small></button>`}).join("")}</div>`:""}`);
+  <div class="grid">${yrs.map(y=>{const qs=yearPaper(y),k=qs.filter(q=>q.v==="k").length,r=ss["yp"+y];const mains=qs.some(q=>/मुख्य/.test(q.src||""));return `<button class="tile" data-set="yp${y}" style="--c:#142a6e"><b>${y}${mains?" · मुख्य परीक्षा":" · पूर्वपरीक्षा"}</b><small>${qs.length} मूळ प्रश्न${k?" · "+k+" ✓ उत्तरतालिका":" · उत्तरतालिका नाही"}${r?" · मागील: "+fmt(r.sc)+"/"+r.n:""}</small></button>`}).join("")}</div>`:""}`);
   main.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>runSet(b.dataset.set));
   $("#full").onclick=()=>runMock(100,60);$("#mini").onclick=()=>runMock(25,15)}
 function runMock(n,min,pre,meta){const qs=pre||buildMock(n);n=qs.length;const ans=Array(n).fill(-1),sel=Array(n).fill(-1),flag=Array(n).fill(0),gs=Array(n).fill(0),tm=Array(n).fill(0);
