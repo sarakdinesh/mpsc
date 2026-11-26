@@ -67,6 +67,8 @@ a{color:var(--blue)}
 .qhead.sticky{position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:2;border-bottom:1px solid var(--line)}
 #clock{color:var(--blue);font-size:17px}#clock.warn{color:var(--bad)}
 .bar{height:5px;background:var(--line);border-radius:3px;margin:8px 0}.bar i{display:block;height:100%;background:var(--pink);border-radius:3px}
+.sheet{border-left:4px solid var(--c);padding:2px 0 2px 12px}.sheet h3{margin:12px 0 4px;font-size:17px;color:var(--c)}.sheet ul{margin:0;padding-left:18px}.sheet li{margin:3px 0;font-size:15px;line-height:1.45}
+@media print{header,nav,.noprint{display:none!important}main{padding:0!important;max-width:none!important}.sheet li{font-size:12px;margin:1px 0}.sheet h3{font-size:13px;margin:6px 0 2px}h1{font-size:18px;margin:0 0 4px}}
 .qs{font-size:20px;font-weight:600;line-height:1.45;margin:16px 0;white-space:pre-line}
 .opts{display:grid;gap:10px}
 .op{appearance:none;font:inherit;color:var(--ink);text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:54px;display:flex;gap:12px;align-items:center;cursor:pointer}
@@ -173,6 +175,7 @@ if(!authOk())document.documentElement.classList.add("locked");
 <script src="questions.js?v=15"></script>
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
+<script src="sheets.js?v=1"></script>
 <script>
 const L=[];
 L.push(
@@ -2213,9 +2216,12 @@ for(let d=1;d<=35;d++){
 }
 const REV=[["pol","राज्यघटना व पंचायत राज"],["his","इतिहास"],["geo","भूगोल"],["eco","अर्थव्यवस्था + महाराष्ट्र विशेष"],["sci","सामान्य विज्ञान"],["ca","चालू घडामोडी"],["mat","गणित व बुद्धिमत्ता + मिनी मॉक"]];
 REV.forEach(r=>DAYS.push({t:"rev",sub:r[0],title:r[1]}));
-for(let d=43;d<=49;d++)DAYS.push({t:d%2?"mock":"weak"});
-for(let d=50;d<=56;d++)DAYS.push({t:"mock"});
-[["pol","his"],["geo","gk"],["eco","sci"],["ca","mat"],["rea","all"]].forEach(p=>DAYS.push({t:"light",subs:p}));
+/* शेवटचे 3 आठवडे (दिवस 41–61): दर आठवड्याला 2 पूर्ण उजळणी मॉक + वेळ लावून विभागीय चाचण्या; शेवटचे 5 दिवस (57–61) एक-पानी पत्रके */
+const SECR=[["pol","his","mat"],["geo","sci","rea"],["eco","ca","mat"],["his","geo","rea"],["pol","sci","gk"],["eco","mat","rea"]];let sk=0;
+[["mock",1],["sec"],["weak"],["mock",2],["sec"],
+ ["weak"],["mock",1],["sec"],["sec"],["mock",2],["weak"],["sec"],
+ ["mock",1],["sec"],["light",0,["pol","his"]],["mock",2,["ca"]],["light",0,["geo","gk","eco"]],["light",0,["sci","mat","rea"]],["light",0,["all"]]]
+ .forEach(([t,no,subs])=>DAYS.push(t==="sec"?{t,subs:SECR[sk++]}:t==="mock"?{t,no,sheets:subs}:t==="light"?{t,subs}:{t}));
 const dayNo=d=>Math.round((d-START)/864e5)+1;
 const dateOf=n=>{const d=new Date(START);d.setDate(d.getDate()+n-1);return d};
 const fmtD=d=>d.getDate()+" "+["जाने","फेब्रु","मार्च","एप्रि","मे","जून","जुलै","ऑग","सप्टें","ऑक्टो","नोव्हें","डिसें"][d.getMonth()];
@@ -2380,6 +2386,8 @@ function md(src){
 const stars=n=>"★".repeat(n)+"☆".repeat(3-n);
 
 /* ---------- आज ---------- */
+const nextSet=(p,c)=>{const ss=store.get("sets",{});for(let i=1;i<=c;i++)if(!ss[p+i])return p+i;return p+c};
+const shLink=s=>s==="all"?"<a href='#sh'>सर्व विषयांची पत्रके</a>":`<a href='#sh-${s}'>${SN[s].name}</a>`;
 function dayCard(n){
   const D=DAYS[n-1];if(!D)return "";
   const k="day_"+n, chk=store.get(k,[]);
@@ -2399,17 +2407,23 @@ function dayCard(n){
     rows.push(["9:30–10:30","mpsc.gov.in वरून एक मूळ जुनी प्रश्नपत्रिका सोडवा"]);
     rows.push(["रात्री","चुकलेले प्रश्न + चालू घडामोडी"]);
   }else if(D.t==="mock"){
-    rows.push(["7:00–8:00","<a href='#mock'><b>पूर्ण मॉक टेस्ट</b></a> (100 प्रश्न, 60 मिनिटे; खऱ्या परीक्षेसारखी)"]);
-    rows.push(["8:00–9:30","निकालातील प्रत्येक चुकीचे स्पष्टीकरण वाचा; संबंधित धडा उघडा"]);
-    rows.push(["9:30–10:30","सर्वात कमजोर विषयाच्या छोट्या नोट्स (<a href='#progress'>प्रगती</a> पाहा)"]);
+    const fk=nextSet("fm",NFM);
+    rows.push(["7:00–8:00",`<b>या आठवड्याचा ${D.no===1?"पहिला":"दुसरा"} पूर्ण उजळणी मॉक</b> (100 प्रश्न, 60 मिनिटे, खऱ्या पेपरच्या क्रमाने) <button class="btn sm" data-run="${fk}">मॉक ${fk.slice(2)} सुरू करा</button>`]);
+    rows.push(["8:00–9:30","निकालातील प्रत्येक चुकीचे स्पष्टीकरण वाचा; संबंधित धडा उघडा. मग कमजोर धडे ड्रिल (25 प्रश्न)."]);
+    rows.push(["9:30–10:30",D.sheets?"एक-पानी पत्रक: "+D.sheets.map(shLink).join(" + "):"सर्वात कमजोर विषयाच्या छोट्या नोट्स (<a href='#progress'>प्रगती</a> पाहा)"]);
+    rows.push(["रात्री","चुकलेले प्रश्न + चालू घडामोडी"]);
+  }else if(D.t==="sec"){
+    rows.push(["7:00–8:00","<b>वेळ लावून विभागीय चाचण्या</b> (प्रत्येकी 25 प्रश्न, 20 मिनिटे, −0.25): "+D.subs.map(s=>{const k=nextSet("st-"+s+"-",TESTS[s]);return `<button class="btn sm" data-run="${k}">${SN[s].name} ${k.split("-").pop()}</button>`}).join(" ")]);
+    rows.push(["8:00–9:00","तिन्ही चाचण्यांतील चुकीची स्पष्टीकरणे; त्या धड्यांच्या छोट्या नोट्स"]);
+    rows.push(["9:00–10:00","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न, 15 मिनिटे) किंवा एक मूळ जुनी प्रश्नपत्रिका"]);
     rows.push(["रात्री","चुकलेले प्रश्न + चालू घडामोडी"]);
   }else if(D.t==="weak"){
     rows.push(["6:30–8:30","काल मॉकमध्ये कमी गुण आलेले 2 विषय: धडे पुन्हा वाचा"]);
-    rows.push(["8:30–9:30","<a href='#practice'>कमजोर धडे ड्रिल</a> (25 प्रश्न) + त्या विषयांचा सराव"]);
+    rows.push(["8:30–9:30","<a href='#practice'>कमजोर धडे ड्रिल</a> (25 प्रश्न) + त्या विषयांची एक विभागीय चाचणी (<a href='#mock'>मॉक पान</a>)"]);
     rows.push(["9:30–10:30","एक मूळ जुनी प्रश्नपत्रिका"]);
     rows.push(["रात्री","चुकलेले प्रश्न"]);
   }else{
-    rows.push(["6:30–8:30","हलकी उजळणी: "+D.subs.map(s=>s==="all"?"सर्व विषयांची सूत्रे":`<a href='#rv-${s}'>${SN[s].name}</a>`).join(" + ")+" (फक्त छोट्या नोट्स)"]);
+    rows.push(["6:30–8:30","एक-पानी उजळणी पत्रके: "+D.subs.map(shLink).join(" + ")+" (नवीन काही वाचू नका)"]);
     rows.push(["8:30–9:00","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न)"]);
     rows.push(["9:00–10:00","चालू घडामोडींचे शेवटचे 2 महिने"]);
     rows.push(["रात्री","11 पूर्वी झोप. नवीन काहीही वाचू नका."]);
@@ -2422,7 +2436,7 @@ function vToday(n){
   const D=DAYS[n-1];
   const chk=store.get("day_"+n,[]);const tot=D?(D.t==="learn"?6:4):0;
   const behind=L.filter((l,i)=>{const di=GSORD.indexOf(l.id);const sd=di>=0?Math.floor(di*35/GSORD.length)+1:SCORD.indexOf(l.id)>=0?SCORD.indexOf(l.id)*3+1:MRORD.indexOf(l.id)>=0?Math.floor(MRORD.indexOf(l.id)*35/19)+1:99;return sd<cur&&!isRead(l.id)});
-  const typ={learn:"नवीन धडे",rev:"उजळणी आठवडा",mock:"मॉक टेस्ट दिवस",weak:"कमजोर विषय दिवस",light:"हलकी उजळणी"};
+  const typ={learn:"नवीन धडे",rev:"उजळणी आठवडा",mock:"पूर्ण उजळणी मॉक दिवस",sec:"वेळ लावून विभागीय सराव",weak:"कमजोर विषय दिवस",light:"शेवटचे 5 दिवस: एक-पानी उजळणी"};
   main.innerHTML=`
   <section class="hero">
    <div class="count"><b>${daysLeft()}</b><span>दिवस उरले<br>परीक्षा: 24 जानेवारी 2027</span></div>
@@ -2441,6 +2455,7 @@ function vToday(n){
   main.querySelectorAll(".slots input").forEach(c=>c.onchange=()=>{const k="day_"+c.dataset.d;const a=store.get(k,[]);const i=+c.dataset.i;store.set(k,c.checked?[...new Set([...a,i])]:a.filter(x=>x!==i));vToday(n)});
   $("#pv").onclick=()=>vToday(n-1);$("#nx").onclick=()=>vToday(n+1);
   const srn=$("#srn");if(srn)srn.onclick=startReview;
+  main.querySelectorAll("[data-run]").forEach(b=>b.onclick=e=>{e.preventDefault();runSet(b.dataset.run)});
   if(n===cur)nnBind(()=>vToday(n));const td=$("#tdrl");if(td)td.onclick=()=>startDrill(drillPending().mid);
   const dq=$("#dq");if(dq)dq.onclick=()=>quiz(bankLessons([...D.gs,...D.sc,...(D.scRev?[D.scRev]:[]),...D.mr],20),"दिवस "+n+" क्विझ");
 }
@@ -2451,7 +2466,8 @@ function vLearn(){
   <p class="lead">पूर्व परीक्षा म्हणजे <b>सामान्य क्षमता चाचणी</b>: 100 प्रश्न, 100 गुण, 60 मिनिटे; चुकीच्या उत्तराला −0.25. यात मराठी व इंग्रजी व्याकरण नाही.</p>
   <div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>अंदाजे प्रश्न</th><th>धडे</th></tr></thead><tbody>${SUB.map(s=>{const ls=bySub(s.id);const r=ls.filter(l=>isRead(l.id)).length;return `<tr><td><span class="dot" style="background:${s.c}"></span>${s.name}</td><td class="n">${s.w}</td><td class="n">${r}/${ls.length}</td></tr>`}).join("")}</tbody></table></div>
   <a class="btn pri" href="#strategy" style="width:100%;margin:4px 0 8px">📋 परीक्षा पद्धत, निगेटिव्ह मार्किंग व वेळेची रणनीती ›</a>
-  <a class="btn" href="#ref" style="width:100%;margin:0 0 12px">📚 संदर्भ: जिल्हे, नकाशा, कालरेषा, आकृत्या, सूत्रे ›</a>
+  <a class="btn" href="#ref" style="width:100%;margin:0 0 8px">📚 संदर्भ: जिल्हे, नकाशा, कालरेषा, आकृत्या, सूत्रे ›</a>
+  <a class="btn" href="#sh" style="width:100%;margin:0 0 12px">📄 एक-पानी उजळणी पत्रके (शेवटचे 5 दिवस) ›</a>
   <details class="box"><summary>हे आकडे कुठून आले?</summary><p class="small">MPSC विषयनिहाय प्रश्नसंख्या अधिकृतपणे जाहीर करत नाही. वरचे आकडे 2018–2026 च्या गट-क पेपर्सवरील कोचिंग विश्लेषणांवर आधारित अंदाज आहेत, आणि विश्लेषणांमध्ये फरक आहे; विशेषतः गणित व बुद्धिमत्तेचा वाटा. Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (एका वर्षी 48.25 नोंदवला गेला). म्हणून लक्ष्य: मॉकमध्ये सातत्याने 70+.</p></details>
   ${SUB.map(s=>`<div class="sc" style="--c:${s.c}"><h3>${s.name}</h3><ul>${bySub(s.id).map(l=>`<li><a href="#l-${l.id}"><span>${isRead(l.id)?"✓ ":""}${l.t}</span><span class="st">${stars(l.imp)}</span></a></li>`).join("")}</ul><a class="rvlink" href="#rv-${s.id}">⚡ सर्व छोट्या नोट्स (उजळणी)</a></div>`).join("")}
   <div class="sc" style="--c:#555"><h3>मूळ जुन्या प्रश्नपत्रिका</h3><p>2018, 2019, 2022, 2023, 2025, जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपत्रिका व उत्तरतालिका <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> वर आहेत. <a href="https://www.mpscs.in/exams" target="_blank" rel="noopener">mpscs.in</a> वर त्या फोनवर ऑनलाइन सोडवता येतात. उजळणी आठवड्यापासून (दिवस 36) रोज एक पेपर सोडवा.</p></div>`;
@@ -2475,6 +2491,17 @@ function vLesson(id){
   $("#lq").onclick=()=>{markRead(id);quiz(bankLessons([id],GEN[id]?15:l.q.length),l.t)};
   $("#rd").onclick=()=>{markRead(id);vLesson(id)};
 }
+/* ---------- एक-पानी उजळणी पत्रके (sheets.js; चालू घडामोडी CA धड्यांच्या छोट्या नोट्समधून) ---------- */
+function sheetOf(sid){if(sid==="ca"){const ls=bySub("ca");return ls.length?{t:"चालू घडामोडी",g:ls.map(l=>[l.t,l.sn||[]])}:null}
+  return typeof SHEETS==="object"?SHEETS[sid]:null}
+function vSheet(sid){const ids=SUB.map(s=>s.id).filter(id=>sheetOf(id));
+  if(!sid||!sheetOf(sid)){main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>📄 एक-पानी उजळणी पत्रके</h1><p class="lead">शेवटच्या 5 दिवसांसाठी (दिवस 57–61) प्रत्येक विषयाचे सर्वात महत्त्वाचे मुद्दे एका पानावर. छापून किंवा फोनवर वाचा.</p>
+   ${ids.length?`<div class="grid">${ids.map(id=>`<a class="tile" href="#sh-${id}" style="--c:${SN[id].c}"><b>${SN[id].name}</b><small>${sheetOf(id).g.reduce((a,x)=>a+x[1].length,0)} मुद्दे</small></a>`).join("")}</div>`:`<p class="exp r">पत्रके (sheets.js) लोड झाली नाहीत. इंटरनेट चालू करून पान पुन्हा उघडा.</p>`}`;return}
+  const sh=sheetOf(sid),s=SN[sid],i=ids.indexOf(sid);
+  main.innerHTML=`<a class="back noprint" href="#sh">‹ सर्व पत्रके</a><h1>📄 ${sh.t}</h1>
+  <div class="sheet" style="--c:${s.c}">${sh.g.map(([h,b])=>`<h3>${h}</h3><ul>${b.map(x=>`<li>${x}</li>`).join("")}</ul>`).join("")}</div>
+  <div class="btns noprint"><button class="btn" id="shp">🖨 छापा</button><a class="btn" href="#rv-${sid}">सविस्तर छोट्या नोट्स ›</a>${i<ids.length-1?`<a class="btn pri" href="#sh-${ids[i+1]}">पुढचे: ${SN[ids[i+1]].name} ›</a>`:""}</div>`;
+  $("#shp").onclick=()=>window.print()}
 function vRevise(sid){
   const s=SN[sid];if(!s){location.hash="learn";return}
   main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>⚡ ${s.name}: उजळणी</h1><p class="lead">सर्व धड्यांच्या छोट्या नोट्स एकत्र. प्रवासात किंवा परीक्षेच्या आदल्या दिवशी वाचण्यासाठी.</p>
@@ -2743,9 +2770,9 @@ function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.p
   r.onerror=()=>{$("#bkm").innerHTML=`<div class="exp r">फाइल वाचता आली नाही.</div>`};r.readAsText(f)}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
-  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="strategy"||h==="ref"||h.startsWith("rf-")?"learn":h.startsWith("mr-")?"mock":h;
+  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="sh"||h.startsWith("sh-")||h==="strategy"||h==="ref"||h.startsWith("rf-")?"learn":h.startsWith("mr-")?"mock":h;
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+tab));
-  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));
+  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));else if(h==="sh"||h.startsWith("sh-"))vSheet(h.slice(3));
   else({today:()=>vToday(),learn:vLearn,strategy:vStrategy,ref:vRef,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
   if(!h.startsWith("sec-"))window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);$("#dl").textContent=daysLeft();route();
