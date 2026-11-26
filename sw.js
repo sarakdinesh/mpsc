@@ -1,7 +1,7 @@
 /* गट-क सराव: offline service worker.
    App files: network first (so updates arrive), cache fallback when offline.
    Fonts: cache first after the first online visit. */
-const CACHE = "gc2-v13";
+const CACHE = "gc2-v15";
 const CORE = ["./", "./index.html", "./questions.js", "./current-affairs.js", "./ref.js", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", e => {
