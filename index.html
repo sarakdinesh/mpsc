@@ -84,6 +84,11 @@ a{color:var(--blue)}
 .br div{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.br i{display:block;height:100%;background:var(--blue)}.br.weak i{background:var(--bad)}.br b{text-align:right}
 .rev{padding-left:22px}.rev li{margin:12px 0;padding:8px 10px;border-radius:8px;border-left:4px solid var(--line)}.rev li.g{border-color:var(--ok)}.rev li.r{border-color:var(--bad)}.rev p{margin:2px 0}
 .hist{list-style:none;padding:0}.hist li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.hist a{color:inherit}
+.flt{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.flt button{appearance:none;font:inherit;font-size:15px;font-weight:600;min-height:40px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.flt button.on{border-color:var(--blue);background:var(--blue);color:var(--bg)}
+.rev .ol{list-style:none;padding:0;margin:6px 0}.rev .ol li{margin:2px 0;padding:2px 8px;border:0;font-size:15px}.rev .ol li.a{color:var(--ok);font-weight:700}.rev .ol li.y{color:var(--bad);text-decoration:line-through}
+.lsn{list-style:none;padding:0}.lsn li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.lsn small{color:var(--mut);white-space:nowrap}
+.srbox{display:flex;gap:8px;margin:8px 0}.srbox div{flex:1;background:var(--card);border-radius:10px;padding:8px;text-align:center}.srbox b{display:block;font-size:22px;color:var(--blue)}.srbox small{color:var(--mut);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats div{background:var(--card);border-radius:12px;padding:12px;text-align:center}.stats b{display:block;font-size:26px;color:var(--blue)}.stats small{color:var(--mut);font-size:13px}
 .mk{position:relative;height:180px;display:flex;gap:6px;align-items:flex-end;border-bottom:1.5px solid var(--line);padding-top:10px}
 .mc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}.mc i{display:block;width:100%;max-width:36px;background:var(--blue);border-radius:6px 6px 0 0}.mc i.g{background:var(--ok)}.mc small{font-size:12px;color:var(--mut)}
@@ -2800,12 +2805,26 @@ function bankLessons(ids,n){
 const bankSub=(sid,n)=>bankLessons(bySub(sid).map(l=>l.id),n);
 
 /* ---------- प्रगती ---------- */
-function rec(q,ok){
+function rec(q,ok,noSr){
   const st=store.get("stats",{});st[q.s]=st[q.s]||[0,0];st[q.s][1]++;if(ok)st[q.s][0]++;store.set("stats",st);
   const ls=store.get("lstats",{});ls[q.l]=ls[q.l]||[0,0];ls[q.l][1]++;if(ok)ls[q.l][0]++;store.set("lstats",ls);
-  if(!q.g){const wr=store.get("wrong",[]);const i=wr.findIndex(x=>x.q===q.q);if(!ok&&i<0){wr.push(q);store.set("wrong",wr.slice(-300))}if(ok&&i>=0){wr.splice(i,1);store.set("wrong",wr)}}
+  if(!(noSr&&ok))srRec(q,ok);
   const days=store.get("days",{});const d=dkey(new Date());days[d]=(days[d]||0)+1;store.set("days",days);
 }
+/* ---------- चुकलेले प्रश्न: अंतराने उजळणी (1, 3, 7 दिवस) ---------- */
+const SRI=[1,3,7];
+const addDays=n=>{const d=today0();d.setDate(d.getDate()+n);return dkey(d)};
+const srList=()=>store.get("wrong",[]).map(x=>x.due?x:{...x,box:0,due:dkey(today0())});
+const srDue=()=>{const t=dkey(today0());return srList().filter(x=>x.due<=t)};
+function srRec(q,ok){
+  const wr=srList(),i=wr.findIndex(x=>x.q===q.q),t=dkey(today0());
+  if(!ok){const it={s:q.s,l:q.l,q:q.q,o:q.o,a:q.a,e:q.e,box:0,due:addDays(SRI[0]),miss:(i>=0&&wr[i].miss||0)+1};
+    if(i>=0)wr.splice(i,1);wr.push(it);store.set("wrong",wr.slice(-300));return}
+  if(i<0||wr[i].due>t)return;
+  const b=wr[i].box+1;
+  if(b>=SRI.length){wr.splice(i,1);store.set("mastered",store.get("mastered",0)+1)}else{wr[i].box=b;wr[i].due=addDays(SRI[b])}
+  store.set("wrong",wr)}
+const startReview=()=>{const d=srDue();if(d.length)quiz(shuffle(d).slice(0,30),"आजची उजळणी")};
 const streak=()=>{const days=store.get("days",{});let s=0;const d=today0();if(!days[dkey(d)])d.setDate(d.getDate()-1);while(days[dkey(d)]){s++;d.setDate(d.getDate()-1)}return s};
 const isRead=id=>store.get("read",[]).includes(id);
 const markRead=id=>{const r=store.get("read",[]);if(!r.includes(id)){r.push(id);store.set("read",r)}};
@@ -2881,11 +2900,13 @@ function vToday(n){
   <div class="daynav"><button class="btn sm" id="pv" ${n<=1?"disabled":""}>‹</button><div><b>दिवस ${n}</b> · ${fmtD(dateOf(n))}<br><small>${n===62?"परीक्षा 🎯":typ[D.t]}</small></div><button class="btn sm" id="nx" ${n>=62?"disabled":""}>›</button></div>
   ${n===62?`<p class="lead">आज परीक्षा. हॉल तिकीट, ओळखपत्र, काळे बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित. दोन पर्याय नक्की बाद करता आले तरच अंदाज लावा. शुभेच्छा!</p>`:dayCard(n)}
   ${D&&D.t==="learn"?`<div class="btns"><button class="btn pri" id="dq">आजचा मिश्र क्विझ (20)</button><a class="btn" href="#l-${D.gs[0]}">आजचा धडा उघडा</a></div>`:""}
+  ${n===cur&&srDue().length?`<div class="note"><b>🔁 आज ${srDue().length} चुकलेले प्रश्न उजळणीला आले आहेत.</b><br><small>1, 3 व 7 दिवसांनी पुन्हा विचारले जातात; तिन्ही वेळा बरोबर आल्यावरच यादीतून जातात.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="srn">आत्ता उजळणी करा</button></div></div>`:""}
   ${n!==cur?`<p><a href="#today">आजच्या दिवसावर परत जा ›</a></p>`:""}
   ${behind.length&&n===cur?`<details class="box"><summary>मागे राहिलेले धडे (${behind.length})</summary><ul class="plain">${behind.map(l=>`<li><a href="#l-${l.id}">${l.t}</a> <small>${SN[l.s].name}</small></li>`).join("")}</ul></details>`:""}
   <p class="small">🔥 ${streak()} दिवस सलग सराव · वाचलेले धडे ${store.get("read",[]).length}/${L.length}</p>`;
   main.querySelectorAll(".slots input").forEach(c=>c.onchange=()=>{const k="day_"+c.dataset.d;const a=store.get(k,[]);const i=+c.dataset.i;store.set(k,c.checked?[...new Set([...a,i])]:a.filter(x=>x!==i));vToday(n)});
   $("#pv").onclick=()=>vToday(n-1);$("#nx").onclick=()=>vToday(n+1);
+  const srn=$("#srn");if(srn)srn.onclick=startReview;
   const dq=$("#dq");if(dq)dq.onclick=()=>quiz(bankLessons([...D.gs,...D.sc,...(D.scRev?[D.scRev]:[]),...D.mr],20),"दिवस "+n+" क्विझ");
 }
 
@@ -2927,25 +2948,32 @@ function vRevise(sid){
 
 /* ---------- सराव ---------- */
 function vPractice(){
-  const wr=store.get("wrong",[]);
+  const wr=srList(),t=dkey(today0()),due=wr.filter(x=>x.due<=t),nx=wr.filter(x=>x.due>t).map(x=>x.due).sort()[0];
+  const stg=SRI.map((_,b)=>wr.filter(x=>x.box===b).length);
   main.innerHTML=`<h1>सराव</h1><p class="lead">प्रत्येक उत्तरानंतर लगेच स्पष्टीकरण दिसते. चुकलेले प्रश्न आपोआप जतन होतात. गणित व बुद्धिमत्तेचे प्रश्न दरवेळी नवीन तयार होतात.</p>
   <div class="grid">${SUB.map(s=>`<button class="tile" data-s="${s.id}" style="--c:${s.c}"><b>${s.name}</b><small>${bySub(s.id).reduce((a,l)=>a+l.q.length,0)} प्रश्न${bySub(s.id).some(l=>GEN[l.id])?" + अमर्याद":""}</small></button>`).join("")}
   <button class="tile" data-s="mix" style="--c:#142a6e"><b>मिश्र 25</b><small>सर्व विषय</small></button>
-  <button class="tile" data-s="wrong" style="--c:#e2336b" ${wr.length?"":"disabled"}><b>चुकलेले प्रश्न</b><small>${wr.length} जतन</small></button></div>`;
+  <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
+  <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button></div>
+  <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
+  <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
+  <div class="srbox"><div><b>${stg[0]}</b><small>1 दिवस टप्पा</small></div><div><b>${stg[1]}</b><small>3 दिवस टप्पा</small></div><div><b>${stg[2]}</b><small>7 दिवस टप्पा</small></div><div><b>${store.get("mastered",0)}</b><small>पक्के झाले</small></div></div>
+  ${!due.length&&nx?`<p class="small">पुढची उजळणी: ${fmtD(new Date(nx+"T00:00"))}</p>`:""}`;
   main.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const s=b.dataset.s;
-    if(s==="wrong")return quiz(shuffle(store.get("wrong",[])).slice(0,25),"चुकलेले प्रश्न");
+    if(s==="due")return startReview();
+    if(s==="wrong")return quiz(shuffle(srList()).slice(0,25),"चुकलेले प्रश्न",true);
     if(s==="mix")return quiz(buildMock(25),"मिश्र सराव");
     quiz(bankSub(s,25),SN[s].name)});
 }
-function quiz(qs,title){
+function quiz(qs,title,noSr){
   let i=0,score=0;
   const show=()=>{
-    if(i>=qs.length){main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p><div class="btns"><a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;window.scrollTo(0,0);return}
+    if(i>=qs.length){const left=srDue().length;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
     const q=qs[i];
     main.innerHTML=`<div class="qhead"><span>${title}</span><span>${i+1}/${qs.length} · बरोबर ${score}</span></div><div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
     <p class="small">${SN[q.s].name}</p><p class="qs">${esc(q.q)}</p>
     <div class="opts">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div><div id="fb"></div>`;
-    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ok=k===q.a;if(ok)score++;rec(q,ok);
+    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ok=k===q.a;if(ok)score++;rec(q,ok,noSr);
       main.querySelectorAll(".op").forEach((x,j)=>{x.disabled=true;if(j===q.a)x.classList.add("ok");else if(j===k)x.classList.add("bad")});
       $("#fb").innerHTML=`<div class="exp ${ok?"g":"r"}"><b>${ok?"बरोबर!":"चूक. बरोबर उत्तर: "+esc(q.o[q.a])}</b><br>${esc(q.e)} <a href="#l-${q.l}">धडा पाहा ›</a></div><button class="btn pri" id="nx">${i+1<qs.length?"पुढचा प्रश्न ›":"निकाल पाहा"}</button>`;
       $("#nx").onclick=()=>{i++;show()};$("#nx").focus()});
@@ -2960,11 +2988,11 @@ function buildMock(n){const f=n/100,out=[];
     for(let k=0;k<want;k++){if(g.length&&k%2===1)out.push(genFor(pick(g)));else out.push(stat[k%stat.length])}}
   return shuffle(out).slice(0,n)}
 let timer=null;
-function vMock(){clearInterval(timer);const h=store.get("mocks",[]);
+function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.get("mockrev",[]);
   main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेसारखी: वेळेची मर्यादा, उत्तरे शेवटी तपासली जातात, चुकीच्या उत्तराला −0.25. प्रश्न सोडून दिल्यास 0 गुण.</p>
   <div class="grid"><button class="tile" id="full" style="--c:#142a6e"><b>पूर्ण मॉक</b><small>100 प्रश्न · 60 मिनिटे</small></button><button class="tile" id="mini" style="--c:#e2336b"><b>मिनी मॉक</b><small>25 प्रश्न · 15 मिनिटे</small></button></div>
   <p class="small">विषय वाटप: चालू घडामोडी 12, इतिहास 14, भूगोल 14, राज्यघटना 14, अर्थ 10, विज्ञान 14, महाराष्ट्र विशेष 4, गणित 9, बुद्धिमत्ता 9. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
-  ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>`<li><span>${m.d} · ${m.n} प्रश्न</span><b>${fmt(m.sc)}/${m.n}</b></li>`).join("")}</ul>`:""}`;
+  ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>{const has=m.id&&mrv.some(x=>x.id===m.id);return `<li><span>${m.d} · ${m.n} प्रश्न${has?` · <a href="#mr-${m.id}">उत्तरे पाहा ›</a>`:""}</span><b>${fmt(m.sc)}/${m.n}</b></li>`}).join("")}</ul><p class="small">शेवटच्या 5 मॉकची सर्व उत्तरे जतन राहतात.</p>`:""}`;
   $("#full").onclick=()=>runMock(100,60);$("#mini").onclick=()=>runMock(25,15)}
 function runMock(n,min){const qs=buildMock(n),ans=Array(n).fill(-1);let cur=0;const end=Date.now()+min*6e4;
   const draw=()=>{const q=qs[cur];
@@ -2983,12 +3011,40 @@ function runMock(n,min){const qs=buildMock(n),ans=Array(n).fill(-1);let cur=0;co
   clearInterval(timer);timer=setInterval(tick,1000);
   const finish=()=>{clearInterval(timer);let r=0,w=0;const by={};
     qs.forEach((q,k)=>{by[q.s]=by[q.s]||[0,0,0];by[q.s][2]++;if(ans[k]<0)return;const ok=ans[k]===q.a;if(ok){r++;by[q.s][0]++}else{w++;by[q.s][1]++}rec(q,ok)});
-    const sc=r-w*.25,h=store.get("mocks",[]);h.push({d:dkey(new Date()).slice(5),n,sc,r,w});store.set("mocks",h.slice(-40));
-    main.innerHTML=`<h1>मॉक निकाल</h1><div class="big">${fmt(sc)}<small>/${n}</small></div>
-    <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n===100?(sc>=70?"सुरक्षित पातळी! हीच पातळी टिकवा.":sc>=60?"जवळ आहात; कमजोर विषयांवर भर द्या.":"धडे व सराव वाढवा; पुढच्या मॉकमध्ये +5 चे लक्ष्य ठेवा."):""}</p>
-    <h2>विषयनिहाय</h2><div class="bars">${Object.entries(by).map(([s,v])=>`<div class="br ${v[0]/v[2]<.6?"weak":""}"><span>${SN[s].name}</span><div><i style="width:${v[0]/v[2]*100}%"></i></div><b>${v[0]}/${v[2]}</b></div>`).join("")}</div>
-    <h2>उत्तरे तपासा</h2><ol class="rev">${qs.map((q,k)=>`<li class="${ans[k]<0?"sk":ans[k]===q.a?"g":"r"}"><p>${esc(q.q)}</p><p class="small">तुमचे: ${ans[k]<0?"सोडला":esc(q.o[ans[k]])} · बरोबर: <b>${esc(q.o[q.a])}</b><br>${esc(q.e)} <a href="#l-${q.l}">धडा ›</a></p></li>`).join("")}</ol><a class="btn pri" href="#mock">मॉक मेनू</a>`;window.scrollTo(0,0)};
+    qs.forEach((q,k)=>{if(ans[k]<0)srRec(q,false)});
+    const id=Date.now(),d=dkey(new Date()).slice(5),sc=r-w*.25,h=store.get("mocks",[]);h.push({id,d,n,sc,r,w});store.set("mocks",h.slice(-40));
+    const mrv=store.get("mockrev",[]);mrv.push({id,d,n,sc,r,w,qs:qs.map(q=>({s:q.s,l:q.l,q:q.q,o:q.o,a:q.a,e:q.e})),ans});store.set("mockrev",mrv.slice(-5));
+    location.hash="mr-"+id};
   draw();window.scrollTo(0,0)}
+
+/* ---------- मॉक उजळणी ---------- */
+function vMockReview(id,f){
+  const m=store.get("mockrev",[]).find(x=>String(x.id)===String(id));
+  if(!m){main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>मॉक उजळणी</h1><p class="lead">या मॉकची उत्तरे आता उपलब्ध नाहीत. फक्त शेवटच्या 5 मॉकची उत्तरे जतन राहतात.</p>`;return}
+  const {qs,ans,n,sc,r,w}=m,st=k=>ans[k]<0?"sk":ans[k]===qs[k].a?"g":"r";
+  f=f||(w?"r":ans.some(a=>a<0)?"sk":"all");
+  const by={},lw={};
+  qs.forEach((q,k)=>{by[q.s]=by[q.s]||[0,0];by[q.s][1]++;if(st(k)==="g")by[q.s][0]++;else{lw[q.l]=lw[q.l]||[0,0];lw[q.l][st(k)==="r"?0:1]++}});
+  const lsn=Object.entries(lw).filter(([l])=>LX[l]).sort((a,b)=>b[1][0]+b[1][1]-a[1][0]-a[1][1]);
+  const cnt={r:w,sk:n-r-w,g:r,all:n},lab={r:"चुकलेले",sk:"सोडलेले",g:"बरोबर",all:"सर्व"};
+  const list=qs.map((q,k)=>[q,k]).filter(([,k])=>f==="all"||st(k)===f);
+  main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>मॉक निकाल व उजळणी</h1><p class="small">${m.d} · ${n} प्रश्न</p>
+  <div class="big">${fmt(sc)}<small>/${n}</small></div>
+  <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n===100?(sc>=70?"सुरक्षित पातळी! हीच पातळी टिकवा.":sc>=60?"जवळ आहात; कमजोर विषयांवर भर द्या.":"धडे व सराव वाढवा; पुढच्या मॉकमध्ये +5 चे लक्ष्य ठेवा."):""}</p>
+  <h2>विषयनिहाय</h2><div class="bars">${Object.entries(by).map(([s,v])=>`<div class="br ${v[0]/v[1]<.6?"weak":""}"><span>${SN[s].name}</span><div><i style="width:${v[0]/v[1]*100}%"></i></div><b>${v[0]}/${v[1]}</b></div>`).join("")}</div>
+  ${lsn.length?`<h2>हे धडे पुन्हा वाचा</h2><ul class="lsn">${lsn.map(([l,v])=>`<li><a href="#l-${l}">${LX[l].t}</a><small>${v[0]?v[0]+" चूक":""}${v[0]&&v[1]?" · ":""}${v[1]?v[1]+" सोडले":""}</small></li>`).join("")}</ul>
+  <div class="btns"><button class="btn pri" id="redo">चुकलेले व सोडलेले ${n-r} प्रश्न पुन्हा सोडवा</button></div>
+  <p class="small">हे प्रश्न 1-3-7 दिवसांच्या उजळणीतही जोडले गेले आहेत.</p>`:""}
+  <h2>उत्तरे तपासा</h2>
+  <div class="flt">${["r","sk","g","all"].map(x=>`<button data-f="${x}" class="${x===f?"on":""}">${lab[x]} (${cnt[x]})</button>`).join("")}</div>
+  ${list.length?`<ol class="rev">${list.map(([q,k])=>`<li value="${k+1}" class="${st(k)}"><p>${esc(q.q)}</p>
+   <ul class="ol">${q.o.map((o,j)=>`<li class="${j===q.a?"a":j===ans[k]?"y":""}">${LT[j]}. ${esc(o)}${j===q.a?" ✓":j===ans[k]?" ✗":""}</li>`).join("")}</ul>
+   <p class="small">${ans[k]<0?"तुम्ही हा प्रश्न सोडला. ":""}${esc(q.e)}</p>
+   <p class="small"><a href="#l-${q.l}">धडा: ${LX[q.l]?LX[q.l].t:"पाहा"} ›</a></p></li>`).join("")}</ol>`:`<p class="small">या गटात एकही प्रश्न नाही.</p>`}
+  <a class="btn pri" href="#mock">मॉक मेनू</a>`;
+  main.querySelectorAll(".flt button").forEach(b=>b.onclick=()=>{vMockReview(id,b.dataset.f);$(".flt").scrollIntoView()});
+  const rd=$("#redo");if(rd)rd.onclick=()=>quiz(shuffle(qs.filter((_,k)=>st(k)!=="g")),"मॉकमधील चुका",true);
+}
 
 /* ---------- प्रगती ---------- */
 function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=store.get("lstats",{});
@@ -3004,9 +3060,9 @@ function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=s
   $("#rst").onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith("gc2_")).forEach(k=>localStorage.removeItem(k))}catch(e){}vProgress()}}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
-  const tab=h.startsWith("l-")||h.startsWith("rv-")?"learn":h;
+  const tab=h.startsWith("l-")||h.startsWith("rv-")?"learn":h.startsWith("mr-")?"mock":h;
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+tab));
-  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));
+  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));
   else({today:()=>vToday(),learn:vLearn,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
   if(!h.startsWith("sec-"))window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);$("#dl").textContent=daysLeft();route();
