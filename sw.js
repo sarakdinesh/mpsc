@@ -2,7 +2,7 @@
    App files: network first (so updates arrive), cache fallback when offline.
    Fonts: cache first after the first online visit. */
 const CACHE = "gc2-v3";
-const CORE = ["./", "./index.html", "./questions.js", "./manifest.json", "./icon.svg"];
+const CORE = ["./", "./index.html", "./questions.js", "./current-affairs.js", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
