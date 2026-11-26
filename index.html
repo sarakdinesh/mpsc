@@ -79,7 +79,10 @@ a{color:var(--blue)}
 .omr{margin-top:8px}.omr summary{cursor:pointer;font-weight:600;padding:8px 0}
 .og{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
 .ob{appearance:none;font:inherit;font-size:13px;height:40px;border-radius:50%;border:1.5px solid var(--pink);background:transparent;color:var(--ink);cursor:pointer}
-.ob.f{background:var(--blue);border-color:var(--blue);color:var(--bg)}.ob.c{outline:2px solid var(--pink);outline-offset:2px}
+.ob.f{background:var(--blue);border-color:var(--blue);color:var(--bg)}.ob.fl{border-style:dashed;border-width:2px;background:color-mix(in srgb,var(--pink) 18%,transparent)}
+.gs{display:flex;gap:10px;align-items:center;margin:12px 0 0;font-size:15px;min-height:44px;cursor:pointer}.gs input{width:22px;height:22px;accent-color:var(--pink)}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:10px;background:var(--card);color:var(--mut);margin-left:6px}
+.op.sk{border-style:dashed}.tl{list-style:none;margin:10px 0;padding:0 0 0 14px;border-left:3px solid var(--line)}.tl li{position:relative;margin:0 0 10px;padding-left:6px}.tl li::before{content:"";position:absolute;left:-22px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--pink)}.tl b{display:block}.sqg{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin:8px 0 14px}.sqg span{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;font-size:14px}.ob.c{outline:2px solid var(--pink);outline-offset:2px}
 .bars{display:grid;gap:8px}.br{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) 3.5em;gap:10px;align-items:center;font-size:15px}
 .br div{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.br i{display:block;height:100%;background:var(--blue)}.br.weak i{background:var(--bad)}.br b{text-align:right}
 .rev{padding-left:22px}.rev li{margin:12px 0;padding:8px 10px;border-radius:8px;border-left:4px solid var(--line)}.rev li.g{border-color:var(--ok)}.rev li.r{border-color:var(--bad)}.rev p{margin:2px 0}
@@ -130,6 +133,7 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
 </nav>
 <script src="questions.js?v=6"></script>
 <script src="current-affairs.js?v=1"></script>
+<script src="ref.js?v=1"></script>
 <script>
 const L=[];
 L.push(
@@ -303,7 +307,7 @@ d:`## न्यायव्यवस्था
 |कलम|124|214|
 |निवृत्ती वय|65|62|
 |रिट कलम|32|226|
-सर्वोच्च न्यायालयाची स्थापना 28 जानेवारी 1950 ला झाली. न्यायाधीशांची नेमणूक राष्ट्रपती करतात. <b>मुंबई उच्च न्यायालय</b> 1862 मध्ये स्थापन झाले. त्याची खंडपीठे नागपूर, छत्रपती संभाजीनगर आणि पणजी (गोवा) येथे आहेत. मुंबई उच्च न्यायालयाचे कार्यक्षेत्र महाराष्ट्र, गोवा, दादरा-नगर हवेली व दमण-दीव आहे.
+सर्वोच्च न्यायालयाची स्थापना 28 जानेवारी 1950 ला झाली. न्यायाधीशांची नेमणूक राष्ट्रपती करतात. <b>मुंबई उच्च न्यायालय</b> 1862 मध्ये स्थापन झाले. त्याची खंडपीठे नागपूर, छत्रपती संभाजीनगर आणि पणजी (गोवा) येथे आहेत. <b>कोल्हापूर</b> येथे चौथे (सर्किट) खंडपीठ <b>18 ऑगस्ट 2025</b> पासून सुरू झाले (उद्घाटन सरन्यायाधीश भूषण गवई). मुंबई उच्च न्यायालयाचे कार्यक्षेत्र महाराष्ट्र, गोवा, दादरा-नगर हवेली व दमण-दीव आहे.
 ## घटनात्मक संस्था
 |संस्था|कलम|
 |निवडणूक आयोग|324|
@@ -334,7 +338,7 @@ d:`## न्यायव्यवस्था
 |101 वी|2016|GST|
 |103 वी|2019|आर्थिक दुर्बल घटकांना (EWS) 10% आरक्षण|
 |106 वी|2023|महिलांना 1/3 आरक्षण|`,
-sn:["सर्वोच्च न्यायालय: कलम 124, निवृत्ती 65 · उच्च न्यायालय: कलम 214, निवृत्ती 62","मुंबई उच्च न्यायालय 1862; खंडपीठे नागपूर, छ. संभाजीनगर, पणजी","निवडणूक आयोग 324 · लोकसेवा आयोग 315 · CAG 148 · वित्त आयोग 280 · ॲटर्नी जनरल 76 · महाधिवक्ता 165","MPSC स्थापना 1 मे 1960","आणीबाणी: 352 राष्ट्रीय · 356 राष्ट्रपती राजवट · 360 आर्थिक (कधीच लागू नाही)","दुरुस्त्या: 61 वी मतदान वय 18 · 101 वी GST · 103 वी EWS 10% · 106 वी महिला आरक्षण"],
+sn:["सर्वोच्च न्यायालय: कलम 124, निवृत्ती 65 · उच्च न्यायालय: कलम 214, निवृत्ती 62","मुंबई उच्च न्यायालय 1862; खंडपीठे नागपूर, छ. संभाजीनगर, पणजी + कोल्हापूर (सर्किट, 18 ऑगस्ट 2025)","निवडणूक आयोग 324 · लोकसेवा आयोग 315 · CAG 148 · वित्त आयोग 280 · ॲटर्नी जनरल 76 · महाधिवक्ता 165","MPSC स्थापना 1 मे 1960","आणीबाणी: 352 राष्ट्रीय · 356 राष्ट्रपती राजवट · 360 आर्थिक (कधीच लागू नाही)","दुरुस्त्या: 61 वी मतदान वय 18 · 101 वी GST · 103 वी EWS 10% · 106 वी महिला आरक्षण"],
 tr:["सर्वोच्च व उच्च न्यायालयाच्या निवृत्ती वयाची (65/62) अदलाबदल केली जाते.","CAG (148) आणि वित्त आयोग (280) यांची कलमे अदलाबदलून विचारली जातात."],
 q:[]},
 
@@ -609,7 +613,7 @@ d:`## राजर्षी शाहू महाराज (1874–1922)
 |<b>संत गाडगे महाराज</b>|स्वच्छता, अंधश्रद्धा निर्मूलन; कीर्तनातून प्रबोधन|
 |<b>राष्ट्रसंत तुकडोजी महाराज</b>|'ग्रामगीता'; गुरुकुंज आश्रम, मोझरी (अमरावती)|
 |<b>साने गुरुजी</b>|पंढरपूर विठ्ठल मंदिर प्रवेश सत्याग्रह (1947); 'श्यामची आई'; 'साधना' साप्ताहिक (1948)|
-|<b>महर्षी शिंदे / गोखले</b>|(गोखले: सर्व्हंट्स ऑफ इंडिया, 1905; गांधीजींचे राजकीय गुरू)|`,
+|<b>गोपाळ कृष्ण गोखले</b>|सर्व्हंट्स ऑफ इंडिया सोसायटी (1905, पुणे); गांधीजींचे राजकीय गुरू|`,
 sn:["शाहू: आरक्षण 26 जुलै 1902 · मोफत सक्तीचे शिक्षण 1917 · 26 जून सामाजिक न्याय दिन","कर्वे: हिंगणे आश्रम 1896 · SNDT 1916 · भारतरत्न 1958","रानडे: सार्वजनिक सभा 1870 · सामाजिक परिषद 1887","आगरकर: सुधारक 1888 · लोकहितवादी: शतपत्रे","वि. रा. शिंदे: डिप्रेस्ड क्लासेस मिशन 1906","रमाबाई: शारदा सदन 1889 · ताराबाई शिंदे: स्त्री-पुरुष तुलना 1882","भाऊराव पाटील: रयत 1919 · पंजाबराव: शिवाजी शिक्षण संस्था 1932","लोखंडे: पहिले कामगार नेते, रविवार सुट्टी · तुकडोजी: ग्रामगीता · साने गुरुजी: पंढरपूर मंदिर प्रवेश 1947"],
 tr:["SNDT विद्यापीठ कर्व्यांनी स्थापले; पंडिता रमाबाई असा चुकीचा पर्याय दिला जातो.","'स्त्री-पुरुष तुलना' ताराबाई शिंदे यांचे आहे; सावित्रीबाई असा चुकीचा पर्याय दिला जातो."],
 q:[]},
@@ -882,7 +886,7 @@ d:`## नदी प्रणाली
 - <b>भीमा</b>: इंद्रायणी, मुळा-मुठा, घोड, नीरा, सीना.
 - <b>कृष्णा</b>: कोयना, वारणा, पंचगंगा, वेण्णा, येरळा.
 ## कोकणातील नद्या (उत्तरेकडून दक्षिणेकडे)
-वैतरणा, उल्हास (सर्वात लांब कोकणी नदी), पाताळगंगा, कुंडलिका, सावित्री, वाशिष्ठी, शास्त्री, तेरेखोल.
+वैतरणा, उल्हास (बहुतेक पुस्तकांनुसार सर्वात लांब कोकणी नदी; काही पुस्तकांत वैतरणा दिलेली असते, म्हणून पर्यायांत दोन्ही असल्यास काळजीपूर्वक वाचा), पाताळगंगा, कुंडलिका, सावित्री, वाशिष्ठी, शास्त्री, तेरेखोल.
 ## शहरे व नद्या
 |शहर|नदी|
 |नाशिक, पैठण, नांदेड|गोदावरी|
@@ -1028,6 +1032,51 @@ d:`## वने
 भारताची 2011 ची साक्षरता 74.04% आणि लिंग गुणोत्तर 943 होते.`,
 sn:["वने ~20%; सर्वाधिक गडचिरोली","6 राष्ट्रीय उद्याने: ताडोबा (1955, सर्वात जुने), पेंच, नवेगाव, गुगामल, चांदोली, संजय गांधी","पहिला व्याघ्र प्रकल्प मेळघाट (अमरावती) · एकूण 6","भीमाशंकर: शेकरू · राधानगरी: गवा · नान्नज: माळढोक · मयुरेश्वर: मोर","रामसर: नांदूर मधमेश्वर, लोणार, ठाणे खाडी","2011: लोकसंख्या 11.24 कोटी · घनता 365 · लिंग गुणोत्तर 929 · साक्षरता 82.34%"],
 tr:["सर्वात जुने राष्ट्रीय उद्यान (ताडोबा) आणि पहिला व्याघ्र प्रकल्प (मेळघाट) यांची अदलाबदल केली जाते.","लोणार सरोवर गोड्या पाण्याचे आहे असा चुकीचा पर्याय दिला जातो; ते खाऱ्या पाण्याचे आहे."],
+q:[]},
+{id:"ge11",s:"geo",t:"जग: खंड, महासागर, सामुद्रधुनी व स्थानिक वारे",imp:2,
+pyq:"अभ्यासक्रमात 'जगातील विभाग' आहे. 'सर्वात मोठा/लांब' जगातील घटक, सामुद्रधुनी कोणाला जोडते, गवताळ प्रदेश–खंड, आणि स्थानिक वारे–प्रदेश अशा जोड्यांवर प्रश्न येतात.",
+d:`## खंड (क्षेत्रफळानुसार मोठ्याकडून लहानाकडे)
+आशिया > आफ्रिका > उत्तर अमेरिका > दक्षिण अमेरिका > अंटार्क्टिका > युरोप > ऑस्ट्रेलिया. आशिया लोकसंख्येनेही सर्वात मोठा खंड आहे.
+## महासागर (5)
+|महासागर|वैशिष्ट्य|
+|<b>पॅसिफिक</b> (प्रशांत)|सर्वात मोठा व सर्वात खोल; <b>मरियाना गर्ता</b> (सुमारे 11 कि.मी. खोल); भोवती ज्वालामुखींचे 'अग्निकंकण' (Ring of Fire)|
+|अटलांटिक|दुसरा मोठा; 'S' आकाराचा|
+|<b>हिंदी</b>|देशाच्या नावाने ओळखला जाणारा एकमेव महासागर|
+|दक्षिण (सदर्न)|अंटार्क्टिकाभोवती|
+|आर्क्टिक|सर्वात लहान|
+## 'सर्वात' (जग)
+|बाब|उत्तर|
+|सर्वोच्च शिखर|<b>माउंट एव्हरेस्ट</b> (नेपाळ–चीन सीमा; 8,849 मी., 2020 चे संयुक्त मोजमाप)|
+|सर्वात लांब नदी|<b>नाईल</b> (आफ्रिका)|
+|सर्वाधिक पाणी वाहणारी नदी|<b>ॲमेझॉन</b> (दक्षिण अमेरिका)|
+|सर्वात मोठे उष्ण वाळवंट|<b>सहारा</b> (आफ्रिका)|
+|सर्वात मोठे बेट|<b>ग्रीनलँड</b>|
+|सर्वात मोठे सरोवर|<b>कॅस्पियन समुद्र</b> (खारे)|
+|सर्वात खोल सरोवर|<b>बैकल</b> (रशिया)|
+|क्षेत्रफळाने सर्वात मोठा देश|रशिया · सर्वात लहान: व्हॅटिकन सिटी|
+## सामुद्रधुनी व कालवे
+|नाव|काय जोडते / वेगळे करते|
+|पाल्क|भारत–श्रीलंका|
+|<b>जिब्राल्टर</b>|युरोप (स्पेन)–आफ्रिका (मोरोक्को); अटलांटिक–भूमध्य समुद्र|
+|मलाक्का|मलेशिया–सुमात्रा (इंडोनेशिया); हिंदी–पॅसिफिक महासागर|
+|बेरिंग|आशिया (रशिया)–उत्तर अमेरिका (अलास्का)|
+|होर्मुझ|पर्शियन आखात–ओमानचे आखात (तेलवाहतुकीचा मार्ग)|
+|<b>सुएझ कालवा</b> (1869, इजिप्त)|भूमध्य समुद्र–तांबडा समुद्र|
+|<b>पनामा कालवा</b> (1914)|अटलांटिक–पॅसिफिक महासागर|
+## गवताळ प्रदेश
+प्रेअरी (उत्तर अमेरिका) · पंपास (अर्जेंटिना, दक्षिण अमेरिका) · स्टेप्स (युरेशिया) · व्हेल्ड (दक्षिण आफ्रिका) · डाउन्स (ऑस्ट्रेलिया).
+## स्थानिक वारे
+|वारा|प्रदेश व वैशिष्ट्य|
+|लू|उत्तर भारत; उन्हाळ्यातील उष्ण, कोरडे वारे|
+|<b>चिनूक</b>|रॉकी पर्वत (उत्तर अमेरिका); उष्ण वारे, बर्फ वितळवतात ('हिम भक्षक')|
+|फॉन|आल्प्स (युरोप); उष्ण, कोरडे|
+|सिरोक्को|सहाराकडून इटलीकडे येणारे उष्ण वारे|
+|<b>हरमॅटन</b>|पश्चिम आफ्रिका; कोरडे वारे, दमट हवेतून दिलासा देतात म्हणून 'डॉक्टर'|
+|मिस्ट्रल|फ्रान्स; थंड वारे|
+## आंतरराष्ट्रीय सीमारेषा
+<b>मॅकमहॉन रेषा</b>: भारत–चीन · <b>ड्युरंड रेषा</b>: पाकिस्तान–अफगाणिस्तान · <b>रॅडक्लिफ रेषा</b>: भारत–पाकिस्तान व भारत–बांगलादेश · 38 वे अक्षवृत्त: उत्तर–दक्षिण कोरिया · 49 वे अक्षवृत्त: अमेरिका–कॅनडा.`,
+sn:["खंड क्रम: आशिया > आफ्रिका > उ. अमेरिका > द. अमेरिका > अंटार्क्टिका > युरोप > ऑस्ट्रेलिया","पॅसिफिक सर्वात मोठा व खोल (मरियाना गर्ता) · आर्क्टिक सर्वात लहान · हिंदी महासागर देशाच्या नावाने","एव्हरेस्ट 8,849 मी. · नाईल सर्वात लांब · ॲमेझॉन सर्वाधिक पाणी · सहारा · ग्रीनलँड · कॅस्पियन · बैकल सर्वात खोल","जिब्राल्टर: अटलांटिक–भूमध्य · मलाक्का: हिंदी–पॅसिफिक · बेरिंग: आशिया–अमेरिका · होर्मुझ: तेलमार्ग","सुएझ 1869: भूमध्य–तांबडा · पनामा 1914: अटलांटिक–पॅसिफिक","प्रेअरी उ. अमेरिका · पंपास अर्जेंटिना · स्टेप्स युरेशिया · व्हेल्ड द. आफ्रिका · डाउन्स ऑस्ट्रेलिया","चिनूक रॉकी (हिम भक्षक) · फॉन आल्प्स · हरमॅटन 'डॉक्टर' · लू उत्तर भारत","मॅकमहॉन: भारत–चीन · ड्युरंड: पाक–अफगाण · रॅडक्लिफ: भारत–पाक/बांगलादेश"],
+tr:["सर्वात लांब नदी नाईल, पण सर्वाधिक पाणी वाहणारी ॲमेझॉन. 'सर्वात मोठी नदी' असा शब्द आला तर प्रश्न नीट वाचा.","सुएझ कालवा भूमध्य व तांबडा समुद्र जोडतो; पनामा अटलांटिक व पॅसिफिक. ही जोडी उलटी दिली जाते.","ड्युरंड रेषा भारत–चीन असा चुकीचा पर्याय दिला जातो; भारत–चीन सीमा मॅकमहॉन रेषा आहे."],
 q:[]}
 );
 
@@ -1047,14 +1096,14 @@ d:`## अर्थव्यवस्थेची क्षेत्रे
 |<b>राष्ट्रीय उत्पन्न</b>|घटक किमतीला NNP|
 |<b>दरडोई उत्पन्न</b>|राष्ट्रीय उत्पन्न ÷ लोकसंख्या|
 ## कोण मोजते?
-भारतात राष्ट्रीय उत्पन्न <b>राष्ट्रीय सांख्यिकी कार्यालय (NSO)</b> मोजते; ते सांख्यिकी मंत्रालयाच्या अंतर्गत आहे (पूर्वी CSO). सध्याचे आधारवर्ष 2011–12 आहे.
+भारतात राष्ट्रीय उत्पन्न <b>राष्ट्रीय सांख्यिकी कार्यालय (NSO)</b> मोजते; ते सांख्यिकी मंत्रालयाच्या अंतर्गत आहे (पूर्वी CSO). <b>नवे आधारवर्ष 2022–23</b>: ही नवी GDP मालिका 27 फेब्रुवारी 2026 रोजी प्रसिद्ध झाली. त्याआधी आधारवर्ष 2011–12 होते (जुन्या पुस्तकांत तेच दिसेल).
 ## इतिहास
 - राष्ट्रीय उत्पन्नाचा पहिला अंदाज <b>दादाभाई नौरोजी</b> यांनी 1867–68 साठी काढला.
 - पहिला शास्त्रीय अंदाज <b>डॉ. व्ही. के. आर. व्ही. राव</b> (1931).
 - स्वातंत्र्यानंतर 1949 मध्ये <b>पी. सी. महालनोबीस</b> यांच्या अध्यक्षतेखाली राष्ट्रीय उत्पन्न समिती नेमली गेली.
 ## 1991 च्या आर्थिक सुधारणा
 1991 मध्ये परकीय चलनाचे संकट आले. तेव्हा पंतप्रधान पी. व्ही. नरसिंह राव आणि अर्थमंत्री <b>डॉ. मनमोहन सिंग</b> यांनी <b>LPG</b> सुधारणा आणल्या: उदारीकरण (Liberalisation), खासगीकरण (Privatisation), जागतिकीकरण (Globalisation). आर्थिक पाहणी अहवाल अर्थसंकल्पाच्या एक दिवस आधी संसदेत मांडला जातो.`,
-sn:["प्राथमिक: शेती · द्वितीयक: उद्योग · तृतीयक: सेवा (GDP मध्ये सर्वाधिक वाटा)","GDP: देशाच्या सीमेत · GNP = GDP + परदेशातून निव्वळ उत्पन्न · NNP = GNP − घसारा","राष्ट्रीय उत्पन्न NSO मोजते; आधारवर्ष 2011–12","पहिला अंदाज दादाभाई नौरोजी · शास्त्रीय अंदाज व्ही. के. आर. व्ही. राव · समिती 1949 महालनोबीस","1991 LPG सुधारणा: नरसिंह राव व मनमोहन सिंग"],
+sn:["प्राथमिक: शेती · द्वितीयक: उद्योग · तृतीयक: सेवा (GDP मध्ये सर्वाधिक वाटा)","GDP: देशाच्या सीमेत · GNP = GDP + परदेशातून निव्वळ उत्पन्न · NNP = GNP − घसारा","राष्ट्रीय उत्पन्न NSO मोजते; नवे आधारवर्ष 2022–23 (फेब्रु 2026 पासून; आधी 2011–12)","पहिला अंदाज दादाभाई नौरोजी · शास्त्रीय अंदाज व्ही. के. आर. व्ही. राव · समिती 1949 महालनोबीस","1991 LPG सुधारणा: नरसिंह राव व मनमोहन सिंग"],
 tr:["GDP मध्ये परदेशात काम करणाऱ्या भारतीयांचे उत्पन्न येते असा चुकीचा पर्याय दिला जातो; ते GNP मध्ये येते.","NNP काढताना कर वजा करतात असा चुकीचा पर्याय दिला जातो; प्रत्यक्षात घसारा वजा करतात."],
 q:[]},
 
@@ -1132,9 +1181,20 @@ d:`## अर्थसंकल्प
 - <b>GST परिषद</b> (कलम 279A) चे अध्यक्ष <b>केंद्रीय अर्थमंत्री</b> असतात; राज्यांचे अर्थमंत्री सदस्य असतात.
 - GST विधेयकाला मान्यता देणारे पहिले राज्य आसाम.
 - मानवी सेवनासाठीचे मद्य GST बाहेर आहे; पेट्रोलियम उत्पादने सध्या GST बाहेर आहेत.
+- <b>GST 2.0</b> (56 वी GST परिषद, सप्टेंबर 2025): <b>22 सप्टेंबर 2025</b> पासून मुख्य दर फक्त दोन: <b>5% व 18%</b>; तंबाखूसारख्या 'पाप' व चैनीच्या वस्तूंवर 40%. 12% व 28% हे जुने दर रद्द. (जुन्या पुस्तकांत 5 दर दिसतात; ते आता लागू नाहीत.)
+## परकीय व्यापार व व्यवहारतोल
+- <b>व्यवहारतोल</b> (Balance of Payments): <b>चालू खाते</b> (वस्तू व सेवांची आयात-निर्यात, परदेशातून येणारे पैसे) + <b>भांडवली खाते</b> (परकीय गुंतवणूक, कर्जे).
+- <b>व्यापारतोल</b> = फक्त वस्तूंची निर्यात − आयात. भारताचा व्यापारतोल सहसा तुटीचा असतो (कच्चे तेल, सोने यांची आयात).
+- चालू खात्यावर रुपया पूर्ण परिवर्तनीय: 1994. <b>FEMA 1999</b> ने FERA 1973 ची जागा घेतली.
+- <b>WTO</b>: 1 जानेवारी 1995, मुख्यालय जिनेव्हा; भारत संस्थापक सदस्य.
+- परकीय व्यापार धोरण DGFT (वाणिज्य मंत्रालय) ठरवते; सध्याचे परकीय व्यापार धोरण 2023 (1 एप्रिल 2023 पासून).
+## लेखा व लेखापरीक्षण
+- <b>भारताचा एकत्रित निधी</b> कलम 266(1) · <b>सार्वजनिक लेखा</b> 266(2) · <b>आकस्मिकता निधी</b> कलम 267 (राष्ट्रपतींच्या ताब्यात). सापळा: 266 आणि 267 यांची अदलाबदल करून पर्याय दिले जातात.
+- <b>CAG</b> (कलम 148): कार्यकाळ 6 वर्षे किंवा वय 65; अहवाल राष्ट्रपतींना (राज्याचा राज्यपालांना) देतो, आणि ते संसदेत मांडले जातात.
+- CAG चे अहवाल संसदेची <b>लोकलेखा समिती</b> (PAC) तपासते; तिचे अध्यक्ष परंपरेने विरोधी पक्षाचे असतात.
 ## वित्त आयोग (कलम 280)
 केंद्र व राज्यांमध्ये करांचे वाटप सुचवण्यासाठी राष्ट्रपती दर 5 वर्षांनी वित्त आयोग नेमतात. पहिला वित्त आयोग (1951) के. सी. नियोगी यांच्या अध्यक्षतेखाली होता. 16 व्या वित्त आयोगाचे अध्यक्ष <b>अरविंद पनगढिया</b> आहेत (2026–31 कालावधीसाठी).`,
-sn:["अर्थसंकल्प: कलम 112 'वार्षिक वित्तीय विवरणपत्र' · राज्य 202 · 1 फेब्रुवारीला","राजकोषीय तूट = सरकारचे एकूण कर्ज · प्राथमिक तूट = राजकोषीय तूट − व्याज","FRBM कायदा 2003","प्रत्यक्ष: आयकर, कंपनी कर · अप्रत्यक्ष: GST, सीमाशुल्क","GST: 101 वी दुरुस्ती, 1 जुलै 2017; परिषद 279A, अध्यक्ष केंद्रीय अर्थमंत्री; पहिली मान्यता आसाम","वित्त आयोग 280: पहिला के. सी. नियोगी · 16 वा अरविंद पनगढिया"],
+sn:["अर्थसंकल्प: कलम 112 'वार्षिक वित्तीय विवरणपत्र' · राज्य 202 · 1 फेब्रुवारीला","राजकोषीय तूट = सरकारचे एकूण कर्ज · प्राथमिक तूट = राजकोषीय तूट − व्याज","FRBM कायदा 2003","प्रत्यक्ष: आयकर, कंपनी कर · अप्रत्यक्ष: GST, सीमाशुल्क","GST: 101 वी दुरुस्ती, 1 जुलै 2017; परिषद 279A, अध्यक्ष केंद्रीय अर्थमंत्री; पहिली मान्यता आसाम","वित्त आयोग 280: पहिला के. सी. नियोगी · 16 वा अरविंद पनगढिया","GST 2.0: 22 सप्टें 2025 पासून 5% व 18% (+ 40% पाप वस्तू)","व्यवहारतोल = चालू खाते + भांडवली खाते · FEMA 1999 · WTO 1995","एकत्रित निधी 266 · आकस्मिकता निधी 267 · CAG 148 (6 वर्षे/65) → लोकलेखा समिती"],
 tr:["GST परिषदेचे अध्यक्ष पंतप्रधान असा चुकीचा पर्याय दिला जातो; अध्यक्ष केंद्रीय अर्थमंत्री असतात.","प्राथमिक तूट आणि महसुली तूट यांच्या सूत्रांची अदलाबदल केली जाते."],
 q:[]},
 
@@ -1179,6 +1239,7 @@ d:`## दारिद्र्य
 ## रोजगार हमी
 - महाराष्ट्राची <b>रोजगार हमी योजना</b> 1972 च्या दुष्काळात सुरू झाली आणि 1977 मध्ये तिचा कायदा झाला. संकल्पना <b>वि. स. पागे</b> यांची; म्हणून त्यांना रोजगार हमी योजनेचे जनक म्हणतात. अशी योजना राबवणारे महाराष्ट्र हे देशातील पहिले राज्य.
 - <b>मनरेगा</b>: कायदा 2005; 2 फेब्रुवारी 2006 पासून अंमल. ग्रामीण कुटुंबाला वर्षातून <b>100 दिवस</b> अकुशल कामाची हमी; किमान 1/3 लाभार्थी महिला.
+- <b>नवा कायदा: VB-G RAM G अधिनियम 2025</b> (विकसित भारत – रोजगार व आजीविका हमी मिशन (ग्रामीण)). डिसेंबर 2025 मध्ये संसदेत मंजूर; 21 डिसेंबर 2025 ला राष्ट्रपतींची संमती. याने <b>मनरेगाची जागा घेतली</b> आणि हमीचे दिवस <b>100 वरून 125</b> केले. <b>⚠ तपासा:</b> नवी योजना प्रत्यक्ष लागू होण्याची तारीख परीक्षेपूर्वी बातम्यांत पाहा. सापळा: प्रश्नात वर्ष पाहा; मनरेगा = 100 दिवस, VB-G RAM G = 125 दिवस.
 ## केंद्र सरकारच्या महत्त्वाच्या योजना
 |योजना|सुरुवात|मुख्य मुद्दा|
 |प्रधानमंत्री जनधन|28 ऑगस्ट 2014|बँक खाते|
@@ -1195,7 +1256,7 @@ d:`## दारिद्र्य
 - जलयुक्त शिवार अभियान (2015): दुष्काळमुक्तीसाठी जलसंधारण.
 - माझी कन्या भाग्यश्री (2016): मुलींसाठी.
 - मुख्यमंत्री माझी लाडकी बहीण योजना (2024): पात्र महिलांना दरमहा आर्थिक मदत (सुरुवातीला ₹1500).`,
-sn:["दारिद्र्य समित्या: लकडावाला 1993 · तेंडुलकर 2009 (21.9%) · रंगराजन 2014","छुपी बेरोजगारी: शेती · हंगामी: हंगाम संपल्यावर","महाराष्ट्र रोजगार हमी: 1972, कायदा 1977, जनक वि. स. पागे","मनरेगा: 2005 कायदा, 2006 अंमल, 100 दिवस, 1/3 महिला","जनधन 2014 · स्वच्छ भारत 2 ऑक्टोबर 2014 · मुद्रा 2015 · उज्ज्वला 2016 · आयुष्मान 2018 (₹5 लाख) · पीएम-किसान 2019 (₹6000)","जलयुक्त शिवार 2015 · माझी कन्या भाग्यश्री 2016 · लाडकी बहीण 2024"],
+sn:["दारिद्र्य समित्या: लकडावाला 1993 · तेंडुलकर 2009 (21.9%) · रंगराजन 2014","छुपी बेरोजगारी: शेती · हंगामी: हंगाम संपल्यावर","महाराष्ट्र रोजगार हमी: 1972, कायदा 1977, जनक वि. स. पागे","मनरेगा: 2005 कायदा, 2006 अंमल, 100 दिवस, 1/3 महिला → जागा VB-G RAM G अधिनियम 2025 ने घेतली: 125 दिवस","जनधन 2014 · स्वच्छ भारत 2 ऑक्टोबर 2014 · मुद्रा 2015 · उज्ज्वला 2016 · आयुष्मान 2018 (₹5 लाख) · पीएम-किसान 2019 (₹6000)","जलयुक्त शिवार 2015 · माझी कन्या भाग्यश्री 2016 · लाडकी बहीण 2024"],
 tr:["रोजगार हमीचे जनक वि. स. पागे आहेत; वसंतराव नाईक असा चुकीचा पर्याय दिला जातो.","मनरेगा कायदा 2005 चा आहे आणि अंमल 2006 पासून आहे. ही दोन्ही वर्षे पर्यायांत देऊन फसवले जाते."],
 q:[]},
 
@@ -2080,7 +2141,7 @@ const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const daysLeft=()=>Math.max(0,Math.round((EXAM-today0())/864e5));
 const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
-const LT=["अ","ब","क","ड"];
+const LT=["1","2","3","4"];
 const SUB=[
  {id:"ca",name:"चालू घडामोडी",w:"~15",c:"#455a64"},
  {id:"his",name:"इतिहास",w:"12–15",c:"#b4451f"},
@@ -2100,7 +2161,7 @@ const LX={};L.forEach(l=>LX[l.id]=l);
 const bySub=id=>L.filter(l=>l.s===id);
 
 /* ---------- 62 दिवसांचा धडे-आराखडा ---------- */
-const GSORD=["pl1","pl2","pl3","pl4","pl9","pl10","pl11","hi1","hi2","hi3","hi4","hi5","hi6","hi7","hi8","hi9","hi10","hi11","ge3","ge4","ge5","ge6","ge7","ge8","ge9","ge10","ge1","ge2","pl5","pl6","pl7","pl8","ec1","ec2","ec3","ec4","ec5","ec6","ec7","gk1","ca1","ca2","ca5","ca3","ca6","ca4","ca7","ca8"].filter(id=>LX[id]);
+const GSORD=["pl1","pl2","pl3","pl4","pl9","pl10","pl11","hi1","hi2","hi3","hi4","hi5","hi6","hi7","hi8","hi9","hi10","hi11","ge3","ge4","ge5","ge6","ge7","ge8","ge9","ge10","ge1","ge2","ge11","pl5","pl6","pl7","pl8","ec1","ec2","ec3","ec4","ec5","ec6","ec7","gk1","ca1","ca2","ca5","ca3","ca6","ca4","ca7","ca8"].filter(id=>LX[id]);
 const SCORD=["sc1","sc2","sc3","sc4","sc5","sc6","sc7","sc8","sc9","sc10","sc11"];
 const MRORD=["ma4","re1","ma5","re3","ma6","re4","ma8","re5","ma9","re2","ma10","re6","ma7","re7","ma1","re8","ma2","ma3","ma11"];
 const DAYS=[];
@@ -2273,7 +2334,7 @@ function vToday(n){
   </section>
   ${t<START&&n===1?`<p class="note">आराखडा 24 नोव्हेंबरपासून सुरू होतो. खाली दिवस 1 चे काम आहे.</p>`:""}
   <div class="daynav"><button class="btn sm" id="pv" ${n<=1?"disabled":""}>‹</button><div><b>दिवस ${n}</b> · ${fmtD(dateOf(n))}<br><small>${n===62?"परीक्षा 🎯":typ[D.t]}</small></div><button class="btn sm" id="nx" ${n>=62?"disabled":""}>›</button></div>
-  ${n===62?`<p class="lead">आज परीक्षा. हॉल तिकीट, ओळखपत्र, काळे बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित. दोन पर्याय नक्की बाद करता आले तरच अंदाज लावा. शुभेच्छा!</p>`:dayCard(n)}
+  ${n===62?`<p class="lead">आज परीक्षा. हॉल तिकीट, हॉल तिकिटावर सांगितलेले ओळखपत्र, 2 काळी बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित व अडलेले प्रश्न. एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. <a href='#strategy'>परीक्षा रणनीती एकदा वाचा ›</a> शुभेच्छा!</p>`:dayCard(n)}
   ${D&&D.t==="learn"?`<div class="btns"><button class="btn pri" id="dq">आजचा मिश्र क्विझ (20)</button><a class="btn" href="#l-${D.gs[0]}">आजचा धडा उघडा</a></div>`:""}
   ${n===cur&&srDue().length?`<div class="note"><b>🔁 आज ${srDue().length} चुकलेले प्रश्न उजळणीला आले आहेत.</b><br><small>1, 3 व 7 दिवसांनी पुन्हा विचारले जातात; तिन्ही वेळा बरोबर आल्यावरच यादीतून जातात.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="srn">आत्ता उजळणी करा</button></div></div>`:""}
   ${n!==cur?`<p><a href="#today">आजच्या दिवसावर परत जा ›</a></p>`:""}
@@ -2290,6 +2351,8 @@ function vLearn(){
   main.innerHTML=`<h1>अभ्यासक्रम</h1>
   <p class="lead">पूर्व परीक्षा म्हणजे <b>सामान्य क्षमता चाचणी</b>: 100 प्रश्न, 100 गुण, 60 मिनिटे; चुकीच्या उत्तराला −0.25. यात मराठी व इंग्रजी व्याकरण नाही.</p>
   <div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>अंदाजे प्रश्न</th><th>धडे</th></tr></thead><tbody>${SUB.map(s=>{const ls=bySub(s.id);const r=ls.filter(l=>isRead(l.id)).length;return `<tr><td><span class="dot" style="background:${s.c}"></span>${s.name}</td><td class="n">${s.w}</td><td class="n">${r}/${ls.length}</td></tr>`}).join("")}</tbody></table></div>
+  <a class="btn pri" href="#strategy" style="width:100%;margin:4px 0 8px">📋 परीक्षा पद्धत, निगेटिव्ह मार्किंग व वेळेची रणनीती ›</a>
+  <a class="btn" href="#ref" style="width:100%;margin:0 0 12px">📚 संदर्भ: जिल्हे, नकाशा, कालरेषा, आकृत्या, सूत्रे ›</a>
   <details class="box"><summary>हे आकडे कुठून आले?</summary><p class="small">MPSC विषयनिहाय प्रश्नसंख्या अधिकृतपणे जाहीर करत नाही. वरचे आकडे 2018–2026 च्या गट-क पेपर्सवरील कोचिंग विश्लेषणांवर आधारित अंदाज आहेत, आणि विश्लेषणांमध्ये फरक आहे; विशेषतः गणित व बुद्धिमत्तेचा वाटा. Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (एका वर्षी 48.25 नोंदवला गेला). म्हणून लक्ष्य: मॉकमध्ये सातत्याने 70+.</p></details>
   ${SUB.map(s=>`<div class="sc" style="--c:${s.c}"><h3>${s.name}</h3><ul>${bySub(s.id).map(l=>`<li><a href="#l-${l.id}"><span>${isRead(l.id)?"✓ ":""}${l.t}</span><span class="st">${stars(l.imp)}</span></a></li>`).join("")}</ul><a class="rvlink" href="#rv-${s.id}">⚡ सर्व छोट्या नोट्स (उजळणी)</a></div>`).join("")}
   <div class="sc" style="--c:#555"><h3>मूळ जुन्या प्रश्नपत्रिका</h3><p>2018, 2019, 2022, 2023, 2025, जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपत्रिका व उत्तरतालिका <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> वर आहेत. <a href="https://www.mpscs.in/exams" target="_blank" rel="noopener">mpscs.in</a> वर त्या फोनवर ऑनलाइन सोडवता येतात. उजळणी आठवड्यापासून (दिवस 36) रोज एक पेपर सोडवा.</p></div>`;
@@ -2341,17 +2404,18 @@ function vPractice(){
     quiz(bankSub(s,25),SN[s].name)});
 }
 function quiz(qs,title,noSr){
-  let i=0,score=0;
+  let i=0,score=0,skip=0;
   const show=()=>{
-    if(i>=qs.length){const left=srDue().length;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
+    if(i>=qs.length){const left=srDue().length;const wr=qs.length-score-skip,net=score-wr*.25;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="small">बरोबर ${score} · चूक ${wr} · माहीत नाही ${skip} · MPSC पद्धतीने गुण (चुकीला −0.25): <b>${fmt(net)}</b></p><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
     const q=qs[i];
     main.innerHTML=`<div class="qhead"><span>${title}</span><span>${i+1}/${qs.length} · बरोबर ${score}</span></div><div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
     <p class="small">${qtag(q)}${SN[q.s].name}</p><p class="qs">${esc(q.q)}</p>
-    <div class="opts">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div><div id="fb"></div>`;
-    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ok=k===q.a;if(ok)score++;rec(q,ok,noSr);
+    <div class="opts">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div><button class="btn" id="dk" style="margin-top:12px">माहीत नाही, सोडतो</button><div id="fb"></div>`;
+    const answer=k=>{const sk=k<0,ok=k===q.a;if(ok)score++;if(sk)skip++;rec(q,ok,noSr);$("#dk").remove();
       main.querySelectorAll(".op").forEach((x,j)=>{x.disabled=true;if(j===q.a)x.classList.add("ok");else if(j===k)x.classList.add("bad")});
-      $("#fb").innerHTML=`<div class="exp ${ok?"g":"r"}"><b>${ok?"बरोबर!":"चूक. बरोबर उत्तर: "+esc(q.o[q.a])}</b><br>${esc(q.e)}${qwarn(q)} <a href="#l-${q.l}">धडा पाहा ›</a></div><button class="btn pri" id="nx">${i+1<qs.length?"पुढचा प्रश्न ›":"निकाल पाहा"}</button>`;
-      $("#nx").onclick=()=>{i++;show()};$("#nx").focus()});
+      $("#fb").innerHTML=`<div class="exp ${ok?"g":"r"}"><b>${ok?"बरोबर!":(sk?"सोडला (0 गुण). ":"चूक (−0.25). ")+"बरोबर उत्तर: "+LT[q.a]+". "+esc(q.o[q.a])}</b><br>${esc(q.e)}${qwarn(q)} <a href="#l-${q.l}">धडा पाहा ›</a>${sk?"<br><small>हा प्रश्न उजळणीच्या यादीत गेला.</small>":""}</div><button class="btn pri" id="nx">${i+1<qs.length?"पुढचा प्रश्न ›":"निकाल पाहा"}</button>`;
+      $("#nx").onclick=()=>{i++;show()};$("#nx").focus()};
+    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>answer(+b.dataset.k));$("#dk").onclick=()=>answer(-1);
   };show();window.scrollTo(0,0);
 }
 
@@ -2364,31 +2428,42 @@ function buildMock(n){const f=n/100,out=[];
   return shuffle(out).slice(0,n)}
 let timer=null;
 function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.get("mockrev",[]);
-  main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेसारखी: वेळेची मर्यादा, उत्तरे शेवटी तपासली जातात, चुकीच्या उत्तराला −0.25. प्रश्न सोडून दिल्यास 0 गुण.</p>
+  main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेच्या नियमांप्रमाणे: वेळेची मर्यादा, चुकीच्या उत्तराला −0.25, सोडलेल्या प्रश्नाला 0. <b>OMR सारखे: एकदा 'OMR मध्ये भरा' केलेले उत्तर बदलता येत नाही.</b> अडलेला प्रश्न '⚑ सोडा' करून पुढे जा आणि शेवटी परत या. अंदाजाने उत्तर देताना 'अंदाज' खूण करा; निकालात तुमचे अंदाज फायद्याचे ठरतात की तोट्याचे ते दिसेल. <a href="#strategy">परीक्षा रणनीती ›</a></p>
   <div class="grid"><button class="tile" id="full" style="--c:#142a6e"><b>पूर्ण मॉक</b><small>100 प्रश्न · 60 मिनिटे</small></button><button class="tile" id="mini" style="--c:#e2336b"><b>मिनी मॉक</b><small>25 प्रश्न · 15 मिनिटे</small></button></div>
   <p class="small">विषय वाटप: चालू घडामोडी 12, इतिहास 14, भूगोल 14, राज्यघटना 14, अर्थ 10, विज्ञान 14, महाराष्ट्र विशेष 4, गणित 9, बुद्धिमत्ता 9. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
   ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>{const has=m.id&&mrv.some(x=>x.id===m.id);return `<li><span>${m.d} · ${m.n} प्रश्न${has?` · <a href="#mr-${m.id}">उत्तरे पाहा ›</a>`:""}</span><b>${fmt(m.sc)}/${m.n}</b></li>`}).join("")}</ul><p class="small">शेवटच्या 5 मॉकची सर्व उत्तरे जतन राहतात.</p>`:""}`;
   $("#full").onclick=()=>runMock(100,60);$("#mini").onclick=()=>runMock(25,15)}
-function runMock(n,min){const qs=buildMock(n),ans=Array(n).fill(-1);let cur=0;const end=Date.now()+min*6e4;
-  const draw=()=>{const q=qs[cur];
-    main.innerHTML=`<div class="qhead sticky"><span id="clock"></span><span>प्रश्न ${cur+1}/${n} · सोडवले ${ans.filter(a=>a>=0).length}</span></div>
-    <p class="small">${qtag(q)}${SN[q.s].name}</p><p class="qs">${esc(q.q)}</p>
-    <div class="opts">${q.o.map((o,k)=>`<button class="op ${ans[cur]===k?"sel":""}" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div>
-    <div class="btns"><button class="btn" id="pv" ${cur?"":"disabled"}>‹ मागे</button><button class="btn" id="clr">उत्तर पुसा</button><button class="btn pri" id="nx">${cur<n-1?"पुढे ›":"सबमिट"}</button></div>
-    <details class="omr"><summary>OMR: सर्व प्रश्न</summary><div class="og">${qs.map((_,k)=>`<button class="ob ${ans[k]>=0?"f":""} ${k===cur?"c":""}" data-j="${k}">${k+1}</button>`).join("")}</div></details>
+function runMock(n,min){const qs=buildMock(n),ans=Array(n).fill(-1),sel=Array(n).fill(-1),flag=Array(n).fill(0),gs=Array(n).fill(0),tm=Array(n).fill(0);
+  let cur=0,t0=Date.now(),omrOpen=false;const end=Date.now()+min*6e4;
+  const stamp=()=>{const t=Date.now();tm[cur]+=t-t0;t0=t};
+  const go=k=>{stamp();cur=k;draw();window.scrollTo(0,0)};
+  const pend=()=>flag.map((f,k)=>f&&ans[k]<0?k:-1).filter(k=>k>=0);
+  const draw=()=>{const q=qs[cur],lk=ans[cur]>=0,pd=pend(),nf=pd.find(k=>k>cur)??pd[0];
+    main.innerHTML=`<div class="qhead sticky"><span id="clock"></span><span>प्रश्न ${cur+1}/${n} · OMR ${ans.filter(a=>a>=0).length} · ⚑ ${pd.length}</span></div>
+    <p class="small">${qtag(q)}${SN[q.s].name}${lk?" · 🔒 OMR मध्ये भरले, आता बदलता येणार नाही":flag[cur]?" · ⚑ सोडलेला":""}</p><p class="qs">${esc(q.q)}</p>
+    <div class="opts">${q.o.map((o,k)=>`<button class="op ${(lk?ans[cur]:sel[cur])===k?"sel":""}" data-k="${k}" ${lk?"disabled":""}><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div>
+    ${lk?(gs[cur]?`<p class="small">🤔 अंदाज म्हणून नोंदवले</p>`:""):`<label class="gs"><input type="checkbox" id="gs" ${gs[cur]?"checked":""}>हे उत्तर अंदाजाने देतोय</label>`}
+    <div class="btns"><button class="btn" id="pv" ${cur?"":"disabled"}>‹ मागे</button>${lk?`<button class="btn pri" id="nx">${cur<n-1?"पुढे ›":"सबमिट"}</button>`:`<button class="btn" id="fl">⚑ सोडा, नंतर</button><button class="btn pri" id="ok" ${sel[cur]<0?"disabled":""}>OMR मध्ये भरा ✓</button>`}</div>
+    ${pd.length&&nf!==cur?`<button class="btn" id="nf" style="width:100%">⚑ सोडलेला प्रश्न ${nf+1} वर जा</button>`:""}
+    <details class="omr" ${omrOpen?"open":""}><summary>OMR: सर्व प्रश्न (भरलेले निळे, ⚑ सोडलेले गुलाबी)</summary><div class="og">${qs.map((_,k)=>`<button class="ob ${ans[k]>=0?"f":flag[k]?"fl":""} ${k===cur?"c":""}" data-j="${k}">${k+1}</button>`).join("")}</div></details>
     <button class="btn wide" id="sub">परीक्षा सबमिट करा</button><div id="cf"></div>`;
-    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>{ans[cur]=+b.dataset.k;if(cur<n-1)cur++;draw()});
-    $("#pv").onclick=()=>{cur--;draw()};$("#clr").onclick=()=>{ans[cur]=-1;draw()};
-    $("#nx").onclick=()=>{if(cur<n-1){cur++;draw()}else conf()};
-    main.querySelectorAll(".ob").forEach(b=>b.onclick=()=>{cur=+b.dataset.j;draw()});$("#sub").onclick=conf;tick()};
-  const conf=()=>{$("#cf").innerHTML=`<div class="exp r">${ans.filter(a=>a<0).length} प्रश्न सोडवायचे राहिले आहेत. सबमिट करायचे?<div class="btns"><button class="btn pri" id="yes">हो, सबमिट</button><button class="btn" id="no">नाही</button></div></div>`;$("#yes").onclick=finish;$("#no").onclick=()=>$("#cf").innerHTML="";$("#cf").scrollIntoView({behavior:"smooth"})};
+    main.querySelectorAll(".op").forEach(b=>b.onclick=()=>{sel[cur]=+b.dataset.k;draw()});
+    const g=$("#gs");if(g)g.onchange=()=>{gs[cur]=g.checked?1:0};
+    $("#pv").onclick=()=>go(cur-1);
+    const nx=$("#nx");if(nx)nx.onclick=()=>{if(cur<n-1)go(cur+1);else conf()};
+    const ok=$("#ok");if(ok)ok.onclick=()=>{if(sel[cur]<0)return;ans[cur]=sel[cur];flag[cur]=0;if(cur<n-1)go(cur+1);else{draw();conf()}};
+    const fl=$("#fl");if(fl)fl.onclick=()=>{flag[cur]=1;sel[cur]=-1;gs[cur]=0;if(cur<n-1)go(cur+1);else{draw();conf()}};
+    const nfb=$("#nf");if(nfb)nfb.onclick=()=>go(nf);
+    const om=main.querySelector(".omr");om.ontoggle=()=>{omrOpen=om.open};
+    main.querySelectorAll(".ob").forEach(b=>b.onclick=()=>go(+b.dataset.j));$("#sub").onclick=conf;tick()};
+  const conf=()=>{const left=ans.filter(a=>a<0).length;$("#cf").innerHTML=`<div class="exp r">${left?left+" प्रश्न OMR मध्ये भरायचे राहिले आहेत. ":""}सबमिट करायचे?<div class="btns"><button class="btn pri" id="yes">हो, सबमिट</button><button class="btn" id="no">नाही</button></div></div>`;$("#yes").onclick=finish;$("#no").onclick=()=>$("#cf").innerHTML="";$("#cf").scrollIntoView({behavior:"smooth"})};
   const tick=()=>{const left=Math.max(0,end-Date.now()),c=$("#clock");if(c){c.textContent="⏱ "+Math.floor(left/6e4)+":"+String(Math.floor(left/1e3)%60).padStart(2,"0");c.className=left<3e5?"warn":""}if(left<=0)finish()};
   clearInterval(timer);timer=setInterval(tick,1000);
-  const finish=()=>{clearInterval(timer);let r=0,w=0;const by={};
-    qs.forEach((q,k)=>{by[q.s]=by[q.s]||[0,0,0];by[q.s][2]++;if(ans[k]<0)return;const ok=ans[k]===q.a;if(ok){r++;by[q.s][0]++}else{w++;by[q.s][1]++}rec(q,ok)});
+  const finish=()=>{clearInterval(timer);stamp();let r=0,w=0;
+    qs.forEach((q,k)=>{if(ans[k]<0)return;const ok=ans[k]===q.a;if(ok)r++;else w++;rec(q,ok)});
     qs.forEach((q,k)=>{if(ans[k]<0)srRec(q,false)});
     const id=Date.now(),d=dkey(new Date()).slice(5),sc=r-w*.25,h=store.get("mocks",[]);h.push({id,d,n,sc,r,w});store.set("mocks",h.slice(-40));
-    const mrv=store.get("mockrev",[]);mrv.push({id,d,n,sc,r,w,qs:qs.map(q=>({s:q.s,l:q.l,id:q.id,q:q.q,o:q.o,a:q.a,e:q.e,y:q.y,n:q.n,v:q.v,src:q.src,u:q.u,c:q.c})),ans});store.set("mockrev",mrv.slice(-5));
+    const mrv=store.get("mockrev",[]);mrv.push({id,d,n,min,sc,r,w,qs:qs.map(q=>({s:q.s,l:q.l,id:q.id,q:q.q,o:q.o,a:q.a,e:q.e,y:q.y,n:q.n,v:q.v,src:q.src,u:q.u,c:q.c})),ans,gs:gs.map((x,k)=>ans[k]>=0?x:0),tm:tm.map(x=>Math.round(x/1e3))});store.set("mockrev",mrv.slice(-5));
     location.hash="mr-"+id};
   draw();window.scrollTo(0,0)}
 
@@ -2407,6 +2482,7 @@ function vMockReview(id,f){
   <div class="big">${fmt(sc)}<small>/${n}</small></div>
   <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n===100?(sc>=70?"सुरक्षित पातळी! हीच पातळी टिकवा.":sc>=60?"जवळ आहात; कमजोर विषयांवर भर द्या.":"धडे व सराव वाढवा; पुढच्या मॉकमध्ये +5 चे लक्ष्य ठेवा."):""}</p>
   <h2>विषयनिहाय</h2><div class="bars">${Object.entries(by).map(([s,v])=>`<div class="br ${v[0]/v[1]<.6?"weak":""}"><span>${SN[s].name}</span><div><i style="width:${v[0]/v[1]*100}%"></i></div><b>${v[0]}/${v[1]}</b></div>`).join("")}</div>
+  ${mockInsights(m)}
   ${lsn.length?`<h2>हे धडे पुन्हा वाचा</h2><ul class="lsn">${lsn.map(([l,v])=>`<li><a href="#l-${l}">${LX[l].t}</a><small>${v[0]?v[0]+" चूक":""}${v[0]&&v[1]?" · ":""}${v[1]?v[1]+" सोडले":""}</small></li>`).join("")}</ul>
   <div class="btns"><button class="btn pri" id="redo">चुकलेले व सोडलेले ${n-r} प्रश्न पुन्हा सोडवा</button></div>
   <p class="small">हे प्रश्न 1-3-7 दिवसांच्या उजळणीतही जोडले गेले आहेत.</p>`:""}
@@ -2414,11 +2490,65 @@ function vMockReview(id,f){
   <div class="flt">${["r","sk","g","all"].map(x=>`<button data-f="${x}" class="${x===f?"on":""}">${lab[x]} (${cnt[x]})</button>`).join("")}</div>
   ${list.length?`<ol class="rev">${list.map(([q,k])=>`<li value="${k+1}" class="${st(k)}"><p>${esc(q.q)}</p>
    <ul class="ol">${q.o.map((o,j)=>`<li class="${j===q.a?"a":j===ans[k]?"y":""}">${LT[j]}. ${esc(o)}${j===q.a?" ✓":j===ans[k]?" ✗":""}</li>`).join("")}</ul>
-   <p class="small">${ans[k]<0?"तुम्ही हा प्रश्न सोडला. ":""}${esc(q.e)}${qwarn(q)}</p>
+   <p class="small">${ans[k]<0?"तुम्ही हा प्रश्न सोडला. ":""}${m.gs&&m.gs[k]?"<span class='tag'>अंदाज</span> ":""}${m.tm?"<span class='tag'>⏱ "+m.tm[k]+" से.</span> ":""}${esc(q.e)}${qwarn(q)}</p>
    <p class="small"><a href="#l-${q.l}">धडा: ${LX[q.l]?LX[q.l].t:"पाहा"} ›</a></p></li>`).join("")}</ol>`:`<p class="small">या गटात एकही प्रश्न नाही.</p>`}
   <a class="btn pri" href="#mock">मॉक मेनू</a>`;
   main.querySelectorAll(".flt button").forEach(b=>b.onclick=()=>{vMockReview(id,b.dataset.f);$(".flt").scrollIntoView()});
   const rd=$("#redo");if(rd)rd.onclick=()=>quiz(shuffle(qs.filter((_,k)=>st(k)!=="g")),"मॉकमधील चुका",true);
+}
+
+function mockInsights(m){const {qs,ans,n}=m;let out="";
+  if(m.tm){const tot=m.tm.reduce((a,b)=>a+b,0),avg=tot/n,by={};qs.forEach((q,k)=>{by[q.s]=by[q.s]||[0,0];by[q.s][0]+=m.tm[k];by[q.s][1]++});
+    const slow=qs.map((q,k)=>[k,m.tm[k]]).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    out+=`<h2>वेळेचा वापर</h2><p class="small">एकूण ${Math.floor(tot/60)} मि ${tot%60} से वापरले (मर्यादा ${m.min||Math.round(n*.6)} मि) · सरासरी <b>${Math.round(avg)} सेकंद</b> प्रति प्रश्न. खऱ्या परीक्षेत सरासरी 36 सेकंद मिळतात: GS चे प्रश्न 15–25 सेकंदांत सोडवा, म्हणजे गणितासाठी 60–90 सेकंद उरतात.</p>
+    <div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>सरासरी वेळ</th></tr></thead><tbody>${Object.entries(by).map(([s,v])=>`<tr><td>${SN[s].name}</td><td class="n">${Math.round(v[0]/v[1])} से</td></tr>`).join("")}</tbody></table></div>
+    <p class="small">सर्वाधिक वेळ घेतलेले प्रश्न: ${slow.map(([k,t])=>`क्र. ${k+1} (${t} से, ${ans[k]<0?"सोडला":ans[k]===qs[k].a?"बरोबर":"चूक"})`).join(" · ")}. यापैकी चुकलेल्या किंवा सोडलेल्या प्रश्नांवर परीक्षेत इतका वेळ घालवू नका.</p>`}
+  if(m.gs){let gr=0,gw=0;qs.forEach((q,k)=>{if(m.gs[k]&&ans[k]>=0){if(ans[k]===q.a)gr++;else gw++}});
+    if(gr+gw){const net=gr-gw*.25;out+=`<h2>अंदाजाचा हिशेब</h2><p class="small">तुम्ही ${gr+gw} प्रश्न अंदाजाने सोडवले: ${gr} बरोबर, ${gw} चूक. निव्वळ <b>${net>=0?"+":""}${fmt(net)} गुण</b>. ${net>0?"तुमचे अंदाज फायद्याचे ठरत आहेत; एक पर्याय नक्की बाद होत असेल तेव्हा अंदाज लावत राहा.":"अंदाजांमुळे गुण गेले. पुढच्या वेळी किमान एक पर्याय नक्की चूक दिसत असेल तरच अंदाज लावा."}</p>`}}
+  return out}
+
+/* ---------- परीक्षा रणनीती ---------- */
+const SYL=[["चालू घडामोडी: जागतिक तसेच भारतातील","ca"],["नागरिकशास्त्र: भारताची घटना, भारतीय राज्यव्यवस्था (शासन यंत्रणा), ग्राम प्रशासन व स्थानिक स्वराज्य संस्था","pol"],["इतिहास: आधुनिक भारताचा, विशेषतः महाराष्ट्राचा इतिहास","his"],["भूगोल (महाराष्ट्रावर भर): पृथ्वी, हवामान, अक्षांश-रेखांश; महाराष्ट्राचा प्राकृतिक, आर्थिक व सामाजिक भूगोल","geo"],["अर्थव्यवस्था: राष्ट्रीय उत्पन्न, शेती, उद्योग, परकीय व्यापार, बँकिंग, लोकसंख्या, दारिद्र्य व बेरोजगारी, चलन व राजकोषीय धोरण; शासकीय अर्थव्यवस्था: अर्थसंकल्प, लेखा, लेखापरीक्षण","eco"],["सामान्य विज्ञान: भौतिकशास्त्र, रसायनशास्त्र, प्राणिशास्त्र, वनस्पतीशास्त्र, आरोग्यशास्त्र","sci"],["अंकगणित: बेरीज, वजाबाकी, गुणाकार, भागाकार, दशांश अपूर्णांक, टक्केवारी इ.","mat"],["बुद्धिमापन चाचणी: किती लवकर व अचूक विचार करता येतो हे तपासणारे प्रश्न","rea"]];
+const REFS=typeof REF!=="undefined"&&Array.isArray(REF)?REF:[];
+function vRef(){
+  main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>संदर्भ पाने</h1><p class="lead">परीक्षेआधी पटकन उजळणीसाठी: तक्ते, कालरेषा, आकृत्या व सूत्रे. धड्यांची जागा घेत नाहीत; धडे वाचल्यानंतर वापरा.</p>
+  ${REFS.length?REFS.map(r=>`<a class="box" href="#rf-${r.id}" style="display:block;text-decoration:none;color:inherit"><b>${r.t}</b><div class="small">${r.d}</div></a>`).join(""):`<div class="exp r">संदर्भ पाने (ref.js) लोड झाली नाहीत. इंटरनेट चालू करून पान पुन्हा उघडा.</div>`}`}
+function vRefSec(id){const r=REFS.find(x=>x.id===id);if(!r){location.hash="ref";return}
+  main.innerHTML=`<a class="back" href="#ref">‹ संदर्भ</a><h1>${r.t}</h1><p class="lead">${r.d}</p>${r.h}`}
+function vStrategy(){
+  main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>परीक्षा पद्धत व रणनीती</h1>
+  <p class="lead">पेपर किती येतो यासोबत तो कसा सोडवता यावरही गुण ठरतात. हे पान परीक्षेपूर्वी दोनदा वाचा: मॉक सुरू करताना (दिवस 43) आणि परीक्षेच्या आदल्या दिवशी.</p>
+  <h2>अधिकृत नियम</h2><p class="small">स्रोत: 11 जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपुस्तिकेवरील सूचना.</p>
+  <ul class="notes"><li><b>100 प्रश्न, 100 गुण, 1 तास.</b> सर्व प्रश्न अनिवार्य, सर्वांना समान गुण.</li>
+  <li>प्रत्येक प्रश्नाला <b>4 पर्याय, क्रमांक 1, 2, 3, 4</b>. (म्हणून या app मध्येही पर्याय 1–4 असे आहेत.)</li>
+  <li>प्रश्न <b>मराठी व इंग्रजी</b> दोन्ही भाषांत असतात. मराठी प्रश्नाबद्दल शंका आली तर इंग्रजी प्रश्न वाचा.</li>
+  <li>प्रत्येक चुकीच्या उत्तराला <b>1/4 गुण वजा</b>. सोडलेल्या प्रश्नाला 0.</li>
+  <li>फक्त <b>काळ्या शाईचे बॉलपेन</b>. पेन्सिल किंवा शाईचे पेन नाही.</li>
+  <li>OMR मध्ये एकदा भरलेले उत्तर <b>खोडता येत नाही</b>. खोडून नवे उत्तर दिले तर ते तपासले जात नाही. एकापेक्षा जास्त उत्तरे भरली तर उत्तर चूक धरून गुण वजा होतात. म्हणून या app च्या मॉकमध्येही भरलेले उत्तर बदलता येत नाही.</li>
+  <li>OMR वर परीक्षा क्रमांक आणि प्रश्नपुस्तिका क्रमांक न विसरता लिहा.</li></ul>
+  <h2>निगेटिव्ह मार्किंगचे गणित</h2>
+  <div class="scroll"><table class="t"><thead><tr><th>तुमची स्थिती</th><th>बरोबर येण्याची शक्यता</th><th>सरासरी फायदा</th></tr></thead><tbody>
+  <tr><td>उत्तर नक्की माहीत</td><td class="n">~100%</td><td class="n">+1</td></tr>
+  <tr><td>2 पर्याय नक्की चूक (50-50)</td><td class="n">50%</td><td class="n">+0.38</td></tr>
+  <tr><td>1 पर्याय नक्की चूक</td><td class="n">33%</td><td class="n">+0.17</td></tr>
+  <tr><td>काहीच कल्पना नाही</td><td class="n">25%</td><td class="n">+0.06</td></tr></tbody></table></div>
+  <p class="note"><b>नियम:</b> एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. पूर्ण अंदाजाचा सरासरी फायदा फक्त +0.06 आहे, म्हणजे जवळजवळ शून्य; त्यावर वेळ घालवू नका. 20 चुकीची उत्तरे = 5 गुण वजा, आणि cut-off च्या जवळ 5 गुण म्हणजे हजारो उमेदवार. तुमचे अंदाज खरोखर फायद्याचे ठरतात का, हे मॉकच्या 'अंदाजाचा हिशेब' मध्ये पाहा.</p>
+  <h2>60 मिनिटांचा आराखडा</h2>
+  <div class="scroll"><table class="t"><thead><tr><th>वेळ</th><th>काय करायचे</th></tr></thead><tbody>
+  <tr><td class="n">0–2 मि</td><td>OMR वर क्रमांक भरा. प्रश्नपुस्तिकेत 100 प्रश्न आहेत का ते पाहा.</td></tr>
+  <tr><td class="n">2–37 मि</td><td><b>पहिली फेरी:</b> 1 ते 100 क्रमाने. खात्रीचे प्रश्न लगेच. 30 सेकंदांत सुटत नसेल तर प्रश्नपुस्तिकेवर खूण करून पुढे. आयोगाची सूचनाही हेच सांगते: कठीण प्रश्नावर वेळ न घालवता पुढे जा.</td></tr>
+  <tr><td class="n">37–55 मि</td><td><b>दुसरी फेरी:</b> खूण केलेले गणित, बुद्धिमत्ता आणि 50-50 प्रश्न.</td></tr>
+  <tr><td class="n">55–60 मि</td><td>OMR तपासा: प्रत्येक बबल पूर्ण भरले का, प्रश्न क्रमांक जुळतात का.</td></tr></tbody></table></div>
+  <p class="small">OMR दर 10–20 प्रश्नांनी भरत राहा. सगळी उत्तरे शेवटी एकदम भरायला ठेवली तर वेळ संपल्यावर गुण जातात. सरासरी वेग 36 सेकंद प्रति प्रश्न; मॉकनंतर 'वेळेचा वापर' पाहून तुमचा वेग तपासा.</p>
+  <h2>लक्ष्य</h2><p class="small">Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (अंदाज; वर्षानुसार बदलतो). म्हणून पूर्ण मॉकमध्ये सातत्याने <b>70+</b> हे लक्ष्य ठेवा.</p>
+  <h2>परीक्षेच्या आदल्या दिवशी</h2>
+  <ul class="notes"><li>हॉल तिकिटाची प्रिंट काढा आणि त्यावरील सर्व सूचना वाचा: कोणते ओळखपत्र, किती वाजता पोहोचायचे, काय नेता येत नाही.</li>
+  <li>2 काळी बॉलपेन, हॉल तिकीट, मूळ ओळखपत्र एका पिशवीत ठेवा. मोबाइल, स्मार्टवॉच, कॅल्क्युलेटर नेऊ नका.</li>
+  <li>केंद्र कुठे आहे आणि पोहोचायला किती वेळ लागतो, ते आधी पाहून ठेवा.</li>
+  <li>नवीन काहीही वाचू नका. फक्त छोट्या नोट्स आणि चुकलेले प्रश्न. 11 पूर्वी झोपा.</li></ul>
+  <h2>अधिकृत अभ्यासक्रम आणि त्याचे धडे</h2>
+  <p class="small">⚠ गट-क जाहिरातीतील पूर्व परीक्षेच्या अभ्यासक्रमाचा सारांश. जाहिरात <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> वर एकदा जरूर वाचा. मराठी व इंग्रजी व्याकरण पूर्व परीक्षेत नाही; ते मुख्य परीक्षेत आहे.</p>
+  ${SYL.map(([t,sid])=>{const ls=bySub(sid),r=ls.filter(l=>isRead(l.id)).length;return `<div class="sc" style="--c:${SN[sid].c}"><h3>${t}</h3><p class="small">${r}/${ls.length} धडे वाचले${sid==="eco"?" · परकीय व्यापार व लेखापरीक्षण: <a href='#l-ec4'>सार्वजनिक वित्त</a> धड्यात":""}${sid==="pol"?" · महाराष्ट्र विशेष धडाही पाहा: <a href='#l-gk1'>"+LX.gk1.t+"</a>":""}</p><a class="rvlink" href="#rv-${sid}">⚡ ${SN[sid].name}: छोट्या नोट्स व सराव ›</a></div>`}).join("")}`;
 }
 
 /* ---------- प्रगती ---------- */
@@ -2460,10 +2590,10 @@ function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.p
   r.onerror=()=>{$("#bkm").innerHTML=`<div class="exp r">फाइल वाचता आली नाही.</div>`};r.readAsText(f)}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
-  const tab=h.startsWith("l-")||h.startsWith("rv-")?"learn":h.startsWith("mr-")?"mock":h;
+  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="strategy"||h==="ref"||h.startsWith("rf-")?"learn":h.startsWith("mr-")?"mock":h;
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+tab));
-  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));
-  else({today:()=>vToday(),learn:vLearn,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
+  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));
+  else({today:()=>vToday(),learn:vLearn,strategy:vStrategy,ref:vRef,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
   if(!h.startsWith("sec-"))window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);$("#dl").textContent=daysLeft();route();
 if(typeof CA!=="object")main.insertAdjacentHTML("afterbegin",`<div class="exp r">चालू घडामोडी (current-affairs.js) लोड झाल्या नाहीत. इंटरनेट चालू करून पान पुन्हा उघडा.</div>`);
