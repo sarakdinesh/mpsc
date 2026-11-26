@@ -3054,10 +3054,35 @@ function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=s
   <h2>मॉक गुण (100 मध्ये)</h2>${h.length?`<div class="mk">${h.slice(-12).map(m=>{const p=m.sc/m.n*100;return `<div class="mc"><i style="height:${Math.max(2,p)}%" class="${p>=70?"g":""}"></i><small>${Math.round(p)}</small></div>`}).join("")}<span class="line" style="bottom:70%">70</span></div>`:`<p class="small">अजून मॉक दिली नाही. दिवस 42 पासून मॉक सुरू होतात; त्याआधी मिनी मॉक देऊ शकता.</p>`}
   <h2>विषयनिहाय अचूकता</h2><div class="bars">${SUB.map(s=>{const v=st[s.id];if(!v)return `<div class="br"><span>${s.name}</span><div></div><b>—</b></div>`;const p=Math.round(v[0]/v[1]*100);return `<div class="br ${p<60?"weak":""}"><span>${s.name}</span><div><i style="width:${p}%"></i></div><b>${p}%</b></div>`}).join("")}</div>
   ${weak.length?`<h2>सर्वात कमजोर धडे</h2><ul class="plain">${weak.map(([id,v])=>`<li><a href="#l-${id}">${LX[id].t}</a> <small>${Math.round(v[0]/v[1]*100)}%</small></li>`).join("")}</ul>`:""}
-  <h2>चालू घडामोडी नोंदवही</h2><textarea id="ca" rows="8" placeholder="उदा. 24 नोव्हेंबर: ...">${esc(store.get("ca",""))}</textarea><p class="small" id="sv">हे फक्त याच फोनच्या याच ब्राउझरमध्ये जतन होते.</p>
+  <h2>चालू घडामोडी नोंदवही</h2><textarea id="ca" rows="8" placeholder="उदा. 24 नोव्हेंबर: ...">${esc(store.get("ca",""))}</textarea><p class="small" id="sv">हे याच फोनमध्ये जतन होते; खालील बॅकअपमध्येही येते.</p>
+  <h2>बॅकअप</h2><p class="small">सर्व प्रगती (वाचलेले धडे, चुकलेले प्रश्न, मॉक गुण, नोंदवही) एका फाइलमध्ये जतन करा. फोन बदलला, ब्राउझर साफ केला तरी ही फाइल उघडून सर्व परत मिळेल.</p>
+  <p class="small" id="bkinfo">${bkAge()}</p>
+  <div class="btns"><button class="btn pri" id="bkx">बॅकअप फाइल घ्या</button><label class="btn" for="bkf">बॅकअप उघडा</label><input type="file" id="bkf" accept=".json,application/json,text/plain" hidden></div><div id="bkm"></div>
   <details class="box"><summary>सर्व प्रगती पुसा</summary><button class="btn" id="rst">हो, सर्व पुसा</button></details>`;
   $("#ca").oninput=e=>{store.set("ca",e.target.value);$("#sv").textContent="जतन झाले ✓"};
-  $("#rst").onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith("gc2_")).forEach(k=>localStorage.removeItem(k))}catch(e){}vProgress()}}
+  $("#rst").onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith("gc2_")).forEach(k=>localStorage.removeItem(k))}catch(e){}vProgress()};
+  $("#bkx").onclick=exportBackup;
+  $("#bkf").onchange=e=>{const f=e.target.files[0];e.target.value="";if(f)readBackup(f)}}
+
+/* ---------- बॅकअप ---------- */
+const gcKeys=()=>{try{return Object.keys(localStorage).filter(k=>k.startsWith("gc2_"))}catch(e){return[]}};
+function bkAge(){const t=store.get("bk",0);if(!t)return "अजून एकदाही बॅकअप घेतला नाही. आठवड्यातून एकदा घ्या.";
+  const d=Math.floor((Date.now()-t)/864e5);return d<1?"शेवटचा बॅकअप: आज ✓":"शेवटचा बॅकअप: "+d+" दिवसांपूर्वी"+(d>=7?" · नवीन बॅकअप घ्या":"")}
+async function exportBackup(){store.set("bk",Date.now());const data={};gcKeys().forEach(k=>data[k]=localStorage.getItem(k));
+  const txt=JSON.stringify({app:"gc2",v:1,at:new Date().toISOString(),data}),name="gat-k-backup-"+dkey(new Date())+".json";
+  const file=new File([txt],name,{type:"application/json"});let shared=false;
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"गट-क सराव बॅकअप"});shared=true}}catch(e){if(e&&e.name==="AbortError"){$("#bkinfo").textContent=bkAge();return}}
+  if(!shared){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)}
+  $("#bkinfo").textContent=bkAge();$("#bkm").innerHTML=`<div class="exp g">बॅकअप फाइल तयार: <b>${esc(name)}</b>. ती Google Drive / WhatsApp वर स्वतःला पाठवून ठेवा.</div>`}
+function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.parse(r.result)}catch(e){o=null}
+  const data=o&&o.app==="gc2"&&o.data&&typeof o.data==="object"?o.data:null,keys=data?Object.keys(data).filter(k=>k.startsWith("gc2_")&&typeof data[k]==="string"):[];
+  if(!keys.length){$("#bkm").innerHTML=`<div class="exp r">ही फाइल या app ची बॅकअप फाइल नाही.</div>`;return}
+  const when=o.at?new Date(o.at).toLocaleString("mr-IN"):"";
+  $("#bkm").innerHTML=`<div class="exp r">या फाइलमधील प्रगती${when?" ("+esc(when)+")":""} उघडल्यास सध्याची प्रगती बदलली जाईल. पुढे जायचे?<div class="btns"><button class="btn pri" id="bky">हो, बॅकअप उघडा</button><button class="btn" id="bkn">नाही</button></div></div>`;
+  $("#bkn").onclick=()=>$("#bkm").innerHTML="";
+  $("#bky").onclick=()=>{try{gcKeys().forEach(k=>localStorage.removeItem(k));keys.forEach(k=>localStorage.setItem(k,data[k]))}catch(e){$("#bkm").innerHTML=`<div class="exp r">जतन करता आले नाही: ${esc(e.message||e)}</div>`;return}
+    vProgress();$("#bkm").innerHTML=`<div class="exp g">बॅकअप उघडला ✓ सर्व प्रगती परत आली.</div>`}};
+  r.onerror=()=>{$("#bkm").innerHTML=`<div class="exp r">फाइल वाचता आली नाही.</div>`};r.readAsText(f)}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
   const tab=h.startsWith("l-")||h.startsWith("rv-")?"learn":h.startsWith("mr-")?"mock":h;
@@ -3066,7 +3091,9 @@ function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
   else({today:()=>vToday(),learn:vLearn,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
   if(!h.startsWith("sec-"))window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);$("#dl").textContent=daysLeft();route();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 }
+if("serviceWorker" in navigator&&location.protocol!=="file:")window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 
 </script>
 </body>
