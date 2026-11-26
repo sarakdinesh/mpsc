@@ -172,7 +172,7 @@ if(!authOk())document.documentElement.classList.add("locked");
     document.documentElement.classList.add("locked");document.getElementById("lgu").focus()};
   if(!authOk())setTimeout(()=>document.getElementById("lgu").focus(),0)})();
 </script>
-<script src="questions.js?v=15"></script>
+<script src="questions.js?v=16"></script>
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
 <script src="sheets.js?v=1"></script>
@@ -2706,7 +2706,9 @@ function rec(q,ok,noSr){
 /* ---------- चुकलेले प्रश्न: अंतराने उजळणी (1, 3, 7 दिवस) ---------- */
 const SRI=[1,3,7];
 const addDays=n=>{const d=today0();d.setDate(d.getDate()+n);return dkey(d)};
-const srList=()=>store.get("wrong",[]).map(x=>x.due?x:{...x,box:0,due:dkey(today0())});
+/* निवृत्त (x:1) प्रश्न, उदा. मुख्य परीक्षेचे: चुकलेल्या प्रश्नांच्या उजळणीतही दिसू नयेत */
+const XQ=new Set();if(QOK)Object.values(QB).forEach(a=>a.forEach(q=>{const m=q[4];if(m&&m.x){if(m.i)XQ.add(m.i);if(!QIX["t:"+q[0]])XQ.add("t:"+q[0])}}));
+const srList=()=>store.get("wrong",[]).filter(x=>!(x.id?XQ.has(x.id):XQ.has("t:"+x.q))).map(x=>x.due?x:{...x,box:0,due:dkey(today0())});
 const sameQ=(x,q)=>x.id&&q.id?x.id===q.id:x.q===q.q;
 const srDue=()=>{const t=dkey(today0());return srList().filter(x=>x.due<=t)};
 function srRec(q,ok){
@@ -2932,7 +2934,7 @@ function vPractice(){
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
   <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button>
   <button class="tile" data-s="drill" style="--c:#b8560f" ${allWeak().length?"":"disabled"}><b>🎯 कमजोर धडे ड्रिल</b><small>${allWeak().length?"सर्वात कमजोर "+Math.min(5,allWeak().length)+" धड्यांतून 25 प्रश्न":"आधी थोडा सराव करा"}</small></button></div>
-  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) व मुख्य परीक्षा (2018; 2023 सामान्य अध्ययन; 2022 कर सहायक, लिपिक-टंकलेखक व दुय्यम निरीक्षक पेपर-II) यांतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
+  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) यांतील मूळ प्रश्न. हे ॲप फक्त पूर्वपरीक्षेसाठी आहे, म्हणून मुख्य परीक्षेचे प्रश्न काढले आहेत. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
   <div class="grid">${SUB.map(s=>[s,pyqAll().filter(q=>q.s===s.id&&!q.c).length]).filter(x=>x[1]).map(([s,c])=>`<button class="tile" data-s="py-${s.id}" style="--c:${s.c}"><b>PYQ: ${s.name}</b><small>${c} मूळ प्रश्न</small></button>`).join("")}</div>
   <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
   <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
