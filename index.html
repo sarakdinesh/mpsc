@@ -119,10 +119,34 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
 @media(max-width:600px){.t{font-size:14px}}
 @media(prefers-reduced-motion:no-preference){.ring{transition:background .4s}.op{transition:border-color .15s,background .15s}}
 .qy{display:inline-block;font-size:12px;padding:1px 7px;border-radius:9px;background:color-mix(in srgb,var(--c,#142a6e) 14%,transparent);font-weight:600}.qu{font-size:14px;color:var(--bad)}.qy.ok{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+/* लॉगिन: साधे कुलूप. app सार्वजनिक आहे, म्हणून येथे पासवर्ड नसून फक्त त्याचा SHA-256 hash आहे. */
+html.locked header,html.locked #main,html.locked nav{display:none}
+#login{display:none}html.locked #login{display:grid;min-height:100vh;min-height:100dvh;place-items:center;padding:24px max(4vw,16px)}
+#login form{width:100%;max-width:380px;background:var(--card);border-radius:16px;border-top:6px solid var(--pink);padding:22px 20px}
+#login h1{margin:0 0 4px;color:var(--blue)}#login label{display:block;font-weight:600;margin:14px 0 4px}
+#login input{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);min-height:46px}
+#login input:focus-visible{outline:3px solid var(--pink);outline-offset:1px}
+#login .btn{width:100%;margin-top:18px}
+#lgout{appearance:none;font:inherit;font-size:14px;font-weight:600;color:#fff;background:transparent;border:1.5px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;margin-left:10px;min-height:34px;cursor:pointer}
+#lgout:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+header .hr{display:flex;align-items:center}
 </style>
+<script>
+/* लॉगिन स्थिती: "gc2auth" ही key "gc2_" ने सुरू होत नाही, त्यामुळे बॅकअप/"सर्व प्रगती पुसा" यांना ती लागत नाही आणि लॉगआउटने प्रगती पुसली जात नाही. */
+const AUTH_HASH="c47d3b0bede0dc16675e06beb790b41e59869da93e0dad92a50540a6c28fdebb";
+function authOk(){try{return localStorage.getItem("gc2auth")===AUTH_HASH}catch(e){return false}}
+if(!authOk())document.documentElement.classList.add("locked");
+</script>
 </head>
 <body>
-<header><b>गट-क सराव</b><span>परीक्षेला <b id="dl" style="font-size:16px"></b> दिवस</span></header>
+<div id="login"><form id="lgf" autocomplete="on">
+ <h1>गट-क सराव</h1><p class="small">सुरू करण्यासाठी लॉगिन करा.</p>
+ <label for="lgu">वापरकर्ता नाव</label><input id="lgu" name="username" autocomplete="username" inputmode="numeric" required>
+ <label for="lgp">पासवर्ड</label><input id="lgp" name="password" type="password" autocomplete="current-password" required>
+ <div id="lgm" role="alert"></div>
+ <button class="btn pri" type="submit">लॉगिन</button>
+</form></div>
+<header><b>गट-क सराव</b><span class="hr"><span>परीक्षेला <b id="dl" style="font-size:16px"></b> दिवस</span><button id="lgout" type="button">लॉगआउट</button></span></header>
 <main id="main"></main>
 <nav>
  <a href="#today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>आज</a>
@@ -131,6 +155,20 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
  <a href="#mock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>मॉक</a>
  <a href="#progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>प्रगती</a>
 </nav>
+<script>
+/* लॉगिन / लॉगआउट */
+(function(){const f=document.getElementById("lgf"),m=document.getElementById("lgm");
+  async function sha(t){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,"0")).join("")}
+  f.onsubmit=async e=>{e.preventDefault();m.innerHTML="";
+    const u=document.getElementById("lgu").value.trim(),p=document.getElementById("lgp").value;let h="";
+    try{h=await sha("gc2-login|"+u+"|"+p)}catch(err){m.innerHTML='<div class="exp r">हा ब्राउझर लॉगिन तपासू शकत नाही. Chrome मध्ये उघडा.</div>';return}
+    if(h!==AUTH_HASH){m.innerHTML='<div class="exp r">वापरकर्ता नाव किंवा पासवर्ड चुकीचा आहे.</div>';document.getElementById("lgp").value="";return}
+    try{localStorage.setItem("gc2auth",h)}catch(err){}
+    document.getElementById("lgp").value="";document.documentElement.classList.remove("locked");window.scrollTo(0,0)};
+  document.getElementById("lgout").onclick=()=>{try{localStorage.removeItem("gc2auth")}catch(err){}
+    document.documentElement.classList.add("locked");document.getElementById("lgu").focus()};
+  if(!authOk())setTimeout(()=>document.getElementById("lgu").focus(),0)})();
+</script>
 <script src="questions.js?v=9"></script>
 <script src="current-affairs.js?v=2"></script>
 <script src="ref.js?v=1"></script>
