@@ -131,7 +131,7 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
  <a href="#mock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>मॉक</a>
  <a href="#progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>प्रगती</a>
 </nav>
-<script src="questions.js?v=7"></script>
+<script src="questions.js?v=8"></script>
 <script src="current-affairs.js?v=1"></script>
 <script src="ref.js?v=1"></script>
 <script>
@@ -2393,7 +2393,7 @@ function vPractice(){
   <button class="tile" data-s="mix" style="--c:#142a6e"><b>मिश्र 25</b><small>सर्व विषय</small></button>
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
   <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button></div>
-  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) व मुख्य परीक्षा (2023 सामान्य अध्ययन; 2022 कर सहायक पेपर-II) यांतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
+  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) व मुख्य परीक्षा (2018; 2023 सामान्य अध्ययन; 2022 कर सहायक, लिपिक-टंकलेखक व दुय्यम निरीक्षक पेपर-II) यांतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
   <div class="grid">${SUB.map(s=>[s,pyqAll().filter(q=>q.s===s.id&&!q.c).length]).filter(x=>x[1]).map(([s,c])=>`<button class="tile" data-s="py-${s.id}" style="--c:${s.c}"><b>PYQ: ${s.name}</b><small>${c} मूळ प्रश्न</small></button>`).join("")}</div>
   <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
   <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
