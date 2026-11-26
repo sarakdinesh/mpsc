@@ -3,6 +3,9 @@
  *   node tools/qb.js check   तपासणी (questions.js + current-affairs.js): रचना, 4 वेगळे पर्याय, उत्तर क्रमांक, ID अद्वितीय, धडा अस्तित्वात
  *   node tools/qb.js ids     ID नसलेल्या प्रश्नांना पुढचा ID देतो (जुने ID कधीच बदलत नाहीत) व फाइल नीट मांडतो
  *   node tools/qb.js stats   विषय/वर्ष/तपासणी-स्थितीनुसार संख्या
+ *   node tools/qb.js balance PYQ नसलेल्या प्रश्नांचे बरोबर उत्तर ID वरून ठरलेल्या जागी (A–D) नेतो
+ *                            (ids चालवल्यावरही आपोआप होते). PYQ (y असलेले) मूळ क्रमातच राहतात;
+ *                            "यापैकी नाही/वरील सर्व/दोन्ही" असे पर्याय असलेले प्रश्न तसेच राहतात.
  *
  * प्रश्नाचा आकार: [प्रश्न, [4 पर्याय], उत्तर (0–3), स्पष्टीकरण, मेटा]
  * मेटा:
@@ -101,14 +104,33 @@ function assignIds(QB) {
   return added;
 }
 
+// उत्तर नेहमी एकाच अक्षरावर (उदा. A) राहू नये म्हणून: ID च्या hash वरून ठरलेल्या जागेशी अदलाबदल.
+// पुन्हा चालवले तरी बदल होत नाही (idempotent). PYQ व क्रमावर अवलंबून असलेले पर्याय वगळले.
+const ANCHOR = /यापैकी|वरील|दोन्ही|एकही|सर्व पर्याय|^सर्व$|none|all of/i;
+const slot = id => { let h = 2166136261; for (const c of id) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h % 4; };
+function balance(QB) {
+  let moved = 0;
+  for (const [lid, arr] of Object.entries(QB)) {
+    if (SKIP.test(lid)) continue;
+    for (const q of arr) {
+      const m = meta(q); if (!m || !m.i || m.y || m.x) continue;
+      if (!Array.isArray(q[1]) || q[1].length !== 4 || q[1].some(o => ANCHOR.test(String(o)))) continue;
+      const t = slot(m.i); if (t === q[2]) continue;
+      [q[1][t], q[1][q[2]]] = [q[1][q[2]], q[1][t]]; q[2] = t; moved++;
+    }
+  }
+  return moved;
+}
+
 const cmd = process.argv[2] || "check";
 const QB = load(), L = lessonIds();
-if (cmd === "ids") {
-  const n = assignIds(QB);
+if (cmd === "ids" || cmd === "balance") {
+  const n = cmd === "ids" ? assignIds(QB) : 0, b = balance(QB);
   fs.writeFileSync(FILE, fmt(QB, L));
-  console.log(`नवीन ID: ${n}`);
+  if (cmd === "ids") console.log(`नवीन ID: ${n}`);
+  console.log(`उत्तराची जागा बदलली: ${b}`);
 }
-if (cmd === "check" || cmd === "ids") {
+if (cmd === "check" || cmd === "ids" || cmd === "balance") {
   const CA = loadCA();
   const errs = check({ ...load(), ...CA.Q }, [...L, ...CA.L.map(l => ({ id: l.id, s: l.s, t: l.t }))]);
   const total = Object.values({ ...load(), ...CA.Q }).reduce((a, x) => a + x.length, 0);

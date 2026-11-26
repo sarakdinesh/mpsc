@@ -67,7 +67,7 @@ a{color:var(--blue)}
 .qhead.sticky{position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:2;border-bottom:1px solid var(--line)}
 #clock{color:var(--blue);font-size:17px}#clock.warn{color:var(--bad)}
 .bar{height:5px;background:var(--line);border-radius:3px;margin:8px 0}.bar i{display:block;height:100%;background:var(--pink);border-radius:3px}
-.qs{font-size:20px;font-weight:600;line-height:1.45;margin:16px 0}
+.qs{font-size:20px;font-weight:600;line-height:1.45;margin:16px 0;white-space:pre-line}
 .opts{display:grid;gap:10px}
 .op{appearance:none;font:inherit;color:var(--ink);text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:54px;display:flex;gap:12px;align-items:center;cursor:pointer}
 .bub{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--pink);color:var(--pink);display:grid;place-items:center;font-size:14px;font-weight:600}
@@ -85,7 +85,7 @@ a{color:var(--blue)}
 .op.sk{border-style:dashed}.tl{list-style:none;margin:10px 0;padding:0 0 0 14px;border-left:3px solid var(--line)}.tl li{position:relative;margin:0 0 10px;padding-left:6px}.tl li::before{content:"";position:absolute;left:-22px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--pink)}.tl b{display:block}.sqg{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin:8px 0 14px}.sqg span{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;font-size:14px}.ob.c{outline:2px solid var(--pink);outline-offset:2px}
 .bars{display:grid;gap:8px}.br{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) 3.5em;gap:10px;align-items:center;font-size:15px}
 .br div{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.br i{display:block;height:100%;background:var(--blue)}.br.weak i{background:var(--bad)}.br b{text-align:right}
-.rev{padding-left:22px}.rev li{margin:12px 0;padding:8px 10px;border-radius:8px;border-left:4px solid var(--line)}.rev li.g{border-color:var(--ok)}.rev li.r{border-color:var(--bad)}.rev p{margin:2px 0}
+.rev{padding-left:22px}.rev li{margin:12px 0;padding:8px 10px;border-radius:8px;border-left:4px solid var(--line)}.rev li.g{border-color:var(--ok)}.rev li.r{border-color:var(--bad)}.rev p{margin:2px 0;white-space:pre-line}
 .hist{list-style:none;padding:0}.hist li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
 .hist a{color:inherit}
 .flt{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.flt button{appearance:none;font:inherit;font-size:15px;font-weight:600;min-height:40px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.flt button.on{border-color:var(--blue);background:var(--blue);color:var(--bg)}
@@ -170,7 +170,7 @@ if(!authOk())document.documentElement.classList.add("locked");
     document.documentElement.classList.add("locked");document.getElementById("lgu").focus()};
   if(!authOk())setTimeout(()=>document.getElementById("lgu").focus(),0)})();
 </script>
-<script src="questions.js?v=14"></script>
+<script src="questions.js?v=15"></script>
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
 <script>
