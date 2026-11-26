@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* प्रश्नसंच साधन (questions.js)
- *   node tools/qb.js check   तपासणी: रचना, 4 वेगळे पर्याय, उत्तर क्रमांक, ID अद्वितीय, धडा अस्तित्वात
+ *   node tools/qb.js check   तपासणी (questions.js + current-affairs.js): रचना, 4 वेगळे पर्याय, उत्तर क्रमांक, ID अद्वितीय, धडा अस्तित्वात
  *   node tools/qb.js ids     ID नसलेल्या प्रश्नांना पुढचा ID देतो (जुने ID कधीच बदलत नाहीत) व फाइल नीट मांडतो
  *   node tools/qb.js stats   विषय/वर्ष/तपासणी-स्थितीनुसार संख्या
  *
@@ -24,13 +24,19 @@ function load() {
   vm.runInNewContext(fs.readFileSync(FILE, "utf8").replace(/^const QB\s*=/m, "QB="), ctx);
   return ctx.QB;
 }
+// चालू घडामोडी स्वतंत्र current-affairs.js मध्ये (CA.L धडे, CA.Q प्रश्न); तपासणीत तेही धरतो
+function loadCA() {
+  const f = path.join(ROOT, "current-affairs.js"); if (!fs.existsSync(f)) return { L: [], Q: {} };
+  const ctx = {}; vm.runInNewContext(fs.readFileSync(f, "utf8").replace(/^const CA\s*=/m, "CA=") , ctx);
+  return ctx.CA || { L: [], Q: {} };
+}
 function lessonIds() {
   const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
   return [...html.matchAll(/\{id:"([a-z]+\d+)",s:"([a-z]+)",t:"([^"]*)"/g)].map(m => ({ id: m[1], s: m[2], t: m[3] }));
 }
 const meta = q => (q[4] && typeof q[4] === "object" ? q[4] : null);
 const ID_RE = /^([a-z]+\d+)-(\d{3,})$/;
-// चालू घडामोडी (ca1–ca8) स्वतंत्र current-affairs.js मध्ये हलत आहेत; तोपर्यंत त्यांना ID व पुनर्मांडणी लागू नाही.
+// चालू घडामोडी (ca1–ca8) current-affairs.js मध्ये; questions.js च्या ids/पुनर्मांडणीत त्यांना हात लावत नाही.
 const SKIP = /^ca\d+$/;
 
 function check(QB, L) {
@@ -102,8 +108,9 @@ if (cmd === "ids") {
   console.log(`नवीन ID: ${n}`);
 }
 if (cmd === "check" || cmd === "ids") {
-  const errs = check(load(), L);
-  const total = Object.values(load()).reduce((a, x) => a + x.length, 0);
+  const CA = loadCA();
+  const errs = check({ ...load(), ...CA.Q }, [...L, ...CA.L.map(l => ({ id: l.id, s: l.s, t: l.t }))]);
+  const total = Object.values({ ...load(), ...CA.Q }).reduce((a, x) => a + x.length, 0);
   if (errs.length) { console.error(errs.join("\n")); console.error(`${errs.length} चुका`); process.exit(1); }
   console.log(`ठीक: ${total} प्रश्न`);
 }
