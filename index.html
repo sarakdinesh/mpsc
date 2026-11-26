@@ -115,7 +115,7 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
 .rvlink{display:inline-block;margin-top:10px;font-weight:600;text-decoration:none}
 @media(max-width:600px){.t{font-size:14px}}
 @media(prefers-reduced-motion:no-preference){.ring{transition:background .4s}.op{transition:border-color .15s,background .15s}}
-.qy{display:inline-block;font-size:12px;padding:1px 7px;border-radius:9px;background:color-mix(in srgb,var(--c,#142a6e) 14%,transparent);font-weight:600}.qu{font-size:14px;color:var(--bad)}
+.qy{display:inline-block;font-size:12px;padding:1px 7px;border-radius:9px;background:color-mix(in srgb,var(--c,#142a6e) 14%,transparent);font-weight:600}.qu{font-size:14px;color:var(--bad)}.qy.ok{background:color-mix(in srgb,var(--ok) 18%,transparent)}
 </style>
 </head>
 <body>
@@ -128,7 +128,7 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
  <a href="#mock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>मॉक</a>
  <a href="#progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>प्रगती</a>
 </nav>
-<script src="questions.js?v=4"></script>
+<script src="questions.js?v=5"></script>
 <script>
 const L=[];
 L.push(
@@ -2295,7 +2295,9 @@ const SUB=[
  {id:"rea",name:"बुद्धिमापन चाचणी",w:"8–20",c:"#00796b"},
  {id:"gk",name:"महाराष्ट्र विशेष",w:"(GK मध्ये)",c:"#6d4c41"}];
 /* प्रश्नसंच questions.js मधून येतो */
-const QOK=typeof QB==="object";L.forEach(l=>{l.q=(QOK&&QB[l.id])||[]});
+const QOK=typeof QB==="object";L.forEach(l=>{l.q=((QOK&&QB[l.id])||[]).filter(q=>!(q[4]&&q[4].x))});
+/* ID किंवा मजकुरावरून सध्याचा प्रश्न (जुन्या जतन प्रगतीसाठी) */
+const QIX={};L.forEach(l=>l.q.forEach(q=>{const m=q[4]||{};if(m.i)QIX[m.i]=[l,q];QIX["t:"+q[0]]=[l,q]}));
 const SN={};SUB.forEach(s=>SN[s.id]=s);
 const LX={};L.forEach(l=>LX[l.id]=l);
 const bySub=id=>L.filter(l=>l.s===id);
@@ -2363,9 +2365,13 @@ const GEN={
  re8:[()=>{const N=pick([30,35,40,45,50,60]),Lp=3+rnd(N-6);const a=N-Lp+1;const [o,i]=opts(a,[1,2]);return gq("re8",`${N} जणांच्या रांगेत एक मुलगा डावीकडून ${Lp} वा आहे. उजवीकडून तो कितवा?`,o,i,`${N} − ${Lp} + 1 = ${a}`)},
   ()=>{const l=3+rnd(20),r=3+rnd(20);const a=l+r-1;const [o,i]=opts(a,[1,2]);return gq("re8",`रांगेत रवी डावीकडून ${l} वा व उजवीकडून ${r} वा आहे. रांगेत एकूण किती जण?`,o,i,`${l} + ${r} − 1 = ${a}`)}]
 };
-const toQ=(l,q)=>({s:l.s,l:l.id,q:q[0],o:q[1],a:q[2],e:q[3],y:q[4]&&q[4].y,u:q[4]&&q[4].u?1:0});
-const qtag=q=>q.y?`<span class="qy">${q.y==="pyq"?"पूर्वपरीक्षा-शैली":"PYQ "+esc(q.y)}</span> `:"";
-const qwarn=q=>q.u?`<br><span class="qu">⚠ हा तपशील अलीकडचा/अनिश्चित आहे. अधिकृत स्रोतातून (वृत्तपत्र, शासन संकेतस्थळ) एकदा तपासा.</span>`:"";
+const toQ=(l,q)=>{const m=q[4]||{};return{s:l.s,l:l.id,q:q[0],o:q[1],a:q[2],e:q[3],id:m.i,y:m.y,n:m.n,v:m.v,src:m.src,u:m.u?1:0,c:m.c?1:0}};
+/* जतन केलेल्या प्रश्नाची ताजी आवृत्ती (प्रश्नसंचात दुरुस्ती झाली असेल तर) */
+const freshQ=x=>{const h=(x.id&&QIX[x.id])||QIX["t:"+x.q];return h?{...x,...toQ(h[0],h[1])}:x};
+const qtag=q=>q.y?`<span class="qy">${q.y==="pyq"?"पूर्वपरीक्षा-शैली":"PYQ "+esc(q.y)+(q.n?" · प्र. "+q.n:"")}</span> ${q.v==="k"?'<span class="qy ok">✓ उत्तरतालिका</span> ':""}`:"";
+const qwarn0=q=>q.u?`<br><span class="qu">⚠ हा तपशील अलीकडचा/अनिश्चित आहे. अधिकृत स्रोतातून (वृत्तपत्र, शासन संकेतस्थळ) एकदा तपासा.</span>`:"";
+const qsrc=q=>q.src?`<br><span class="small">स्रोत: ${/^https?:\/\//.test(q.src)?`<a href="${esc(q.src)}" target="_blank" rel="noopener">${esc(q.src.replace(/^https?:\/\/(www\.)?/,"").split("/")[0])}</a>`:esc(q.src)}</span>`:"";
+const qwarn=q=>qwarn0(q)+(q.c?`<br><span class="qu">आयोगाने अंतिम उत्तरतालिकेत हा प्रश्न रद्द केला.</span>`:/^20/.test(q.y||"")&&q.v!=="k"?`<br><span class="qu">उत्तर अधिकृत अंतिम उत्तरतालिकेशी अजून तपासलेले नाही.</span>`:"")+qsrc(q);
 const genFor=id=>GEN[id]?pick(GEN[id])():null;
 function bankLessons(ids,n){
   let out=shuffle(ids.flatMap(id=>LX[id].q.map(q=>toQ(LX[id],q))));
@@ -2386,16 +2392,17 @@ function rec(q,ok,noSr){
 const SRI=[1,3,7];
 const addDays=n=>{const d=today0();d.setDate(d.getDate()+n);return dkey(d)};
 const srList=()=>store.get("wrong",[]).map(x=>x.due?x:{...x,box:0,due:dkey(today0())});
+const sameQ=(x,q)=>x.id&&q.id?x.id===q.id:x.q===q.q;
 const srDue=()=>{const t=dkey(today0());return srList().filter(x=>x.due<=t)};
 function srRec(q,ok){
-  const wr=srList(),i=wr.findIndex(x=>x.q===q.q),t=dkey(today0());
-  if(!ok){const it={s:q.s,l:q.l,q:q.q,o:q.o,a:q.a,e:q.e,box:0,due:addDays(SRI[0]),miss:(i>=0&&wr[i].miss||0)+1};
+  const wr=srList(),i=wr.findIndex(x=>sameQ(x,q)),t=dkey(today0());
+  if(!ok){const it={s:q.s,l:q.l,id:q.id,q:q.q,o:q.o,a:q.a,e:q.e,box:0,due:addDays(SRI[0]),miss:(i>=0&&wr[i].miss||0)+1};
     if(i>=0)wr.splice(i,1);wr.push(it);store.set("wrong",wr.slice(-300));return}
   if(i<0||wr[i].due>t)return;
   const b=wr[i].box+1;
   if(b>=SRI.length){wr.splice(i,1);store.set("mastered",store.get("mastered",0)+1)}else{wr[i].box=b;wr[i].due=addDays(SRI[b])}
   store.set("wrong",wr)}
-const startReview=()=>{const d=srDue();if(d.length)quiz(shuffle(d).slice(0,30),"आजची उजळणी")};
+const startReview=()=>{const d=srDue();if(d.length)quiz(shuffle(d).slice(0,30).map(freshQ),"आजची उजळणी")};
 const streak=()=>{const days=store.get("days",{});let s=0;const d=today0();if(!days[dkey(d)])d.setDate(d.getDate()-1);while(days[dkey(d)]){s++;d.setDate(d.getDate()-1)}return s};
 const isRead=id=>store.get("read",[]).includes(id);
 const markRead=id=>{const r=store.get("read",[]);if(!r.includes(id)){r.push(id);store.set("read",r)}};
@@ -2532,7 +2539,7 @@ function vPractice(){
   ${!due.length&&nx?`<p class="small">पुढची उजळणी: ${fmtD(new Date(nx+"T00:00"))}</p>`:""}`;
   main.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const s=b.dataset.s;
     if(s==="due")return startReview();
-    if(s==="wrong")return quiz(shuffle(srList()).slice(0,25),"चुकलेले प्रश्न",true);
+    if(s==="wrong")return quiz(shuffle(srList()).slice(0,25).map(freshQ),"चुकलेले प्रश्न",true);
     if(s==="mix")return quiz(buildMock(25),"मिश्र सराव");
     quiz(bankSub(s,25),SN[s].name)});
 }
@@ -2555,7 +2562,7 @@ function quiz(qs,title,noSr){
 const MIX={ca:12,his:14,geo:14,pol:14,eco:10,sci:14,gk:4,mat:9,rea:9};
 function buildMock(n){const f=n/100,out=[];
   for(const [s,c] of Object.entries(MIX)){const want=Math.max(1,Math.round(c*f));
-    const ids=bySub(s).map(l=>l.id);const stat=shuffle(ids.flatMap(id=>LX[id].q.map(q=>toQ(LX[id],q))));const g=ids.filter(id=>GEN[id]);
+    const ids=bySub(s).map(l=>l.id);const stat=shuffle(ids.flatMap(id=>LX[id].q.map(q=>toQ(LX[id],q)))).filter(q=>!q.c);const g=ids.filter(id=>GEN[id]);
     for(let k=0;k<want;k++){if(g.length&&k%2===1)out.push(genFor(pick(g)));else out.push(stat[k%stat.length])}}
   return shuffle(out).slice(0,n)}
 let timer=null;
@@ -2584,7 +2591,7 @@ function runMock(n,min){const qs=buildMock(n),ans=Array(n).fill(-1);let cur=0;co
     qs.forEach((q,k)=>{by[q.s]=by[q.s]||[0,0,0];by[q.s][2]++;if(ans[k]<0)return;const ok=ans[k]===q.a;if(ok){r++;by[q.s][0]++}else{w++;by[q.s][1]++}rec(q,ok)});
     qs.forEach((q,k)=>{if(ans[k]<0)srRec(q,false)});
     const id=Date.now(),d=dkey(new Date()).slice(5),sc=r-w*.25,h=store.get("mocks",[]);h.push({id,d,n,sc,r,w});store.set("mocks",h.slice(-40));
-    const mrv=store.get("mockrev",[]);mrv.push({id,d,n,sc,r,w,qs:qs.map(q=>({s:q.s,l:q.l,q:q.q,o:q.o,a:q.a,e:q.e,y:q.y,u:q.u})),ans});store.set("mockrev",mrv.slice(-5));
+    const mrv=store.get("mockrev",[]);mrv.push({id,d,n,sc,r,w,qs:qs.map(q=>({s:q.s,l:q.l,id:q.id,q:q.q,o:q.o,a:q.a,e:q.e,y:q.y,n:q.n,v:q.v,src:q.src,u:q.u,c:q.c})),ans});store.set("mockrev",mrv.slice(-5));
     location.hash="mr-"+id};
   draw();window.scrollTo(0,0)}
 
