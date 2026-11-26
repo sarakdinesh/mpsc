@@ -92,9 +92,10 @@ a{color:var(--blue)}
 .rev .ol{list-style:none;padding:0;margin:6px 0}.rev .ol li{margin:2px 0;padding:2px 8px;border:0;font-size:15px}.rev .ol li.a{color:var(--ok);font-weight:700}.rev .ol li.y{color:var(--bad);text-decoration:line-through}
 .lsn{list-style:none;padding:0}.lsn li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.lsn small{color:var(--mut);white-space:nowrap}
 .srbox{display:flex;gap:8px;margin:8px 0}.srbox div{flex:1;background:var(--card);border-radius:10px;padding:8px;text-align:center}.srbox b{display:block;font-size:22px;color:var(--blue)}.srbox small{color:var(--mut);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats div{background:var(--card);border-radius:12px;padding:12px;text-align:center}.stats b{display:block;font-size:26px;color:var(--blue)}.stats small{color:var(--mut);font-size:13px}
-.mk{position:relative;height:180px;display:flex;gap:6px;align-items:flex-end;border-bottom:1.5px solid var(--line);padding-top:10px}
-.mc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}.mc i{display:block;width:100%;max-width:36px;background:var(--blue);border-radius:6px 6px 0 0}.mc i.g{background:var(--ok)}.mc small{font-size:12px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:10px}.stats div{background:var(--card);border-radius:12px;padding:12px;text-align:center}.stats b{display:block;font-size:26px;color:var(--blue)}.stats small{color:var(--mut);font-size:13px}
+.mk{position:relative;height:180px;display:flex;gap:6px;align-items:flex-end;border-bottom:1.5px solid var(--line);margin:24px 0 26px}
+.mc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}.mc i{display:block;width:100%;max-width:36px;background:var(--blue);border-radius:6px 6px 0 0}.mc i.g{background:var(--ok)}.mc{position:relative}.mc small{font-size:12px;color:var(--mut);position:absolute;top:100%;margin-top:3px}
+.line.cl{border-top-color:var(--mut);color:var(--mut);text-align:left}.mc i.m{background:#b8560f}.gu{color:var(--ok)}.gd{color:var(--bad)}.nn h2 small{color:var(--mut);font-weight:400}.nn .slots label{grid-template-columns:28px minmax(0,1fr)}
 .line{position:absolute;left:0;right:0;border-top:1.5px dashed var(--pink);font-size:12px;color:var(--pink);text-align:right;transform:translateY(-1px)}
 textarea{width:100%;font:inherit;font-size:16px;padding:12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
 details>summary{min-height:40px}
@@ -2303,6 +2304,63 @@ const streak=()=>{const days=store.get("days",{});let s=0;const d=today0();if(!d
 const isRead=id=>store.get("read",[]).includes(id);
 const markRead=id=>{const r=store.get("read",[]);if(!r.includes(id)){r.push(id);store.set("read",r)}};
 
+/* ---------- रोजची 3 न चुकवायची कामे (gc2_daily: {"YYYY-MM-DD":{rv,t,ca}}) ---------- */
+const NN=[["rv","आजची उजळणी पूर्ण (देय प्रश्न 0)"],["t","किमान 1 चाचणी (मॉक, विषय चाचणी, ड्रिल किंवा 20+ प्रश्नांचा क्विझ)"],["ca","30 मिनिटे चालू घडामोडी"]];
+const dGet=()=>{const a=store.get("daily",{});return a[dkey(today0())]||{}};
+const dSet=(k,v)=>{const a=store.get("daily",{}),t=dkey(today0()),o=a[t]||{};if(!!o[k]===!!v)return;if(v)o[k]=1;else delete o[k];a[t]=o;
+  const ks=Object.keys(a).sort();ks.slice(0,Math.max(0,ks.length-120)).forEach(k=>delete a[k]);store.set("daily",a)};
+const dFull=o=>!!(o&&o.rv&&o.t&&o.ca);
+const syncRv=()=>dSet("rv",!srDue().length);
+const nnStreak=()=>{const a=store.get("daily",{});let s=0;const d=today0();if(!dFull(a[dkey(d)]))d.setDate(d.getDate()-1);while(dFull(a[dkey(d)])){s++;d.setDate(d.getDate()-1)}return s};
+function nnCard(){syncRv();const o=dGet(),n=NN.filter(([k])=>o[k]).length,due=srDue().length;
+  return `<div class="nn"><h2>आजची 3 न चुकवायची कामे <small>${n}/3</small></h2><ul class="slots">${NN.map(([k,t])=>`<li class="${o[k]?"done":""}"><label><input type="checkbox" data-nn="${k}" ${o[k]?"checked":""} ${k==="ca"?"":"disabled"}><span>${o[k]?"✓ ":""}${t}${k==="rv"&&due?` · <a href="#" id="nnrv">${due} प्रश्न बाकी ›</a>`:""}${k==="t"&&!o.t?` · <a href="#mock">चाचणी द्या ›</a>`:""}${k==="ca"?` · <a href="#rv-ca">चालू घडामोडी ›</a>`:""}</span></label></li>`).join("")}</ul>
+  <p class="small">🏆 ${nnStreak()} दिवस सलग तिन्ही कामे पूर्ण${n===3?" · आजचे काम पूर्ण 🎉":""}. पहिली दोन कामे app आपोआप खूण करते; चालू घडामोडींची खूण तुम्ही करा.</p></div>`}
+function nnBind(re){main.querySelectorAll("[data-nn]").forEach(c=>c.onchange=()=>{dSet(c.dataset.nn,c.checked);re()});const r=$("#nnrv");if(r)r.onclick=e=>{e.preventDefault();startReview()}}
+
+/* ---------- कमजोर धड्यांचा ड्रिल (25 प्रश्न) ---------- */
+/* ls = [[lessonId, weight]] सर्वात कमजोर आधी. avoid = ज्या प्रश्नांच्या key टाळायच्या (उदा. नुकताच दिलेला मॉक). */
+function weakDrill(ls,avoid,N){N=N||25;avoid=avoid||new Set();
+  ls=ls.filter(([l])=>LX[l]&&(LX[l].q.length||GEN[l])).slice(0,5);if(!ls.length)return [];
+  const tw=ls.reduce((a,[,w])=>a+w,0)||1,want=ls.map(([l,w])=>Math.max(3,Math.round(N*w/tw)));
+  const out=[],seen=new Set(),add=q=>{if(!q)return false;const k=qkey(q);if(seen.has(k))return false;seen.add(k);out.push(q);return true};
+  const wr=srList();
+  ls.forEach(([l],i)=>{let c=0;const fresh=shuffle(LX[l].q.map(q=>toQ(LX[l],q))),pool=[...fresh.filter(q=>!avoid.has(qkey(q))),...wr.filter(x=>x.l===l).map(freshQ),...fresh];
+    for(const q of pool){if(c>=want[i])break;if(add(q))c++}
+    let g=0;while(GEN[l]&&c<want[i]&&g<40){g++;if(add(genFor(l)))c++}});
+  for(let g=0;out.length<N&&g<80;g++){const [l]=pick(ls);const q=GEN[l]?genFor(l):pick(LX[l].q.map(x=>toQ(LX[l],x)));add(q)}
+  return shuffle(out).slice(0,N)}
+const allWeak=()=>{const ls=store.get("lstats",{}),miss={};srList().forEach(x=>{if(x.l)miss[x.l]=(miss[x.l]||0)+(x.miss||1)});
+  return Object.keys({...ls,...miss}).filter(id=>LX[id]).map(id=>{const v=ls[id]||[0,0],acc=v[1]?v[0]/v[1]:.5;return [id,(1-acc)*Math.min(v[1],20)/4+(miss[id]||0)]}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])};
+function mockWeak(m){const lw={};m.qs.forEach((q,k)=>{if(m.ans[k]!==q.a&&q.l)lw[q.l]=(lw[q.l]||0)+(m.ans[k]<0?.6:1)});
+  const ls=store.get("lstats",{});return Object.entries(lw).filter(([l])=>LX[l]).map(([l,w])=>{const v=ls[l];return [l,w+(v&&v[1]?(1-v[0]/v[1]):0)]}).sort((a,b)=>b[1]-a[1])}
+function startDrill(mid){let qs=[],t="कमजोर धडे ड्रिल";
+  const m=mid&&store.get("mockrev",[]).find(x=>String(x.id)===String(mid));
+  if(m){const avoid=new Set(m.qs.map(qkey));qs=weakDrill(mockWeak(m),avoid);t="मॉकनंतरचा कमजोर धडे ड्रिल"}
+  if(qs.length<10)qs=weakDrill(allWeak());
+  if(!qs.length){main.insertAdjacentHTML("afterbegin",`<div class="exp g">अजून पुरेसा डेटा नाही. आधी काही सराव किंवा मॉक द्या.</div>`);window.scrollTo(0,0);return}
+  quiz(qs,t,false,()=>{const d=store.get("drill",null);if(d&&(!mid||String(d.mid)===String(mid))){d.done=dkey(today0());store.set("drill",d)}})}
+const drillPending=()=>{const d=store.get("drill",null);return d&&!d.done&&store.get("mockrev",[]).some(x=>String(x.id)===String(d.mid))?d:null};
+
+/* ---------- कट-ऑफ ट्रॅकर ----------
+   स्रोत: MPSC निकालपत्रकांतील आकडे उद्धृत करणाऱ्या mpsclaunchpad.com/exam/group-c-cut-off व testkart.in/exams/mpsc-group-c/cutoff (दोघांचे आकडे जुळतात).
+   आयोगाच्या मूळ PDF शी पडताळले नाहीत, म्हणून app मध्ये "अंदाजे" असे लिहिले आहे. नवीन निकाल आल्यावर फक्त ही यादी अद्ययावत करा. */
+const CUTOFF=[
+  {y:"2025",held:"11 जाने 2026",open:50.25,ow:47.5,st:42,ews:35.5},
+  {y:"2024",held:"2025",open:48.25,ow:45.25,st:39,ews:38.75}];
+const CUT_SRC=[["https://mpsclaunchpad.com/exam/group-c-cut-off","mpsclaunchpad.com"],["https://testkart.in/exams/mpsc-group-c/cutoff","testkart.in"]];
+const TARGET=60;
+const fullMocks=()=>store.get("mocks",[]).filter(m=>m.n>=50).map(m=>({...m,p:m.sc/m.n*100}));
+function cutCard(){const c=CUTOFF[0],fm=fullMocks(),last=fm[fm.length-1],wk=7*864e5,now=Date.now();
+  const avg=a=>a.length?a.reduce((s,m)=>s+m.p,0)/a.length:null,tw=avg(fm.filter(m=>m.id&&now-m.id<wk)),pw=avg(fm.filter(m=>m.id&&now-m.id>=wk&&now-m.id<2*wk));
+  const gap=v=>{const g=v-c.open;return `<b class="${g>=0?"gu":"gd"}">${g>=0?"+":"−"}${fmt(Math.abs(+g.toFixed(2)))}</b>`};
+  return `<h2>कट-ऑफ ट्रॅकर</h2>
+  ${last?`<div class="stats"><div><b>${fmt(+last.p.toFixed(2))}</b><small>शेवटचा मॉक (100 मध्ये)</small></div><div><b>${tw==null?"—":fmt(+tw.toFixed(1))}</b><small>या आठवड्याची सरासरी</small></div><div><b>${c.open}</b><small>मागील कट-ऑफ (Open)*</small></div></div>
+  <p class="lead">शेवटचा मॉक मागील कट-ऑफपेक्षा ${gap(last.p)} गुण${tw!=null?`; या आठवड्याची सरासरी ${gap(tw)}`:""}${tw!=null&&pw!=null?`; मागील आठवड्यापेक्षा ${tw>=pw?"+":"−"}${fmt(Math.abs(+(tw-pw).toFixed(1)))}`:""}. ${last.p>=TARGET?"लक्ष्य 60+ गाठले. हीच पातळी टिकवा.":last.p>=c.open?"कट-ऑफच्या वर आहात, पण फरक कमी आहे. 60+ हे सुरक्षित लक्ष्य ठेवा.":`कट-ऑफ पार करायला अजून ${fmt(+(c.open-last.p).toFixed(2))} गुण हवेत. मॉकनंतरचा कमजोर धडे ड्रिल नक्की करा.`}</p>`
+  :`<p class="small">अजून मॉक दिला नाही. पहिल्या मॉकनंतर इथे तुमचे गुण आणि कट-ऑफ यातील फरक दिसेल.</p>`}
+  <details class="box"><summary>मागील कट-ऑफ (अंदाजे) व स्रोत</summary>
+  <div class="scroll"><table class="t"><thead><tr><th>परीक्षा</th><th>Open</th><th>Open महिला</th><th>ST</th><th>EWS</th></tr></thead><tbody>${CUTOFF.map(r=>`<tr><td>गट-क ${r.y} पूर्व (${r.held})</td><td class="n">${r.open}</td><td class="n">${r.ow}</td><td class="n">${r.st}</td><td class="n">${r.ews}</td></tr>`).join("")}</tbody></table></div>
+  <p class="small">* 100 पैकी, सर्वसाधारण गट. OBC, SC, SEBC चे सर्वसाधारण कट-ऑफ याच वर्षांत Open इतकेच होते. हे आकडे MPSC निकालपत्रक उद्धृत करणाऱ्या ${CUT_SRC.map(([u,t])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" व ")} वरून घेतले आहेत; आयोगाच्या मूळ PDF शी पडताळलेले नाहीत. खात्रीसाठी <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> → निकाल पाहा. कट-ऑफ दरवर्षी बदलतो (2022 मध्ये पदनिहाय 60–74 होता), म्हणून app चे लक्ष्य ${TARGET}+ आहे.</p></details>`}
+
 /* ---------- मजकूर रेंडर ---------- */
 function md(src){
   const out=[];let list=null,tbl=null;
@@ -2347,7 +2405,7 @@ function dayCard(n){
     rows.push(["रात्री","चुकलेले प्रश्न + चालू घडामोडी"]);
   }else if(D.t==="weak"){
     rows.push(["6:30–8:30","काल मॉकमध्ये कमी गुण आलेले 2 विषय: धडे पुन्हा वाचा"]);
-    rows.push(["8:30–9:30","त्या विषयांचा सराव (प्रत्येकी 25 प्रश्न)"]);
+    rows.push(["8:30–9:30","<a href='#practice'>कमजोर धडे ड्रिल</a> (25 प्रश्न) + त्या विषयांचा सराव"]);
     rows.push(["9:30–10:30","एक मूळ जुनी प्रश्नपत्रिका"]);
     rows.push(["रात्री","चुकलेले प्रश्न"]);
   }else{
@@ -2371,6 +2429,8 @@ function vToday(n){
    <div class="ring" style="--p:${tot?Math.round(chk.length/tot*100):0}"><span>${chk.length}/${tot}<small>आजचे काम</small></span></div>
   </section>
   ${t<START&&n===1?`<p class="note">आराखडा 24 नोव्हेंबरपासून सुरू होतो. खाली दिवस 1 चे काम आहे.</p>`:""}
+  ${n===cur?nnCard():""}
+  ${n===cur&&drillPending()?`<div class="note"><b>🎯 मॉकनंतरचा कमजोर धडे ड्रिल बाकी आहे (25 प्रश्न)</b><br><small>शेवटच्या मॉकमधील सर्वात कमजोर धड्यांतून नवे प्रश्न.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="tdrl">ड्रिल सुरू करा</button><a class="btn" href="#mr-${drillPending().mid}">मॉक निकाल</a></div></div>`:""}
   <div class="daynav"><button class="btn sm" id="pv" ${n<=1?"disabled":""}>‹</button><div><b>दिवस ${n}</b> · ${fmtD(dateOf(n))}<br><small>${n===62?"परीक्षा 🎯":typ[D.t]}</small></div><button class="btn sm" id="nx" ${n>=62?"disabled":""}>›</button></div>
   ${n===62?`<p class="lead">आज परीक्षा. हॉल तिकीट, हॉल तिकिटावर सांगितलेले ओळखपत्र, 2 काळी बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित व अडलेले प्रश्न. एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. <a href='#strategy'>परीक्षा रणनीती एकदा वाचा ›</a> शुभेच्छा!</p>`:dayCard(n)}
   ${D&&D.t==="learn"?`<div class="btns"><button class="btn pri" id="dq">आजचा मिश्र क्विझ (20)</button><a class="btn" href="#l-${D.gs[0]}">आजचा धडा उघडा</a></div>`:""}
@@ -2381,6 +2441,7 @@ function vToday(n){
   main.querySelectorAll(".slots input").forEach(c=>c.onchange=()=>{const k="day_"+c.dataset.d;const a=store.get(k,[]);const i=+c.dataset.i;store.set(k,c.checked?[...new Set([...a,i])]:a.filter(x=>x!==i));vToday(n)});
   $("#pv").onclick=()=>vToday(n-1);$("#nx").onclick=()=>vToday(n+1);
   const srn=$("#srn");if(srn)srn.onclick=startReview;
+  if(n===cur)nnBind(()=>vToday(n));const td=$("#tdrl");if(td)td.onclick=()=>startDrill(drillPending().mid);
   const dq=$("#dq");if(dq)dq.onclick=()=>quiz(bankLessons([...D.gs,...D.sc,...(D.scRev?[D.scRev]:[]),...D.mr],20),"दिवस "+n+" क्विझ");
 }
 
@@ -2430,7 +2491,8 @@ function vPractice(){
   <div class="grid">${SUB.map(s=>`<button class="tile" data-s="${s.id}" style="--c:${s.c}"><b>${s.name}</b><small>${bySub(s.id).reduce((a,l)=>a+l.q.length,0)} प्रश्न${bySub(s.id).some(l=>GEN[l.id])?" + अमर्याद":""}</small></button>`).join("")}
   <button class="tile" data-s="mix" style="--c:#142a6e"><b>मिश्र 25</b><small>सर्व विषय</small></button>
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
-  <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button></div>
+  <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button>
+  <button class="tile" data-s="drill" style="--c:#b8560f" ${allWeak().length?"":"disabled"}><b>🎯 कमजोर धडे ड्रिल</b><small>${allWeak().length?"सर्वात कमजोर "+Math.min(5,allWeak().length)+" धड्यांतून 25 प्रश्न":"आधी थोडा सराव करा"}</small></button></div>
   <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) व मुख्य परीक्षा (2018; 2023 सामान्य अध्ययन; 2022 कर सहायक, लिपिक-टंकलेखक व दुय्यम निरीक्षक पेपर-II) यांतील मूळ प्रश्न. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
   <div class="grid">${SUB.map(s=>[s,pyqAll().filter(q=>q.s===s.id&&!q.c).length]).filter(x=>x[1]).map(([s,c])=>`<button class="tile" data-s="py-${s.id}" style="--c:${s.c}"><b>PYQ: ${s.name}</b><small>${c} मूळ प्रश्न</small></button>`).join("")}</div>
   <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
@@ -2439,15 +2501,16 @@ function vPractice(){
   ${!due.length&&nx?`<p class="small">पुढची उजळणी: ${fmtD(new Date(nx+"T00:00"))}</p>`:""}`;
   main.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const s=b.dataset.s;
     if(s==="due")return startReview();
+    if(s==="drill")return startDrill();
     if(s==="wrong")return quiz(shuffle(srList()).slice(0,25).map(freshQ),"चुकलेले प्रश्न",true);
     if(s==="mix")return quiz(buildMock(25),"मिश्र सराव");
     if(s.startsWith("py-"))return quiz(shuffle(pyqAll().filter(q=>q.s===s.slice(3)&&!q.c)),"PYQ: "+SN[s.slice(3)].name);
     quiz(bankSub(s,25),SN[s].name)});
 }
-function quiz(qs,title,noSr){
-  let i=0,score=0,skip=0;
+function quiz(qs,title,noSr,onDone){
+  let i=0,score=0,skip=0,fin=false;
   const show=()=>{
-    if(i>=qs.length){const left=srDue().length;const wr=qs.length-score-skip,net=score-wr*.25;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="small">बरोबर ${score} · चूक ${wr} · माहीत नाही ${skip} · MPSC पद्धतीने गुण (चुकीला −0.25): <b>${fmt(net)}</b></p><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
+    if(i>=qs.length){if(!fin){fin=true;if(qs.length>=20)dSet("t",1);syncRv();if(onDone)onDone()}const left=srDue().length;const wr=qs.length-score-skip,net=score-wr*.25;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="small">बरोबर ${score} · चूक ${wr} · माहीत नाही ${skip} · MPSC पद्धतीने गुण (चुकीला −0.25): <b>${fmt(net)}</b></p><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
     const q=qs[i];
     main.innerHTML=`<div class="qhead"><span>${title}</span><span>${i+1}/${qs.length} · बरोबर ${score}</span></div><div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
     <p class="small">${qtag(q)}${SN[q.s].name}</p><p class="qs">${esc(q.q)}</p>
@@ -2548,6 +2611,7 @@ function runMock(n,min,pre,meta){const qs=pre||buildMock(n);n=qs.length;const an
     qs.forEach((q,k)=>{if(ans[k]<0)srRec(q,false)});
     const id=Date.now(),d=dkey(new Date()).slice(5),sc=r-w*.25,h=store.get("mocks",[]);h.push(meta?{id,d,n,sc,r,w,t:meta.t}:{id,d,n,sc,r,w});store.set("mocks",h.slice(-40));if(meta&&meta.k){const ss=store.get("sets",{});ss[meta.k]={sc,n,d};store.set("sets",ss)}
     const mrv=store.get("mockrev",[]);mrv.push({id,d,n,min,sc,r,w,t:meta?meta.t:undefined,qs:qs.map(q=>({s:q.s,l:q.l,id:q.id,q:q.q,o:q.o,a:q.a,e:q.e,y:q.y,n:q.n,v:q.v,src:q.src,u:q.u,c:q.c})),ans,gs:gs.map((x,k)=>ans[k]>=0?x:0),tm:tm.map(x=>Math.round(x/1e3))});store.set("mockrev",mrv.slice(-5));
+    dSet("t",1);syncRv();if(n>=25)store.set("drill",{mid:id,done:0});
     location.hash="mr-"+id};
   draw();window.scrollTo(0,0)}
 
@@ -2564,11 +2628,12 @@ function vMockReview(id,f){
   const list=qs.map((q,k)=>[q,k]).filter(([,k])=>f==="all"||st(k)===f);
   main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>मॉक निकाल व उजळणी</h1><p class="small">${m.t?esc(m.t)+" · ":""}${m.d} · ${n} प्रश्न</p>
   <div class="big">${fmt(sc)}<small>/${n}</small></div>
-  <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n===100?(sc>=70?"सुरक्षित पातळी! हीच पातळी टिकवा.":sc>=60?"जवळ आहात; कमजोर विषयांवर भर द्या.":"धडे व सराव वाढवा; पुढच्या मॉकमध्ये +5 चे लक्ष्य ठेवा."):""}</p>
+  <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n>=50?(()=>{const p=sc/n*100,c=CUTOFF[0].open;return p>=TARGET?"लक्ष्य 60+ गाठले! हीच पातळी टिकवा.":p>=c?`मागील कट-ऑफच्या (${c}, अंदाजे) वर आहात, पण फरक कमी आहे. 60+ चे लक्ष्य ठेवा.`:`मागील कट-ऑफपेक्षा (${c}, अंदाजे) ${fmt(+(c-p).toFixed(2))} गुण कमी. खालचा कमजोर धडे ड्रिल आजच करा.`})():""}</p>
   <h2>विषयनिहाय</h2><div class="bars">${Object.entries(by).map(([s,v])=>`<div class="br ${v[0]/v[1]<.6?"weak":""}"><span>${SN[s].name}</span><div><i style="width:${v[0]/v[1]*100}%"></i></div><b>${v[0]}/${v[1]}</b></div>`).join("")}</div>
   ${mockInsights(m)}
   ${lsn.length?`<h2>हे धडे पुन्हा वाचा</h2><ul class="lsn">${lsn.map(([l,v])=>`<li><a href="#l-${l}">${LX[l].t}</a><small>${v[0]?v[0]+" चूक":""}${v[0]&&v[1]?" · ":""}${v[1]?v[1]+" सोडले":""}</small></li>`).join("")}</ul>
-  <div class="btns"><button class="btn pri" id="redo">चुकलेले व सोडलेले ${n-r} प्रश्न पुन्हा सोडवा</button></div>
+  <div class="note"><b>🎯 पुढची पायरी: कमजोर धडे ड्रिल (25 प्रश्न)</b><br><small>वरच्या सर्वात कमजोर धड्यांतून नवे प्रश्न (या मॉकमध्ये न आलेले शक्यतो), प्रत्येक उत्तरानंतर स्पष्टीकरणासह.${(()=>{const d=store.get("drill",null);return d&&String(d.mid)===String(m.id)&&d.done?" ✓ हा ड्रिल पूर्ण झाला; पुन्हा करू शकता.":""})()}</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="drl">ड्रिल सुरू करा</button></div></div>
+  <div class="btns"><button class="btn" id="redo">चुकलेले व सोडलेले ${n-r} प्रश्न पुन्हा सोडवा</button></div>
   <p class="small">हे प्रश्न 1-3-7 दिवसांच्या उजळणीतही जोडले गेले आहेत.</p>`:""}
   <h2>उत्तरे तपासा</h2>
   <div class="flt">${["r","sk","g","all"].map(x=>`<button data-f="${x}" class="${x===f?"on":""}">${lab[x]} (${cnt[x]})</button>`).join("")}</div>
@@ -2578,6 +2643,7 @@ function vMockReview(id,f){
    <p class="small"><a href="#l-${q.l}">धडा: ${LX[q.l]?LX[q.l].t:"पाहा"} ›</a></p></li>`).join("")}</ol>`:`<p class="small">या गटात एकही प्रश्न नाही.</p>`}
   <a class="btn pri" href="#mock">मॉक मेनू</a>`;
   main.querySelectorAll(".flt button").forEach(b=>b.onclick=()=>{vMockReview(id,b.dataset.f);$(".flt").scrollIntoView()});
+  const dr=$("#drl");if(dr)dr.onclick=()=>startDrill(m.id);
   const rd=$("#redo");if(rd)rd.onclick=()=>quiz(shuffle(qs.filter((_,k)=>st(k)!=="g")),"मॉकमधील चुका",true);
 }
 
@@ -2624,7 +2690,7 @@ function vStrategy(){
   <tr><td class="n">37–55 मि</td><td><b>दुसरी फेरी:</b> खूण केलेले गणित, बुद्धिमत्ता आणि 50-50 प्रश्न.</td></tr>
   <tr><td class="n">55–60 मि</td><td>OMR तपासा: प्रत्येक बबल पूर्ण भरले का, प्रश्न क्रमांक जुळतात का.</td></tr></tbody></table></div>
   <p class="small">OMR दर 10–20 प्रश्नांनी भरत राहा. सगळी उत्तरे शेवटी एकदम भरायला ठेवली तर वेळ संपल्यावर गुण जातात. सरासरी वेग 36 सेकंद प्रति प्रश्न; मॉकनंतर 'वेळेचा वापर' पाहून तुमचा वेग तपासा.</p>
-  <h2>लक्ष्य</h2><p class="small">Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (अंदाज; वर्षानुसार बदलतो). म्हणून पूर्ण मॉकमध्ये सातत्याने <b>70+</b> हे लक्ष्य ठेवा.</p>
+  <h2>लक्ष्य</h2><p class="small">मागील दोन गट-क पूर्व परीक्षांचा Open कट-ऑफ साधारण <b>48.25 (2024)</b> व <b>50.25 (2025)</b> होता (अंदाजे; MPSC निकाल उद्धृत करणाऱ्या संकेतस्थळांवरून, आयोगाच्या PDF शी पडताळलेले नाही). 2022 मध्ये पदनिहाय कट-ऑफ 60–74 होता, म्हणजे तो वर्षानुसार खूप बदलतो. म्हणून पूर्ण मॉकमध्ये सातत्याने <b>60+</b> हे लक्ष्य ठेवा. तुमचा फरक <a href="#progress">प्रगती › कट-ऑफ ट्रॅकर</a> मध्ये दिसतो.</p>
   <h2>परीक्षेच्या आदल्या दिवशी</h2>
   <ul class="notes"><li>हॉल तिकिटाची प्रिंट काढा आणि त्यावरील सर्व सूचना वाचा: कोणते ओळखपत्र, किती वाजता पोहोचायचे, काय नेता येत नाही.</li>
   <li>2 काळी बॉलपेन, हॉल तिकीट, मूळ ओळखपत्र एका पिशवीत ठेवा. मोबाइल, स्मार्टवॉच, कॅल्क्युलेटर नेऊ नका.</li>
@@ -2639,15 +2705,18 @@ function vStrategy(){
 function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=store.get("lstats",{});
   const weak=Object.entries(ls).filter(([id,v])=>v[1]>=4&&v[0]/v[1]<.6&&LX[id]).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,6);
   main.innerHTML=`<h1>प्रगती</h1>
-  <div class="stats"><div><b>${streak()}</b><small>दिवस सलग</small></div><div><b>${store.get("read",[]).length}/${L.length}</b><small>धडे वाचले</small></div><div><b>${Object.values(st).reduce((a,v)=>a+v[1],0)}</b><small>प्रश्न सोडवले</small></div></div>
-  <h2>मॉक गुण (100 मध्ये)</h2>${h.length?`<div class="mk">${h.slice(-12).map(m=>{const p=m.sc/m.n*100;return `<div class="mc"><i style="height:${Math.max(2,p)}%" class="${p>=70?"g":""}"></i><small>${Math.round(p)}</small></div>`}).join("")}<span class="line" style="bottom:70%">70</span></div>`:`<p class="small">अजून मॉक दिली नाही. दिवस 43 पासून पूर्ण मॉक सुरू होतात; त्याआधी मिनी मॉक देऊ शकता.</p>`}
+  <div class="stats"><div><b>${streak()}</b><small>दिवस सलग सराव</small></div><div><b>${nnStreak()}</b><small>दिवस तिन्ही कामे</small></div><div><b>${store.get("read",[]).length}/${L.length}</b><small>धडे वाचले</small></div><div><b>${Object.values(st).reduce((a,v)=>a+v[1],0)}</b><small>प्रश्न सोडवले</small></div></div>
+  <h2>मॉक गुण (100 मध्ये)</h2>${h.length?`<div class="mk">${h.slice(-12).map(m=>{const p=m.sc/m.n*100;return `<div class="mc"><i style="height:${Math.max(2,p)}%" class="${p>=TARGET?"g":p>=CUTOFF[0].open?"m":""}"></i><small>${Math.round(p)}</small></div>`}).join("")}<span class="line" style="bottom:${TARGET}%">लक्ष्य ${TARGET}</span><span class="line cl" style="bottom:${CUTOFF[0].open}%">कट-ऑफ ${CUTOFF[0].open}*</span></div>`:`<p class="small">अजून मॉक दिली नाही. दिवस 43 पासून पूर्ण मॉक सुरू होतात; त्याआधी मिनी मॉक देऊ शकता.</p>`}
+  ${cutCard()}
+  ${nnCard()}
   <h2>विषयनिहाय अचूकता</h2><div class="bars">${SUB.map(s=>{const v=st[s.id];if(!v)return `<div class="br"><span>${s.name}</span><div></div><b>—</b></div>`;const p=Math.round(v[0]/v[1]*100);return `<div class="br ${p<60?"weak":""}"><span>${s.name}</span><div><i style="width:${p}%"></i></div><b>${p}%</b></div>`}).join("")}</div>
-  ${weak.length?`<h2>सर्वात कमजोर धडे</h2><ul class="plain">${weak.map(([id,v])=>`<li><a href="#l-${id}">${LX[id].t}</a> <small>${Math.round(v[0]/v[1]*100)}%</small></li>`).join("")}</ul>`:""}
+  ${weak.length?`<h2>सर्वात कमजोर धडे</h2><ul class="plain">${weak.map(([id,v])=>`<li><a href="#l-${id}">${LX[id].t}</a> <small>${Math.round(v[0]/v[1]*100)}%</small></li>`).join("")}</ul><div class="btns"><button class="btn pri" id="pdrl">🎯 कमजोर धडे ड्रिल (25)</button></div>`:""}
   <h2>चालू घडामोडी नोंदवही</h2><textarea id="ca" rows="8" placeholder="उदा. 24 नोव्हेंबर: ...">${esc(store.get("ca",""))}</textarea><p class="small" id="sv">हे याच फोनमध्ये जतन होते; खालील बॅकअपमध्येही येते.</p>
   <h2>बॅकअप</h2><p class="small">सर्व प्रगती (वाचलेले धडे, चुकलेले प्रश्न, मॉक गुण, नोंदवही) एका फाइलमध्ये जतन करा. फोन बदलला, ब्राउझर साफ केला तरी ही फाइल उघडून सर्व परत मिळेल.</p>
   <p class="small" id="bkinfo">${bkAge()}</p>
   <div class="btns"><button class="btn pri" id="bkx">बॅकअप फाइल घ्या</button><label class="btn" for="bkf">बॅकअप उघडा</label><input type="file" id="bkf" accept=".json,application/json,text/plain" hidden></div><div id="bkm"></div>
   <details class="box"><summary>सर्व प्रगती पुसा</summary><button class="btn" id="rst">हो, सर्व पुसा</button></details>`;
+  nnBind(vProgress);const pd=$("#pdrl");if(pd)pd.onclick=()=>startDrill();
   $("#ca").oninput=e=>{store.set("ca",e.target.value);$("#sv").textContent="जतन झाले ✓"};
   $("#rst").onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith("gc2_")).forEach(k=>localStorage.removeItem(k))}catch(e){}vProgress()};
   $("#bkx").onclick=exportBackup;
