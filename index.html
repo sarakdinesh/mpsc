@@ -166,6 +166,7 @@ header .hr{display:flex;align-items:center}
  .note,.pyq,.exp,.rev>li,.tl li,.bars .br,.slots li,.sn li,.trap li,.t tr{break-inside:avoid}
  .rev>li{margin:6px 0;padding:4px 8px}
  .pp .pbreak{break-before:page}
+ #wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font:800 64pt/1 Mukta,"Noto Sans Devanagari",sans-serif;color:rgba(20,42,110,.12)!important;white-space:nowrap;pointer-events:none;z-index:9;letter-spacing:4px}
  #phead{font-size:10pt;color:#555;border-bottom:1px solid #bbb;padding-bottom:3px;margin-bottom:8px}
  details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}
  .scroll{overflow:visible!important}
@@ -196,6 +197,7 @@ if(!ME)document.documentElement.classList.add("locked");
 </form></div>
 <header><b>गट-क सराव</b><span class="hr"><span>परीक्षेला <b id="dl" style="font-size:16px"></b> दिवस</span><button id="lgout" type="button">लॉगआउट</button></span></header>
 <div id="phead" class="only-print"></div>
+<div id="wm" class="only-print" aria-hidden="true">Sunil Parkhe</div>
 <main id="main"></main>
 <nav>
  <a href="#today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>आज</a>
@@ -2743,7 +2745,7 @@ const GEN={
 const toQ=(l,q)=>{const m=q[4]||{};return{s:l.s,l:l.id,q:q[0],o:q[1],a:q[2],e:q[3],id:m.i,y:m.y,n:m.n,v:m.v,src:m.src,p:m.p,u:m.u?1:0,c:m.c?1:0}};
 /* जतन केलेल्या प्रश्नाची ताजी आवृत्ती (प्रश्नसंचात दुरुस्ती झाली असेल तर) */
 const freshQ=x=>{const h=(x.id&&QIX[x.id])||QIX["t:"+x.q];return h?{...x,...toQ(h[0],h[1])}:x};
-const qtag=q=>q.y?`<span class="qy">${q.y==="pyq"?"पूर्वपरीक्षा-शैली":"PYQ "+esc(q.y)+(q.n?" · प्र. "+q.n:"")}</span> ${q.v==="k"?'<span class="qy ok">✓ उत्तरतालिका</span> ':""}`:"";
+const qtag=q=>q.y?`<span class="qy">${q.y==="pyq"?"पूर्वपरीक्षा-शैली":"PYQ "+(q.y==="2026"&&!q.p?"गट-क 2025 (11 जाने. 2026)":esc(q.y))+(q.n?" · प्र. "+q.n:"")}</span> ${q.v==="k"?'<span class="qy ok">✓ उत्तरतालिका</span> ':""}`:"";
 const qwarn0=q=>q.u?`<br><span class="qu">⚠ हा तपशील अलीकडचा/अनिश्चित आहे. अधिकृत स्रोतातून (वृत्तपत्र, शासन संकेतस्थळ) एकदा तपासा.</span>`:"";
 const qsrc=q=>q.src?`<br><span class="small">स्रोत: ${/^https?:\/\//.test(q.src)?`<a href="${esc(q.src)}" target="_blank" rel="noopener">${esc(q.src.replace(/^https?:\/\/(www\.)?/,"").split("/")[0])}</a>`:esc(q.src)}</span>`:"";
 const qwarn=q=>qwarn0(q)+(q.c?`<br><span class="qu">आयोगाने अंतिम उत्तरतालिकेत हा प्रश्न रद्द केला.</span>`:/^20/.test(q.y||"")&&q.v!=="k"?`<br><span class="qu">उत्तर अधिकृत अंतिम उत्तरतालिकेशी अजून तपासलेले नाही.</span>`:"")+qsrc(q);
@@ -3168,7 +3170,7 @@ const pyqAll=()=>L.flatMap(l=>l.q.map(q=>toQ(l,q))).filter(q=>/^20\d\d$/.test(q.
 /* प्रश्नपत्रिका की: वर्ष, आणि एकाच वर्षी दुसरी पत्रिका असल्यास "वर्ष-p" (उदा. 2023-ta) */
 const pkey=q=>q.y+(q.p?"-"+q.p:"");
 function yearPaper(y){const qs=pyqAll().filter(q=>pkey(q)===y&&!q.c);return qs.sort((a,b)=>(a.n||999)-(b.n||999))}
-const ptitle=(y,qs)=>{const src=(qs[0]&&qs[0].src)||"",mains=/मुख्य/.test(src);const pc=y.slice(5),pl={gb:" · गट-ब पूर्वपरीक्षा",bc:" · गट-ब व गट-क संयुक्त पूर्वपरीक्षा",es:" · दुय्यम निरीक्षक (उत्पादन शुल्क) पूर्वपरीक्षा",ct:" · लिपिक-टंकलेखक पूर्वपरीक्षा",ta:" · कर सहायक पूर्वपरीक्षा"}[pc];if(pl&&!mains)return y.slice(0,4)+pl;return y.slice(0,4)+(mains?" · मुख्य परीक्षा"+(/कर सहायक/.test(src)?" (कर सहायक)":/लिपिक/.test(src)?" (लिपिक-टंकलेखक)":/दुय्यम निरीक्षक/.test(src)?" (दुय्यम निरीक्षक)":/सामान्य अध्ययन/.test(src)?" (सामान्य अध्ययन)":""):" · गट-क पूर्वपरीक्षा")};
+const ptitle=(y,qs)=>{const src=(qs[0]&&qs[0].src)||"",mains=/मुख्य/.test(src);if(y==="2026"&&!mains)return "गट-क 2025 पूर्वपरीक्षा (11 जानेवारी 2026)";const pc=y.slice(5),pl={gb:" · गट-ब पूर्वपरीक्षा",bc:" · गट-ब व गट-क संयुक्त पूर्वपरीक्षा",es:" · दुय्यम निरीक्षक (उत्पादन शुल्क) पूर्वपरीक्षा",ct:" · लिपिक-टंकलेखक पूर्वपरीक्षा",ta:" · कर सहायक पूर्वपरीक्षा"}[pc];if(pl&&!mains)return y.slice(0,4)+pl;return y.slice(0,4)+(mains?" · मुख्य परीक्षा"+(/कर सहायक/.test(src)?" (कर सहायक)":/लिपिक/.test(src)?" (लिपिक-टंकलेखक)":/दुय्यम निरीक्षक/.test(src)?" (दुय्यम निरीक्षक)":/सामान्य अध्ययन/.test(src)?" (सामान्य अध्ययन)":""):" · गट-क पूर्वपरीक्षा")};
 const setBtns=(pre,N)=>{const ss=store.get("sets",{});return `<div class="og">${Array.from({length:N},(_,k)=>{const r=ss[pre+(k+1)];return `<button class="ob ${r?"f":""}" data-set="${pre+(k+1)}" title="${r?fmt(r.sc)+"/"+r.n+" · "+r.d:"अजून दिली नाही"}">${k+1}</button>`}).join("")}</div>`};
 function runSet(key){const ss=store.get("sets",{});let m;
   if(m=key.match(/^fm(\d+)$/)){const k=+m[1]-1;return runMock(100,60,fixedMock(k),{t:"मॉक "+(k+1),k:key})}
