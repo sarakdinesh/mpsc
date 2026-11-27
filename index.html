@@ -70,7 +70,6 @@ a{color:var(--blue)}
 #clock{color:var(--blue);font-size:17px}#clock.warn{color:var(--bad)}
 .bar{height:5px;background:var(--line);border-radius:3px;margin:8px 0}.bar i{display:block;height:100%;background:var(--pink);border-radius:3px}
 .sheet{border-left:4px solid var(--c);padding:2px 0 2px 12px}.sheet h3{margin:12px 0 4px;font-size:17px;color:var(--c)}.sheet ul{margin:0;padding-left:18px}.sheet li{margin:3px 0;font-size:15px;line-height:1.45}
-@media print{header,nav,.noprint{display:none!important}main{padding:0!important;max-width:none!important}.sheet li{font-size:12px;margin:1px 0}.sheet h3{font-size:13px;margin:6px 0 2px}h1{font-size:18px;margin:0 0 4px}}
 .qs{font-size:20px;font-weight:600;line-height:1.45;margin:16px 0;white-space:pre-line}
 .opts{display:grid;gap:10px}
 .op{appearance:none;font:inherit;color:var(--ink);text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:54px;display:flex;gap:12px;align-items:center;cursor:pointer}
@@ -149,11 +148,23 @@ header .hr{display:flex;align-items:center}
 .pp.noans .pans,.pp.noexp .pe,.pp.noomr .pomr{display:none}
 .pq .pa{display:none}.pp.inl .pq .pa{display:inline;color:var(--ok);font-weight:700}
 .plan .pd{break-inside:avoid;border-top:1px solid var(--line);padding:8px 0}.plan .pd h3{margin:0 0 4px;font-size:16px}.plan table{width:100%;border-collapse:collapse;font-size:14px}.plan td{padding:3px 6px;vertical-align:top;border-bottom:1px dotted var(--line)}.plan td.tm{white-space:nowrap;color:var(--blue);font-weight:600;width:8.5em}
+/* A4 छपाई: पानाचा आकार A4 (210×297 मिमी), अक्षरांचा आकार pt मध्ये, म्हणजे फोन व संगणक दोन्हीवर कागदावर सारखाच दिसतो. */
+@page{size:A4 portrait;margin:12mm 12mm 13mm}
 @media print{
- @page{size:A4;margin:12mm 11mm}
+ html{width:auto!important;-webkit-text-size-adjust:100%;text-size-adjust:100%}
  :root,:root[data-theme=dark],:root[data-theme=light]{color-scheme:light!important}
  html,body{background:#fff!important;color:#000}
- body{font-size:12pt;line-height:1.45}
+ body{font-size:13pt;line-height:1.5;width:auto!important;min-width:0!important;overflow:visible!important}
+ h1{font-size:20pt;margin:0 0 6pt;line-height:1.2}h2{font-size:15.5pt;margin:14pt 0 6pt}h3{font-size:14pt}
+ .small,.lead,.pyq,.note,.exp,.sc ul.plain li,.notes li,.lsn li,.hist li,.br,.t,.wt,.slots .tm,.slots label,.sn li,.trap li,.tag,.qy,.kicker{font-size:12pt!important}
+ .src,.src h2,.src li,.qu,.pbar small{font-size:10.5pt!important}
+ .qs,.pq p,.rev p{font-size:13pt!important}.pq .po li,.rev .ol li{font-size:12.5pt!important}.pq .pe{font-size:11.5pt!important}
+ .sheet li{font-size:12pt;margin:2pt 0;line-height:1.4}.sheet h3{font-size:13.5pt;margin:8pt 0 3pt}
+ .big{font-size:40pt}.big small{font-size:18pt}.count b{font-size:44pt}
+ .plan td{font-size:12pt}.plan .pd h3{font-size:13.5pt}
+ .pp .pk{font-size:12pt;grid-template-columns:repeat(8,minmax(0,1fr))}.pp .omrs{font-size:12pt;grid-template-columns:repeat(4,minmax(0,1fr))}.omrs i{width:17pt;height:17pt;line-height:15pt;font-size:9.5pt}
+ .slots label{grid-template-columns:20pt 100pt minmax(0,1fr)!important;padding:6pt 2pt;min-height:0}.slots .tm{white-space:normal;grid-column:auto!important}.slots label span:last-child{grid-column:auto!important}.nn .slots label{grid-template-columns:20pt minmax(0,1fr)!important}
+ .lesson h3{font-size:14.5pt}.t th,.t td{padding:4pt 6pt}
  header,nav,#login,.noprint,.pbar,.btns,.tabs,.flt,.back,.nav2,.daynav button,button,.btn,#sec-q,textarea{display:none!important}
  #main{padding:0!important;margin:0!important;max-width:none!important}
  .only-print{display:block!important}
@@ -166,7 +177,8 @@ header .hr{display:flex;align-items:center}
  .note,.pyq,.exp,.rev>li,.tl li,.bars .br,.slots li,.sn li,.trap li,.t tr{break-inside:avoid}
  .rev>li{margin:6px 0;padding:4px 8px}
  .pp .pbreak{break-before:page}
- #wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font:800 64pt/1 Mukta,"Noto Sans Devanagari",sans-serif;color:rgba(20,42,110,.12)!important;white-space:nowrap;pointer-events:none;z-index:9;letter-spacing:4px}
+ #wm{position:fixed;inset:0;display:flex!important;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;z-index:9}
+ #wm span{display:block;transform:rotate(-35deg);font:800 60pt/1 Mukta,"Noto Sans Devanagari",sans-serif;color:rgba(20,42,110,.12)!important;white-space:nowrap;letter-spacing:3pt}
  #phead{font-size:10pt;color:#555;border-bottom:1px solid #bbb;padding-bottom:3px;margin-bottom:8px}
  details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}
  .scroll{overflow:visible!important}
@@ -197,7 +209,7 @@ if(!ME)document.documentElement.classList.add("locked");
 </form></div>
 <header><b>गट-क सराव</b><span class="hr"><span>परीक्षेला <b id="dl" style="font-size:16px"></b> दिवस</span><button id="lgout" type="button">लॉगआउट</button></span></header>
 <div id="phead" class="only-print"></div>
-<div id="wm" class="only-print" aria-hidden="true">Sunil Parkhe</div>
+<div id="wm" class="only-print" aria-hidden="true"><span>Sunil Parkhe</span></div>
 <main id="main"></main>
 <nav>
  <a href="#today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>आज</a>
