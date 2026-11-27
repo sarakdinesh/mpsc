@@ -3122,6 +3122,7 @@ function vPractice(){
   const wr=srList(),t=dkey(today0()),due=wr.filter(x=>x.due<=t),nx=wr.filter(x=>x.due>t).map(x=>x.due).sort()[0];
   const stg=SRI.map((_,b)=>wr.filter(x=>x.box===b).length);
   main.innerHTML=`<h1>सराव</h1><p class="lead">प्रत्येक उत्तरानंतर लगेच स्पष्टीकरण दिसते. चुकलेले प्रश्न आपोआप जतन होतात. गणित व बुद्धिमत्तेचे प्रश्न दरवेळी नवीन तयार होतात.</p>
+  <div class="pbar noprint"><label class="gs" style="margin:0"><input type="checkbox" id="pmode" ${PMODE?"checked":""}>🖨 प्रिंट / PDF साठी प्रश्नसंच निवडा</label><small>(खूण केल्यावर खालील कोणत्याही विषयावर, PYQ संचावर किंवा चुकलेल्या प्रश्नांवर टॅप केल्यास सराव सुरू न होता छापण्याचे पान उघडेल: प्रश्न, OMR व उत्तरतालिका. विषयावर टॅप केल्यास त्या विषयाचे सर्व प्रश्न येतात.)</small></div>
   <div class="grid">${SUB.map(s=>`<button class="tile" data-s="${s.id}" style="--c:${s.c}"><b>${s.name}</b><small>${bySub(s.id).reduce((a,l)=>a+l.q.length,0)} प्रश्न${bySub(s.id).some(l=>GEN[l.id])?" + अमर्याद":""}</small></button>`).join("")}
   <button class="tile" data-s="mix" style="--c:#142a6e"><b>मिश्र 25</b><small>सर्व विषय</small></button>
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
@@ -3133,7 +3134,10 @@ function vPractice(){
   <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
   <div class="srbox"><div><b>${stg[0]}</b><small>1 दिवस टप्पा</small></div><div><b>${stg[1]}</b><small>3 दिवस टप्पा</small></div><div><b>${stg[2]}</b><small>7 दिवस टप्पा</small></div><div><b>${store.get("mastered",0)}</b><small>पक्के झाले</small></div></div>
   ${!due.length&&nx?`<p class="small">पुढची उजळणी: ${fmtD(new Date(nx+"T00:00"))}</p>`:""}`;
+  $("#pmode").onchange=e=>{PMODE=e.target.checked};
   main.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const s=b.dataset.s;
+    if(PMODE){if(s==="drill"){const qs=weakDrill(allWeak());return qs&&qs.length?vPaper(null,{t:"कमजोर धडे ड्रिल ("+qs.length+")",qs,min:Math.round(qs.length*.6),back:`<a class="back" href="#practice">‹ सराव</a>`}):0}
+      location.hash="pq-"+(s.startsWith("py-")||["mix","wrong","due"].includes(s)?s:"sub-"+s);return}
     if(s==="due")return startReview();
     if(s==="drill")return startDrill();
     if(s==="wrong")return quiz(shuffle(srList()).slice(0,25).map(freshQ),"चुकलेले प्रश्न",true);
@@ -3143,12 +3147,14 @@ function vPractice(){
 }
 function quiz(qs,title,noSr,onDone){
   let i=0,score=0,skip=0,fin=false;
+  const qPrint=inl=>{vPaper(null,{t:title,qs,min:Math.max(5,Math.round(qs.length*.6)),back:`<a class="back" href="#practice">‹ सराव</a>`});if(inl){const c=main.querySelector('[data-pc="inl"]');if(c){c.checked=true;c.onchange()}}window.scrollTo(0,0)};
   const show=()=>{
-    if(i>=qs.length){if(!fin){fin=true;if(qs.length>=20)dSet("t",1);syncRv();if(onDone)onDone()}const left=srDue().length;const wr=qs.length-score-skip,net=score-wr*.25;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="small">बरोबर ${score} · चूक ${wr} · माहीत नाही ${skip} · MPSC पद्धतीने गुण (चुकीला −0.25): <b>${fmt(net)}</b></p><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a></div>`;const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
+    if(i>=qs.length){if(!fin){fin=true;if(qs.length>=20)dSet("t",1);syncRv();if(onDone)onDone()}const left=srDue().length;const wr=qs.length-score-skip,net=score-wr*.25;main.innerHTML=`<h1>${title}: निकाल</h1><div class="big">${score}/${qs.length}</div><p class="small">बरोबर ${score} · चूक ${wr} · माहीत नाही ${skip} · MPSC पद्धतीने गुण (चुकीला −0.25): <b>${fmt(net)}</b></p><p class="lead">${Math.round(score/qs.length*100)}% बरोबर. ${score/qs.length>=.7?"छान! हाच वेग ठेवा.":"चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा."}</p>${title==="आजची उजळणी"?`<p class="small">बरोबर आलेले प्रश्न पुढच्या टप्प्यात गेले; चुकलेले उद्या पुन्हा येतील.${left?` आज अजून ${left} देय आहेत.`:""}</p>`:""}<div class="btns">${title==="आजची उजळणी"&&left?`<button class="btn pri" id="more">पुढचे ${Math.min(30,left)} प्रश्न</button>`:""}<a class="btn pri" href="#practice">सराव मेनू</a><a class="btn" href="#today">आज</a><button class="btn" type="button" id="qpr">🖨 हे ${qs.length} प्रश्न उत्तरांसह प्रिंट / PDF</button></div>`;$("#qpr").onclick=()=>qPrint(1);const m=$("#more");if(m)m.onclick=startReview;window.scrollTo(0,0);return}
     const q=qs[i];
     main.innerHTML=`<div class="qhead"><span>${title}</span><span>${i+1}/${qs.length} · बरोबर ${score}</span></div><div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
     <p class="small">${qtag(q)}${SN[q.s].name}</p><p class="qs">${esc(q.q)}</p>
-    <div class="opts">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div><button class="btn" id="dk" style="margin-top:12px">माहीत नाही, सोडतो</button><div id="fb"></div>`;
+    <div class="opts">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><span class="bub">${LT[k]}</span>${esc(o)}</button>`).join("")}</div><button class="btn" id="dk" style="margin-top:12px">माहीत नाही, सोडतो</button><div id="fb"></div>${i===0?`<div class="pbar"><button class="btn" type="button" id="qpr">🖨 हा संच (${qs.length} प्रश्न) प्रिंट / PDF</button><small>कागदावर सोडवण्यासाठी; छापण्याचे पान उघडल्यावर हा सराव थांबेल.</small></div>`:""}`;
+    if(i===0)$("#qpr").onclick=()=>qPrint(0);
     const answer=k=>{const sk=k<0,ok=k===q.a;if(ok)score++;if(sk)skip++;rec(q,ok,noSr);$("#dk").remove();
       main.querySelectorAll(".op").forEach((x,j)=>{x.disabled=true;if(j===q.a)x.classList.add("ok");else if(j===k)x.classList.add("bad")});
       $("#fb").innerHTML=`<div class="exp ${ok?"g":"r"}"><b>${ok?"बरोबर!":(sk?"सोडला (0 गुण). ":"चूक (−0.25). ")+"बरोबर उत्तर: "+LT[q.a]+". "+esc(q.o[q.a])}</b><br>${esc(q.e)}${qwarn(q)} <a href="#l-${q.l}">धडा पाहा ›</a>${sk?"<br><small>हा प्रश्न उजळणीच्या यादीत गेला.</small>":""}</div><button class="btn pri" id="nx">${i+1<qs.length?"पुढचा प्रश्न ›":"निकाल पाहा"}</button>`;
@@ -3269,6 +3275,11 @@ window.addEventListener("beforeprint",()=>{
 window.addEventListener("afterprint",()=>{pOpened.forEach(d=>d.open=false);pOpened=[]});
 /* छापण्यासाठी प्रश्नसंच: मॉक/चाचणी/वर्ष पेपर runSet सारखेच (ठरलेले seed), त्यामुळे छापलेला पेपर ॲपमधल्या पेपरसारखाच असतो. */
 function paperOf(key){let m;
+  const PR={back:`<a class="back" href="#practice">‹ सराव</a>`,pr:1};
+  if(m=key.match(/^sub-([a-z0-9]+)$/)){if(!SN[m[1]])return null;const qs=bySub(m[1]).flatMap(l=>l.q.map(q=>toQ(l,q))).filter(q=>!q.c);return{...PR,t:SN[m[1]].name+": सर्व प्रश्न ("+qs.length+")",qs,min:Math.round(qs.length*.6)}}
+  if(m=key.match(/^py-([a-z0-9]+)$/)){if(!SN[m[1]])return null;const qs=pyqAll().filter(q=>q.s===m[1]&&!q.c).sort((a,b)=>pkey(b).localeCompare(pkey(a))||(a.n||999)-(b.n||999));return{...PR,t:"PYQ: "+SN[m[1]].name+" ("+qs.length+" मूळ प्रश्न)",qs,min:Math.round(qs.length*.6)}}
+  if(key==="mix")return{...PR,t:"मिश्र 25 (नवा यादृच्छिक संच)",qs:buildMock(25),min:15,rnd:1};
+  if(key==="wrong"||key==="due"){const t=dkey(today0());const qs=srList().filter(x=>key==="wrong"||x.due<=t).map(freshQ).filter(q=>q.q&&q.o&&q.o.length);return{...PR,t:key==="wrong"?"माझे सर्व चुकलेले प्रश्न ("+qs.length+")":"आजची उजळणी ("+qs.length+")",qs,min:Math.max(5,Math.round(qs.length*.6))}}
   if(key==="full")return{t:"पूर्ण मॉक (नवा यादृच्छिक संच)",qs:buildMock(100),min:60,rnd:1};
   if(key==="mini")return{t:"मिनी मॉक (नवा यादृच्छिक संच)",qs:buildMock(25),min:15,rnd:1};
   if(m=key.match(/^fm(\d+)$/)){const k=+m[1]-1;if(k<0||k>=NFM)return null;return{t:"मॉक "+(k+1),qs:fixedMock(k),min:60,k:key}}
@@ -3278,9 +3289,9 @@ function paperOf(key){let m;
     if(GEN[l.id])qs=qs.concat(withSeed(hsh("pl"+l.id),()=>Array.from({length:Math.max(0,15-qs.length)},()=>genFor(l.id))));
     return{t:l.t+": धड्याचे प्रश्न",qs,min:Math.max(5,Math.round(qs.length*.6)),l:l.id}}
   return null}
-function vPaper(key){const P=paperOf(key);
-  if(!P||!P.qs.length){main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>प्रश्नपत्रिका</h1><p class="lead">हा पेपर सापडला नाही.</p>`;return}
-  const {qs}=P,n=qs.length,back=P.l?`<a class="back" href="#l-${P.l}">‹ धडा</a>`:`<a class="back" href="#mock">‹ मॉक</a>`;
+function vPaper(key,PD){const P=PD||paperOf(key);
+  if(!P||!P.qs.length){main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>${P?esc(P.t):"प्रश्नपत्रिका"}</h1><p class="lead">${P?"या संचात अजून प्रश्न नाहीत.":"हा पेपर सापडला नाही."}</p>`;return}
+  const {qs}=P,n=qs.length,back=P.back||(P.l?`<a class="back" href="#l-${P.l}">‹ धडा</a>`:`<a class="back" href="#mock">‹ मॉक</a>`);
   main.innerHTML=`${back}<h1>${esc(P.t)}</h1>
   <p class="small">${n} प्रश्न · ${P.min} मिनिटे · प्रत्येक बरोबर उत्तराला 1 गुण, चुकीच्या उत्तराला −0.25, सोडलेल्याला 0.${P.rnd?" प्रत्येक वेळी पान उघडल्यावर नवा संच तयार होतो.":""}</p>
   <div class="noprint box"><b>काय छापायचे?</b>
@@ -3298,7 +3309,7 @@ function vPaper(key){const P=paperOf(key);
   const pp=$("#pp");
   main.querySelectorAll("[data-pc]").forEach(c=>c.onchange=()=>pp.classList.toggle(c.dataset.pc,c.dataset.on?c.checked:!c.checked));
   const pr=$("#prun");if(pr)pr.onclick=()=>runSet(P.k);
-  const pn=$("#pnew");if(pn)pn.onclick=()=>vPaper(key)}
+  const pn=$("#pnew");if(pn)pn.onclick=()=>vPaper(key,PD&&PD.again?PD.again():undefined)}
 /* संपूर्ण / आठवड्याचा अभ्यास आराखडा, छापण्यासाठी */
 function vPlan(w){const W=Math.ceil(TOT/7),cur=Math.min(TOT,Math.max(1,dayNo(today0())));w=+w||0;if(w<0||w>W)w=0;
   const from=w?(w-1)*7+1:1,to=w?Math.min(TOT,w*7):TOT;
@@ -3445,7 +3456,7 @@ function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.p
   r.onerror=()=>{$("#bkm").innerHTML=`<div class="exp r">फाइल वाचता आली नाही.</div>`};r.readAsText(f)}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
-  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="sh"||h.startsWith("sh-")||h==="strategy"||h==="ref"||h.startsWith("rf-")||h.startsWith("pq-l-")?"learn":h.startsWith("mr-")||h.startsWith("pq-")?"mock":h==="plan"||h.startsWith("plan-")?"today":h;
+  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="sh"||h.startsWith("sh-")||h==="strategy"||h==="ref"||h.startsWith("rf-")||h.startsWith("pq-l-")?"learn":/^pq-(sub-|py-|mix$|wrong$|due$)/.test(h)?"practice":h.startsWith("mr-")||h.startsWith("pq-")?"mock":h==="plan"||h.startsWith("plan-")?"today":h;
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+tab));
   if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));else if(h==="sh"||h.startsWith("sh-"))vSheet(h.slice(3));else if(h.startsWith("pq-"))vPaper(h.slice(3));else if(h==="plan"||h.startsWith("plan-"))vPlan(h.slice(5));
   else({today:()=>vToday(),learn:vLearn,strategy:vStrategy,ref:vRef,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
