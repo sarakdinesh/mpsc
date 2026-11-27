@@ -2663,16 +2663,24 @@ const daysLeft=()=>Math.max(0,Math.round((EXAM-today0())/864e5));
 const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const LT=["1","2","3","4"];
+/* विषयवार वाटप (100 प्रश्न): गट-क 2025 पूर्वपरीक्षेच्या (11 जाने 2026) प्रश्नपत्रिकेच्या स्वतंत्र विश्लेषणानुसार (mpscpaper.in).
+   हा MPSC चा अधिकृत कोटा नाही; आयोग फक्त एकूण 100 प्रश्न जाहीर करतो. अंकगणित + बुद्धिमत्ता = 20, येथे 10 + 10 असे विभागले.
+   मॉक, संच, मिनी मॉक, विभागीय सराव आराखडा आणि वाटप दाखवणारी सर्व पाने हाच एक आकडा (WT) वापरतात. */
+const WT={ca:15,pol:15,eco:15,sci:15,his:10,geo:10,mat:10,rea:10,gk:0};
+const WTSRC="गट-क 2025 पूर्वपरीक्षेच्या (11 जानेवारी 2026) प्रश्नपत्रिकेच्या स्वतंत्र विश्लेषणावर आधारित (mpscpaper.in); MPSC चा अधिकृत विषयवार कोटा नाही";
 const SUB=[
- {id:"ca",name:"चालू घडामोडी",w:"~15",c:"#455a64"},
- {id:"his",name:"इतिहास",w:"12–15",c:"#b4451f"},
- {id:"geo",name:"भूगोल",w:"12–15",c:"#2f7d4f"},
- {id:"pol",name:"राज्यघटना व पंचायत राज",w:"10–15",c:"#1f4fa8"},
- {id:"eco",name:"अर्थव्यवस्था",w:"10–15",c:"#8a5a00"},
- {id:"sci",name:"सामान्य विज्ञान",w:"12–15",c:"#7a3fa0"},
- {id:"mat",name:"अंकगणित",w:"8–15",c:"#c2185b"},
- {id:"rea",name:"बुद्धिमापन चाचणी",w:"8–20",c:"#00796b"},
- {id:"gk",name:"महाराष्ट्र विशेष",w:"(GK मध्ये)",c:"#6d4c41"}];
+ {id:"ca",name:"चालू घडामोडी",w:"15",c:"#455a64"},
+ {id:"his",name:"इतिहास",w:"10",c:"#b4451f"},
+ {id:"geo",name:"भूगोल व पर्यावरण",w:"10",c:"#2f7d4f"},
+ {id:"pol",name:"राज्यघटना व पंचायत राज",w:"15",c:"#1f4fa8"},
+ {id:"eco",name:"अर्थव्यवस्था",w:"15",c:"#8a5a00"},
+ {id:"sci",name:"सामान्य विज्ञान",w:"15",c:"#7a3fa0"},
+ {id:"mat",name:"अंकगणित",w:"10 (गणित+बुद्धिमत्ता 20)",c:"#c2185b"},
+ {id:"rea",name:"बुद्धिमापन चाचणी",w:"10 (गणित+बुद्धिमत्ता 20)",c:"#00796b"},
+ {id:"gk",name:"महाराष्ट्र विशेष",w:"वेगळा वाटा नाही (इतर विषयांत)",c:"#6d4c41"}];
+/* वाटपाचा तक्ता (अभ्यासक्रम व रणनीती पाने) */
+const WTROWS=[["अंकगणित व बुद्धिमत्ता चाचणी",20],["राज्यशास्त्र व शासनप्रणाली",15],["अर्थव्यवस्था",15],["सामान्य विज्ञान",15],["चालू घडामोडी",15],["इतिहास",10],["भूगोल व पर्यावरण",10]];
+const wtTable=()=>`<div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>प्रश्न</th><th>वाटा</th></tr></thead><tbody>${WTROWS.map(([t,c])=>`<tr><td>${t}</td><td class="n">${c}</td><td class="n">${c}%</td></tr>`).join("")}<tr><td><b>एकूण</b></td><td class="n">100</td><td class="n">100%</td></tr></tbody></table></div><p class="small">⚠ ${WTSRC}. या app मधील सर्व मॉक, क्रमांकित संच, मिनी मॉक आणि सराव आराखडा याच वाटपाने बनतात (गणित 10 + बुद्धिमत्ता 10).</p>`;
 /* प्रश्नसंच questions.js मधून येतो */
 const QOK=typeof QB==="object";L.forEach(l=>{l.q=((QOK&&QB[l.id])||[]).filter(q=>!(q[4]&&q[4].x))});
 /* ID किंवा मजकुरावरून सध्याचा प्रश्न (जुन्या जतन प्रगतीसाठी) */
@@ -2699,7 +2707,8 @@ const REV=[["pol","राज्यघटना व पंचायत राज"
 REV.forEach(r=>DAYS.push({t:"rev",sub:r[0],title:r[1]}));
 /* शेवटचे 3 आठवडे (दिवस 41–61): दर आठवड्याला 2 पूर्ण उजळणी मॉक + वेळ लावून विभागीय चाचण्या; शेवटचे 5 दिवस (57–61) एक-पानी पत्रके.
    पूर्ण-वेळ खाते (दिवस 32–58): दर आठवड्याला 3 पूर्ण मॉक; शेवटचे 5 दिवस तसेच. */
-const SECR=[["pol","his","mat"],["geo","sci","rea"],["eco","ca","mat"],["his","geo","rea"],["pol","sci","gk"],["eco","mat","rea"]];let sk=0;
+/* विभागीय चाचण्यांचे फिरते क्रम WT प्रमाणे: 21 जागांत राज्यघटना/अर्थ/विज्ञान/चालू घडामोडी प्रत्येकी 3, इतिहास/भूगोल प्रत्येकी 2, गणित 3 + बुद्धिमत्ता 2 */
+const SECR=[["pol","his","mat"],["eco","sci","rea"],["ca","geo","pol"],["sci","eco","mat"],["his","ca","rea"],["pol","geo","sci"],["eco","ca","mat"]];let sk=0;
 (FULL?[["mock",0],["sec"],["weak"],["mock",0],["sec"],["sec"],["mock",0],
   ["weak"],["sec"],["mock",0],["sec"],["weak"],["mock",0],["sec"],
   ["sec"],["mock",0],["weak"],["sec"],["mock",0],["sec"],["weak"],["mock",0],
@@ -3060,12 +3069,12 @@ function vToday(n){
 function vLearn(){
   main.innerHTML=`<h1>अभ्यासक्रम</h1>
   <p class="lead">पूर्व परीक्षा म्हणजे <b>सामान्य क्षमता चाचणी</b>: 100 प्रश्न, 100 गुण, 60 मिनिटे; चुकीच्या उत्तराला −0.25. यात मराठी व इंग्रजी व्याकरण नाही.</p>
-  <div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>अंदाजे प्रश्न</th><th>धडे</th></tr></thead><tbody>${SUB.map(s=>{const ls=bySub(s.id);const r=ls.filter(l=>isRead(l.id)).length;return `<tr><td><span class="dot" style="background:${s.c}"></span>${s.name}</td><td class="n">${s.w}</td><td class="n">${r}/${ls.length}</td></tr>`}).join("")}</tbody></table></div>
+  <div class="scroll"><table class="t"><thead><tr><th>विषय</th><th>प्रश्न (2025 पेपर)</th><th>धडे</th></tr></thead><tbody>${SUB.map(s=>{const ls=bySub(s.id);const r=ls.filter(l=>isRead(l.id)).length;return `<tr><td><span class="dot" style="background:${s.c}"></span>${s.name}</td><td class="n">${s.w}</td><td class="n">${r}/${ls.length}</td></tr>`}).join("")}</tbody></table></div>
   <a class="btn pri" href="#strategy" style="width:100%;margin:4px 0 8px">📋 परीक्षा पद्धत, निगेटिव्ह मार्किंग व वेळेची रणनीती ›</a>
   <a class="btn" href="#ref" style="width:100%;margin:0 0 8px">📚 संदर्भ: जिल्हे, नकाशा, कालरेषा, आकृत्या, सूत्रे ›</a>
   <a class="btn" href="#sh" style="width:100%;margin:0 0 12px">📄 एक-पानी उजळणी पत्रके (शेवटचे 5 दिवस) ›</a>
   ${PB("अभ्यासक्रम यादी प्रिंट / PDF",`<a class="btn" href="#plan">📅 अभ्यास आराखडा प्रिंट ›</a>`)}
-  <details class="box"><summary>हे आकडे कुठून आले?</summary><p class="small">MPSC विषयनिहाय प्रश्नसंख्या अधिकृतपणे जाहीर करत नाही. वरचे आकडे 2018–2026 च्या गट-क पेपर्सवरील कोचिंग विश्लेषणांवर आधारित अंदाज आहेत, आणि विश्लेषणांमध्ये फरक आहे; विशेषतः गणित व बुद्धिमत्तेचा वाटा. Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (एका वर्षी 48.25 नोंदवला गेला). म्हणून लक्ष्य: मॉकमध्ये सातत्याने 70+.</p></details>
+  <details class="box"><summary>हे आकडे कुठून आले?</summary><p class="small">MPSC विषयनिहाय प्रश्नसंख्या अधिकृतपणे जाहीर करत नाही; 20 मे 2026 च्या सुधारित परीक्षायोजनेत फक्त एकूण 100 प्रश्न दिले आहेत. वरचे आकडे ${WTSRC}. गणित व बुद्धिमत्ता मिळून 20 प्रश्न होते; app मध्ये ते 10 + 10 असे घेतले आहेत. Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (एका वर्षी 48.25 नोंदवला गेला). म्हणून लक्ष्य: मॉकमध्ये सातत्याने 70+.</p></details>
   ${SUB.map(s=>`<div class="sc" style="--c:${s.c}"><h3>${s.name}</h3><ul>${bySub(s.id).map(l=>`<li><a href="#l-${l.id}"><span>${isRead(l.id)?"✓ ":""}${l.t}</span><span class="st">${stars(l.imp)}</span></a></li>`).join("")}</ul><a class="rvlink" href="#rv-${s.id}">⚡ सर्व छोट्या नोट्स (उजळणी)</a></div>`).join("")}
   <div class="sc" style="--c:#555"><h3>मूळ जुन्या प्रश्नपत्रिका</h3><p>2018, 2019, 2022, 2023, 2025, जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपत्रिका व उत्तरतालिका <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> वर आहेत. <a href="https://www.mpscs.in/exams" target="_blank" rel="noopener">mpscs.in</a> वर त्या फोनवर ऑनलाइन सोडवता येतात. उजळणी आठवड्यापासून (दिवस 36) रोज एक पेपर सोडवा.</p></div>`;
 }
@@ -3149,10 +3158,13 @@ function quiz(qs,title,noSr,onDone){
 }
 
 /* ---------- मॉक ---------- */
-/* विषय वाटप: गट-क पूर्वपरीक्षा 2021, 2023 (गट-ब व क संयुक्त) व 2024 या पूर्ण प्रश्नपत्रिकांतील प्रत्यक्ष विषयवार सरासरीवरून (प्रत्येक प्रश्न 1 गुण). */
-const MIX={ca:15,his:13,geo:12,pol:13,eco:14,sci:14,gk:1,mat:10,rea:8};
-function buildMock(n){const f=n/100,out=[];
-  for(const [s,c] of Object.entries(MIX)){const want=Math.max(1,Math.round(c*f));
+/* विषय वाटप = WT (गट-क 2025 पेपरप्रमाणे, एकूण 100). 100 पेक्षा कमी प्रश्नांच्या मॉकसाठी सर्वाधिक-बाकी पद्धतीने प्रमाणशीर वाटप, म्हणजे बेरीज नेमकी n. */
+const MIX=WT;
+const apportion=n=>{const t=Object.values(MIX).reduce((a,b)=>a+b,0),e=Object.entries(MIX).map(([s,c])=>({s,v:c*n/t,r:Math.random()}));
+  e.forEach(x=>x.n=Math.floor(x.v));let left=n-e.reduce((a,x)=>a+x.n,0);
+  [...e].filter(x=>MIX[x.s]>0).sort((a,b)=>(b.v-b.n)-(a.v-a.n)||a.r-b.r).forEach(x=>{if(left>0){x.n++;left--}});return e.filter(x=>x.n>0).map(x=>[x.s,x.n])};
+function buildMock(n){const out=[];
+  for(const [s,want] of apportion(n)){
     const ids=bySub(s).map(l=>l.id);const stat=shuffle(ids.flatMap(id=>LX[id].q.map(q=>toQ(LX[id],q)))).filter(q=>!q.c);const g=ids.filter(id=>GEN[id]);
     for(let k=0;k<want;k++){if(g.length&&k%2===1)out.push(genFor(pick(g)));else out.push(stat[k%stat.length])}}
   return shuffle(out).slice(0,n)}
@@ -3194,7 +3206,7 @@ function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.ge
   main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेच्या नियमांप्रमाणे: वेळेची मर्यादा, चुकीच्या उत्तराला −0.25, सोडलेल्या प्रश्नाला 0. <b>OMR सारखे: एकदा 'OMR मध्ये भरा' केलेले उत्तर बदलता येत नाही.</b> अडलेला प्रश्न '⚑ सोडा' करून पुढे जा आणि शेवटी परत या. अंदाजाने उत्तर देताना 'अंदाज' खूण करा; निकालात तुमचे अंदाज फायद्याचे ठरतात की तोट्याचे ते दिसेल. <a href="#strategy">परीक्षा रणनीती ›</a></p>
   <div class="pbar noprint"><label class="gs" style="margin:0"><input type="checkbox" id="pmode" ${PMODE?"checked":""}>🖨 प्रिंट / PDF साठी पेपर निवडा</label><small>(खूण केल्यावर खालील कोणत्याही मॉक, चाचणी किंवा प्रश्नपत्रिकेवर टॅप केल्यास ती सोडवण्याऐवजी छापण्याचे पान उघडेल: प्रश्नपत्रिका, OMR व उत्तरतालिका)</small></div>
   <div class="grid"><button class="tile" id="full" style="--c:#142a6e"><b>पूर्ण मॉक</b><small>100 प्रश्न · 60 मिनिटे</small></button><button class="tile" id="mini" style="--c:#e2336b"><b>मिनी मॉक</b><small>25 प्रश्न · 15 मिनिटे</small></button></div>
-  <p class="small">विषय वाटप (मागील गट-क पूर्वपरीक्षांतील प्रत्यक्ष गुणभारानुसार): चालू घडामोडी 15, इतिहास 13, भूगोल 12, राज्यघटना 13, अर्थ 14, विज्ञान 14, महाराष्ट्र विशेष 1, गणित 10, बुद्धिमत्ता 8. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
+  <p class="small">विषय वाटप (गट-क 2025 पेपरप्रमाणे, 100 प्रश्न): चालू घडामोडी 15, राज्यघटना 15, अर्थव्यवस्था 15, सामान्य विज्ञान 15, इतिहास 10, भूगोल व पर्यावरण 10, गणित 10 + बुद्धिमत्ता 10 (=20). मिनी मॉकमध्ये हेच प्रमाण (25 प्रश्न). <small>${WTSRC}.</small> GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
   ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>{const has=m.id&&mrv.some(x=>x.id===m.id);return `<li><span>${m.t?esc(m.t)+" · ":""}${m.d} · ${m.n} प्रश्न${has?` · <a href="#mr-${m.id}">उत्तरे पाहा ›</a>`:""}</span><b>${fmt(m.sc)}/${m.n}</b></li>`}).join("")}</ul><p class="small">शेवटच्या 5 मॉकची सर्व उत्तरे जतन राहतात.</p>`:""}`;
   const ss=store.get("sets",{}),done=p=>Object.keys(ss).filter(k=>k.startsWith(p)).length,yrs=[...new Set(pyqAll().map(pkey))].sort().reverse();
   main.insertAdjacentHTML("beforeend",`<h2>क्रमांकित पूर्ण मॉक (${done("fm")}/${NFM} दिले)</h2>
@@ -3369,6 +3381,7 @@ function vStrategy(){
   <tr><td>1 पर्याय नक्की चूक</td><td class="n">33%</td><td class="n">+0.17</td></tr>
   <tr><td>काहीच कल्पना नाही</td><td class="n">25%</td><td class="n">+0.06</td></tr></tbody></table></div>
   <p class="note"><b>नियम:</b> एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. पूर्ण अंदाजाचा सरासरी फायदा फक्त +0.06 आहे, म्हणजे जवळजवळ शून्य; त्यावर वेळ घालवू नका. 20 चुकीची उत्तरे = 5 गुण वजा, आणि cut-off च्या जवळ 5 गुण म्हणजे हजारो उमेदवार. तुमचे अंदाज खरोखर फायद्याचे ठरतात का, हे मॉकच्या 'अंदाजाचा हिशेब' मध्ये पाहा.</p>
+  <h2>विषयवार प्रश्न (गट-क 2025 पेपर)</h2>${wtTable()}
   <h2>60 मिनिटांचा आराखडा</h2>
   <div class="scroll"><table class="t"><thead><tr><th>वेळ</th><th>काय करायचे</th></tr></thead><tbody>
   <tr><td class="n">0–2 मि</td><td>OMR वर क्रमांक भरा. प्रश्नपुस्तिकेत 100 प्रश्न आहेत का ते पाहा.</td></tr>
