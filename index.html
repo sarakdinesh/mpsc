@@ -113,6 +113,7 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
 .lesson h3{font-size:19px;margin:22px 0 8px;color:var(--blue)}
 .lesson p{margin:8px 0}.lesson b{color:var(--blue)}
 .t{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}.t th,.t td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}.t th{background:var(--card)}.t .n{text-align:right;white-space:nowrap}
+.deep{border-top:2px dashed var(--line);margin-top:22px;padding-top:6px}.deep h2{font-size:1.1em}
 .sn{background:color-mix(in srgb,var(--blue) 8%,var(--bg));border-radius:12px;padding:4px 16px 8px;margin-top:22px}
 .trap{background:color-mix(in srgb,var(--pink) 8%,var(--bg));border-radius:12px;padding:4px 16px 8px;margin-top:16px}
 .src{font-size:13px;opacity:.85;margin-top:16px}.src h2{font-size:15px}.src li{margin:4px 0;overflow-wrap:anywhere}
@@ -176,6 +177,7 @@ if(!authOk())document.documentElement.classList.add("locked");
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
 <script src="sheets.js?v=1"></script>
+<script src="notes.js?v=1"></script>
 <script>
 const L=[];
 L.push(
@@ -2895,7 +2897,7 @@ function vLesson(id){
   <h1>${l.t}</h1>
   <div class="pyq"><b>जुन्या पेपर्समध्ये:</b> ${l.pyq}</div>
   <div class="tabs"><a href="#sec-d">सविस्तर</a><a href="#sec-s">छोट्या नोट्स</a><a href="#sec-t">सापळे</a><a href="#sec-q">क्विझ</a></div>
-  <section id="sec-d" class="lesson">${md(l.d)}</section>
+  <section id="sec-d" class="lesson">${md(l.d)}${typeof NOTES==="object"&&NOTES[id]?`<div class="deep"><h2>📖 सखोल अभ्यास: परीक्षेत विचारले जाणारे तपशील</h2>${md(NOTES[id])}</div>`:""}</section>
   <section id="sec-s" class="sn"><h2>छोट्या नोट्स (उजळणीसाठी)</h2><ul>${l.sn.map(x=>`<li>${x}</li>`).join("")}</ul></section>
   <section id="sec-t" class="trap"><h2>परीक्षक कसा फसवतो</h2><ul>${l.tr.map(x=>`<li>${x}</li>`).join("")}</ul></section>
   ${l.src?`<section class="src"><h2>स्रोत (माहिती तपासण्यासाठी)</h2><ul>${l.src.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("")}</ul></section>`:""}
