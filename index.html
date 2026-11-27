@@ -137,6 +137,39 @@ html.locked header,html.locked #main,html.locked nav{display:none}
 #lgout{appearance:none;font:inherit;font-size:14px;font-weight:600;color:#fff;background:transparent;border:1.5px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;margin-left:10px;min-height:34px;cursor:pointer}
 #lgout:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
 header .hr{display:flex;align-items:center}
+/* प्रिंट / PDF: ब्राउझरच्या प्रिंट मेनूतून "Save as PDF". बटणे, टॅब पट्टी, header छपाईत लपतात; रंग नेहमी पांढऱ्या कागदासारखे. */
+.pbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}.pbar .btn{min-height:40px;padding:6px 14px;font-size:15px}.pbar small{color:var(--mut);font-size:13px}
+.only-print{display:none}
+.popt{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0}.popt label{display:flex;gap:6px;align-items:center;font-size:15px;min-height:40px;cursor:pointer}.popt input{width:20px;height:20px;accent-color:var(--pink)}
+.pp ol.pq{padding-left:28px;margin:0}.pq>li{margin:0 0 14px;break-inside:avoid}.pq p{margin:0 0 4px;white-space:pre-line;font-weight:600}
+.pq .po{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 16px;margin:0;padding:0;list-style:none}.pq .po li{font-size:15px}
+.pq .pe{font-size:14px;color:var(--mut);margin:4px 0 0;font-weight:400}
+.pp .pk{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:4px;font-size:14px}.pp .pk span{border:1px solid var(--line);border-radius:6px;padding:2px 6px;text-align:center}
+.pp .omrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:3px 14px;font-size:14px}.omrs span{white-space:nowrap}.omrs i{display:inline-block;width:18px;height:18px;border:1.3px solid var(--pink);border-radius:50%;margin-left:5px;font-style:normal;font-size:11px;text-align:center;line-height:16px;color:var(--pink)}
+.pp.noans .pans,.pp.noexp .pe,.pp.noomr .pomr{display:none}
+.pq .pa{display:none}.pp.inl .pq .pa{display:inline;color:var(--ok);font-weight:700}
+.plan .pd{break-inside:avoid;border-top:1px solid var(--line);padding:8px 0}.plan .pd h3{margin:0 0 4px;font-size:16px}.plan table{width:100%;border-collapse:collapse;font-size:14px}.plan td{padding:3px 6px;vertical-align:top;border-bottom:1px dotted var(--line)}.plan td.tm{white-space:nowrap;color:var(--blue);font-weight:600;width:8.5em}
+@media print{
+ @page{size:A4;margin:12mm 11mm}
+ :root,:root[data-theme=dark],:root[data-theme=light]{color-scheme:light!important}
+ html,body{background:#fff!important;color:#000}
+ body{font-size:12pt;line-height:1.45}
+ header,nav,#login,.noprint,.pbar,.btns,.tabs,.flt,.back,.nav2,.daynav button,button,.btn,#sec-q,textarea{display:none!important}
+ #main{padding:0!important;margin:0!important;max-width:none!important}
+ .only-print{display:block!important}
+ a{color:inherit!important;text-decoration:none}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .hero{background-image:none;border:1px solid #bbb}
+ .qhead.sticky{position:static}
+ .daynav{display:block;text-align:left;margin:8px 0}.daynav br{display:none}.daynav small::before{content:" · "}
+ h1,h2,h3,.kicker{break-after:avoid}
+ .note,.pyq,.exp,.rev>li,.tl li,.bars .br,.slots li,.sn li,.trap li,.t tr{break-inside:avoid}
+ .rev>li{margin:6px 0;padding:4px 8px}
+ .pp .pbreak{break-before:page}
+ #phead{font-size:10pt;color:#555;border-bottom:1px solid #bbb;padding-bottom:3px;margin-bottom:8px}
+ details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}
+ .scroll{overflow:visible!important}
+}
 </style>
 <script>
 /* लॉगिन स्थिती: "gc2auth" ही key "gc2_" ने सुरू होत नाही, त्यामुळे बॅकअप/"सर्व प्रगती पुसा" यांना ती लागत नाही आणि लॉगआउटने प्रगती पुसली जात नाही. */
@@ -162,6 +195,7 @@ if(!ME)document.documentElement.classList.add("locked");
  <button class="btn pri" type="submit">लॉगिन</button>
 </form></div>
 <header><b>गट-क सराव</b><span class="hr"><span>परीक्षेला <b id="dl" style="font-size:16px"></b> दिवस</span><button id="lgout" type="button">लॉगआउट</button></span></header>
+<div id="phead" class="only-print"></div>
 <main id="main"></main>
 <nav>
  <a href="#today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>आज</a>
@@ -2997,7 +3031,8 @@ function vToday(n){
   ${n===cur&&srDue().length?`<div class="note"><b>🔁 आज ${srDue().length} चुकलेले प्रश्न उजळणीला आले आहेत.</b><br><small>1, 3 व 7 दिवसांनी पुन्हा विचारले जातात; तिन्ही वेळा बरोबर आल्यावरच यादीतून जातात.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="srn">आत्ता उजळणी करा</button></div></div>`:""}
   ${n!==cur?`<p><a href="#today">आजच्या दिवसावर परत जा ›</a></p>`:""}
   ${behind.length&&n===cur?`<details class="box"><summary>मागे राहिलेले धडे (${behind.length})</summary><ul class="plain">${behind.map(l=>`<li><a href="#l-${l.id}">${l.t}</a> <small>${SN[l.s].name}</small></li>`).join("")}</ul></details>`:""}
-  <p class="small">🔥 ${streak()} दिवस सलग सराव · वाचलेले धडे ${store.get("read",[]).length}/${L.length}</p>`;
+  <p class="small">🔥 ${streak()} दिवस सलग सराव · वाचलेले धडे ${store.get("read",[]).length}/${L.length}</p>
+  ${PB("दिवस "+n+" चा आराखडा प्रिंट / PDF",`<a class="btn" href="#plan-${Math.ceil(n/7)}">📅 आठवड्याचा / पूर्ण आराखडा प्रिंट ›</a>`)}`;
   main.querySelectorAll(".slots input").forEach(c=>c.onchange=()=>{const k="day_"+c.dataset.d;const a=store.get(k,[]);const i=+c.dataset.i;store.set(k,c.checked?[...new Set([...a,i])]:a.filter(x=>x!==i));vToday(n)});
   $("#pv").onclick=()=>vToday(n-1);$("#nx").onclick=()=>vToday(n+1);
   const srn=$("#srn");if(srn)srn.onclick=startReview;
@@ -3014,6 +3049,7 @@ function vLearn(){
   <a class="btn pri" href="#strategy" style="width:100%;margin:4px 0 8px">📋 परीक्षा पद्धत, निगेटिव्ह मार्किंग व वेळेची रणनीती ›</a>
   <a class="btn" href="#ref" style="width:100%;margin:0 0 8px">📚 संदर्भ: जिल्हे, नकाशा, कालरेषा, आकृत्या, सूत्रे ›</a>
   <a class="btn" href="#sh" style="width:100%;margin:0 0 12px">📄 एक-पानी उजळणी पत्रके (शेवटचे 5 दिवस) ›</a>
+  ${PB("अभ्यासक्रम यादी प्रिंट / PDF",`<a class="btn" href="#plan">📅 अभ्यास आराखडा प्रिंट ›</a>`)}
   <details class="box"><summary>हे आकडे कुठून आले?</summary><p class="small">MPSC विषयनिहाय प्रश्नसंख्या अधिकृतपणे जाहीर करत नाही. वरचे आकडे 2018–2026 च्या गट-क पेपर्सवरील कोचिंग विश्लेषणांवर आधारित अंदाज आहेत, आणि विश्लेषणांमध्ये फरक आहे; विशेषतः गणित व बुद्धिमत्तेचा वाटा. Open प्रवर्गाचा cut-off साधारण 60–72 अपेक्षित असतो (एका वर्षी 48.25 नोंदवला गेला). म्हणून लक्ष्य: मॉकमध्ये सातत्याने 70+.</p></details>
   ${SUB.map(s=>`<div class="sc" style="--c:${s.c}"><h3>${s.name}</h3><ul>${bySub(s.id).map(l=>`<li><a href="#l-${l.id}"><span>${isRead(l.id)?"✓ ":""}${l.t}</span><span class="st">${stars(l.imp)}</span></a></li>`).join("")}</ul><a class="rvlink" href="#rv-${s.id}">⚡ सर्व छोट्या नोट्स (उजळणी)</a></div>`).join("")}
   <div class="sc" style="--c:#555"><h3>मूळ जुन्या प्रश्नपत्रिका</h3><p>2018, 2019, 2022, 2023, 2025, जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपत्रिका व उत्तरतालिका <a href="https://mpsc.gov.in" target="_blank" rel="noopener">mpsc.gov.in</a> वर आहेत. <a href="https://www.mpscs.in/exams" target="_blank" rel="noopener">mpscs.in</a> वर त्या फोनवर ऑनलाइन सोडवता येतात. उजळणी आठवड्यापासून (दिवस 36) रोज एक पेपर सोडवा.</p></div>`;
@@ -3026,6 +3062,7 @@ function vLesson(id){
   <p class="kicker" style="color:${s.c}">${s.name} · महत्त्व ${stars(l.imp)}${ls?` · तुमची अचूकता ${Math.round(ls[0]/ls[1]*100)}%`:""}</p>
   <h1>${l.t}</h1>
   <div class="pyq"><b>जुन्या पेपर्समध्ये:</b> ${l.pyq}</div>
+  ${PB("धडा प्रिंट / PDF",`<a class="btn" href="#pq-l-${id}">📝 या धड्याचे प्रश्न छापा ›</a>`)}
   <div class="tabs"><a href="#sec-d">सविस्तर</a><a href="#sec-s">छोट्या नोट्स</a><a href="#sec-t">सापळे</a><a href="#sec-q">क्विझ</a></div>
   <section id="sec-d" class="lesson">${md(l.d)}${typeof NOTES==="object"&&NOTES[id]?`<div class="deep"><h2>📖 सखोल अभ्यास: परीक्षेत विचारले जाणारे तपशील</h2>${md(NOTES[id])}</div>`:""}</section>
   <section id="sec-s" class="sn"><h2>छोट्या नोट्स (उजळणीसाठी)</h2><ul>${l.sn.map(x=>`<li>${x}</li>`).join("")}</ul></section>
@@ -3046,12 +3083,12 @@ function vSheet(sid){const ids=SUB.map(s=>s.id).filter(id=>sheetOf(id));
   const sh=sheetOf(sid),s=SN[sid],i=ids.indexOf(sid);
   main.innerHTML=`<a class="back noprint" href="#sh">‹ सर्व पत्रके</a><h1>📄 ${sh.t}</h1>
   <div class="sheet" style="--c:${s.c}">${sh.g.map(([h,b])=>`<h3>${h}</h3><ul>${b.map(x=>`<li>${x}</li>`).join("")}</ul>`).join("")}</div>
-  <div class="btns noprint"><button class="btn" id="shp">🖨 छापा</button><a class="btn" href="#rv-${sid}">सविस्तर छोट्या नोट्स ›</a>${i<ids.length-1?`<a class="btn pri" href="#sh-${ids[i+1]}">पुढचे: ${SN[ids[i+1]].name} ›</a>`:""}</div>`;
-  $("#shp").onclick=()=>window.print()}
+  <div class="btns noprint"><button class="btn" type="button" data-print>🖨 प्रिंट / PDF</button><a class="btn" href="#rv-${sid}">सविस्तर छोट्या नोट्स ›</a>${i<ids.length-1?`<a class="btn pri" href="#sh-${ids[i+1]}">पुढचे: ${SN[ids[i+1]].name} ›</a>`:""}</div>`;}
 function vRevise(sid){
   const s=SN[sid];if(!s){location.hash="learn";return}
   main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>⚡ ${s.name}: उजळणी</h1><p class="lead">सर्व धड्यांच्या छोट्या नोट्स एकत्र. प्रवासात किंवा परीक्षेच्या आदल्या दिवशी वाचण्यासाठी.</p>
   ${bySub(sid).map(l=>`<div class="sc" style="--c:${s.c}"><h3><a href="#l-${l.id}">${l.t}</a></h3><ul class="plain">${l.sn.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")}
+  ${PB(s.name+" छोट्या नोट्स प्रिंट / PDF")}
   <div class="btns"><button class="btn pri" id="rq">${s.name}: 40 प्रश्नांचा सराव</button></div>`;
   $("#rq").onclick=()=>quiz(bankSub(sid,40),s.name);
 }
@@ -3140,6 +3177,7 @@ function runSet(key){const ss=store.get("sets",{});let m;
 let timer=null;
 function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.get("mockrev",[]);
   main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेच्या नियमांप्रमाणे: वेळेची मर्यादा, चुकीच्या उत्तराला −0.25, सोडलेल्या प्रश्नाला 0. <b>OMR सारखे: एकदा 'OMR मध्ये भरा' केलेले उत्तर बदलता येत नाही.</b> अडलेला प्रश्न '⚑ सोडा' करून पुढे जा आणि शेवटी परत या. अंदाजाने उत्तर देताना 'अंदाज' खूण करा; निकालात तुमचे अंदाज फायद्याचे ठरतात की तोट्याचे ते दिसेल. <a href="#strategy">परीक्षा रणनीती ›</a></p>
+  <div class="pbar noprint"><label class="gs" style="margin:0"><input type="checkbox" id="pmode" ${PMODE?"checked":""}>🖨 प्रिंट / PDF साठी पेपर निवडा</label><small>(खूण केल्यावर खालील कोणत्याही मॉक, चाचणी किंवा प्रश्नपत्रिकेवर टॅप केल्यास ती सोडवण्याऐवजी छापण्याचे पान उघडेल: प्रश्नपत्रिका, OMR व उत्तरतालिका)</small></div>
   <div class="grid"><button class="tile" id="full" style="--c:#142a6e"><b>पूर्ण मॉक</b><small>100 प्रश्न · 60 मिनिटे</small></button><button class="tile" id="mini" style="--c:#e2336b"><b>मिनी मॉक</b><small>25 प्रश्न · 15 मिनिटे</small></button></div>
   <p class="small">विषय वाटप (मागील गट-क पूर्वपरीक्षांतील प्रत्यक्ष गुणभारानुसार): चालू घडामोडी 15, इतिहास 13, भूगोल 12, राज्यघटना 13, अर्थ 14, विज्ञान 14, महाराष्ट्र विशेष 1, गणित 10, बुद्धिमत्ता 8. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
   ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>{const has=m.id&&mrv.some(x=>x.id===m.id);return `<li><span>${m.t?esc(m.t)+" · ":""}${m.d} · ${m.n} प्रश्न${has?` · <a href="#mr-${m.id}">उत्तरे पाहा ›</a>`:""}</span><b>${fmt(m.sc)}/${m.n}</b></li>`}).join("")}</ul><p class="small">शेवटच्या 5 मॉकची सर्व उत्तरे जतन राहतात.</p>`:""}`;
@@ -3152,8 +3190,9 @@ function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.ge
   ${Object.entries(TESTS).map(([s,c])=>`<h3>${SN[s].name} <small>(${c})</small></h3>${setBtns("st-"+s+"-",c)}`).join("")}
   ${yrs.length?`<h2>मागील वर्षांच्या प्रश्नपत्रिका</h2><p class="small">मूळ प्रश्नपत्रिकेतील जे प्रश्न ॲपमध्ये आहेत ते मूळ क्रमांकाच्या क्रमाने, वेळेसह (प्रति प्रश्न 36 सेकंद). आयोगाने रद्द केलेले प्रश्न वगळले. ✓ उत्तरतालिका असलेली उत्तरे आयोगाच्या अंतिम उत्तरतालिकेशी जुळवलेली आहेत.</p>
   <div class="grid">${yrs.map(y=>{const qs=yearPaper(y),k=qs.filter(q=>q.v==="k").length,r=ss["yp"+y];return `<button class="tile" data-set="yp${y}" style="--c:#142a6e"><b>${ptitle(y,qs)}</b><small>${qs.length} मूळ प्रश्न${k?" · "+k+" ✓ उत्तरतालिका":" · उत्तरतालिका नाही"}${r?" · मागील: "+fmt(r.sc)+"/"+r.n:""}</small></button>`}).join("")}</div>`:""}`);
-  main.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>runSet(b.dataset.set));
-  $("#full").onclick=()=>runMock(100,60);$("#mini").onclick=()=>runMock(25,15)}
+  main.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>PMODE?location.hash="pq-"+b.dataset.set:runSet(b.dataset.set));
+  $("#pmode").onchange=e=>{PMODE=e.target.checked};
+  $("#full").onclick=()=>PMODE?location.hash="pq-full":runMock(100,60);$("#mini").onclick=()=>PMODE?location.hash="pq-mini":runMock(25,15)}
 function runMock(n,min,pre,meta){const qs=pre||buildMock(n);n=qs.length;const ans=Array(n).fill(-1),sel=Array(n).fill(-1),flag=Array(n).fill(0),gs=Array(n).fill(0),tm=Array(n).fill(0);
   let cur=0,t0=Date.now(),omrOpen=false;const end=Date.now()+min*6e4;
   const stamp=()=>{const t=Date.now();tm[cur]+=t-t0;t0=t};
@@ -3189,6 +3228,62 @@ function runMock(n,min,pre,meta){const qs=pre||buildMock(n);n=qs.length;const an
     location.hash="mr-"+id};
   draw();window.scrollTo(0,0)}
 
+/* ---------- प्रिंट / PDF ----------
+   window.print() वापरते: फोनवर व संगणकावर प्रिंट मेनूमध्ये "Save as PDF" निवडता येते. इंटरनेटशिवायही चालते.
+   छापण्याने कोणतीही प्रगती नोंदली जात नाही. */
+let PMODE=false;
+function PB(t,extra){return `<div class="pbar"><button class="btn" type="button" data-print>🖨 ${t||"प्रिंट / PDF"}</button>${extra||""}<small>PDF हवी असल्यास प्रिंट मेनूमध्ये "Save as PDF" निवडा.</small></div>`}
+function doPrint(){try{window.print()}catch(e){}}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-print]");if(b){e.preventDefault();doPrint()}});
+let pOpened=[];
+window.addEventListener("beforeprint",()=>{
+  pOpened=[...main.querySelectorAll("details:not([open])")];pOpened.forEach(d=>d.open=true);
+  const ph=$("#phead"),h1=main.querySelector("h1");if(ph)ph.textContent="गट-क सराव · "+(ME?ME.name+" · ":"")+fmtD(new Date())+" "+new Date().getFullYear()+(h1?" · "+h1.textContent:"")});
+window.addEventListener("afterprint",()=>{pOpened.forEach(d=>d.open=false);pOpened=[]});
+/* छापण्यासाठी प्रश्नसंच: मॉक/चाचणी/वर्ष पेपर runSet सारखेच (ठरलेले seed), त्यामुळे छापलेला पेपर ॲपमधल्या पेपरसारखाच असतो. */
+function paperOf(key){let m;
+  if(key==="full")return{t:"पूर्ण मॉक (नवा यादृच्छिक संच)",qs:buildMock(100),min:60,rnd:1};
+  if(key==="mini")return{t:"मिनी मॉक (नवा यादृच्छिक संच)",qs:buildMock(25),min:15,rnd:1};
+  if(m=key.match(/^fm(\d+)$/)){const k=+m[1]-1;if(k<0||k>=NFM)return null;return{t:"मॉक "+(k+1),qs:fixedMock(k),min:60,k:key}}
+  if(m=key.match(/^st-([a-z]+)-(\d+)$/)){const k=+m[2]-1;if(!SN[m[1]]||!TESTS[m[1]]||k<0||k>=TESTS[m[1]])return null;return{t:SN[m[1]].name+" चाचणी "+(k+1),qs:subTest(m[1],k),min:20,k:key}}
+  if(m=key.match(/^yp(\d{4}(?:-[a-z]+)?)$/)){const qs=yearPaper(m[1]);if(!qs.length)return null;return{t:"प्रश्नपत्रिका "+ptitle(m[1],qs)+" (मूळ "+qs.length+" प्रश्न)",qs,min:Math.max(5,Math.round(qs.length*.6)),k:key}}
+  if(m=key.match(/^l-(.+)$/)){const l=LX[m[1]];if(!l)return null;let qs=l.q.map(q=>toQ(l,q)).filter(q=>!q.c);
+    if(GEN[l.id])qs=qs.concat(withSeed(hsh("pl"+l.id),()=>Array.from({length:Math.max(0,15-qs.length)},()=>genFor(l.id))));
+    return{t:l.t+": धड्याचे प्रश्न",qs,min:Math.max(5,Math.round(qs.length*.6)),l:l.id}}
+  return null}
+function vPaper(key){const P=paperOf(key);
+  if(!P||!P.qs.length){main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>प्रश्नपत्रिका</h1><p class="lead">हा पेपर सापडला नाही.</p>`;return}
+  const {qs}=P,n=qs.length,back=P.l?`<a class="back" href="#l-${P.l}">‹ धडा</a>`:`<a class="back" href="#mock">‹ मॉक</a>`;
+  main.innerHTML=`${back}<h1>${esc(P.t)}</h1>
+  <p class="small">${n} प्रश्न · ${P.min} मिनिटे · प्रत्येक बरोबर उत्तराला 1 गुण, चुकीच्या उत्तराला −0.25, सोडलेल्याला 0.${P.rnd?" प्रत्येक वेळी पान उघडल्यावर नवा संच तयार होतो.":""}</p>
+  <div class="noprint box"><b>काय छापायचे?</b>
+   <div class="popt"><label><input type="checkbox" data-pc="noomr" checked> OMR उत्तरपत्रिका</label><label><input type="checkbox" data-pc="noans" checked> उत्तरतालिका (शेवटच्या पानावर)</label><label><input type="checkbox" data-pc="noexp"> स्पष्टीकरणे</label><label><input type="checkbox" data-pc="inl" data-on="1"> उत्तरे प्रश्नाखालीच दाखवा (उजळणीसाठी)</label></div>
+   <div class="btns" style="margin:8px 0 0"><button class="btn pri" type="button" data-print>🖨 प्रिंट / PDF</button>${P.k?`<button class="btn" type="button" id="prun">हा पेपर ॲपमध्ये वेळ लावून सोडवा</button>`:""}${P.rnd?`<button class="btn" type="button" id="pnew">नवा संच</button>`:""}</div>
+   <p class="small">फोनवर: प्रिंट मेनूमध्ये प्रिंटरऐवजी "Save as PDF" निवडा. मग ही PDF कुठेही, इंटरनेटशिवाय वाचता किंवा छापता येईल.</p></div>
+  <div class="pp noexp" id="pp">
+   <ol class="pq">${qs.map((q,k)=>`<li><p>${esc(q.q)}</p><ul class="po">${q.o.map((o,j)=>`<li>(${LT[j]}) ${esc(o)}</li>`).join("")}</ul><div class="pa">उत्तर: (${LT[q.a]}) ${esc(q.o[q.a])}${q.u||(/^20/.test(q.y||"")&&q.v!=="k")?" *":""}</div><div class="pe">${esc(q.e||"")}${qwarn(q)}</div></li>`).join("")}</ol>
+   <section class="pomr pbreak"><h2>OMR उत्तरपत्रिका</h2><p class="small">नाव: ____________________ · दिनांक: __________ · सुरुवात: ______ · शेवट: ______</p><div class="omrs">${qs.map((_,k)=>`<span><b>${k+1}.</b>${LT.map(x=>`<i>${x}</i>`).join("")}</span>`).join("")}</div>
+    <p class="small">गुण: बरोबर ____ − (चूक ____ × 0.25) = ______ / ${n}</p></section>
+   <section class="pans pbreak"><h2>उत्तरतालिका</h2><div class="pk">${qs.map((q,k)=>`<span>${k+1} → <b>${LT[q.a]}</b>${q.u||(/^20/.test(q.y||"")&&q.v!=="k")?"*":""}</span>`).join("")}</div>
+    <p class="small">* = उत्तर अधिकृत अंतिम उत्तरतालिकेशी तपासलेले नाही किंवा तपशील अनिश्चित आहे; एकदा पडताळणी करा.</p>
+    <p class="small">विषय: ${Object.entries(qs.reduce((a,q)=>(a[q.s]=(a[q.s]||0)+1,a),{})).map(([s,c])=>SN[s].name+" "+c).join(" · ")}</p></section>
+  </div>`;
+  const pp=$("#pp");
+  main.querySelectorAll("[data-pc]").forEach(c=>c.onchange=()=>pp.classList.toggle(c.dataset.pc,c.dataset.on?c.checked:!c.checked));
+  const pr=$("#prun");if(pr)pr.onclick=()=>runSet(P.k);
+  const pn=$("#pnew");if(pn)pn.onclick=()=>vPaper(key)}
+/* संपूर्ण / आठवड्याचा अभ्यास आराखडा, छापण्यासाठी */
+function vPlan(w){const W=Math.ceil(TOT/7),cur=Math.min(TOT,Math.max(1,dayNo(today0())));w=+w||0;if(w<0||w>W)w=0;
+  const from=w?(w-1)*7+1:1,to=w?Math.min(TOT,w*7):TOT;
+  const typ={learn:"नवीन धडे",rev:"उजळणी",mock:"मॉक दिवस",sec:"विभागीय सराव",weak:"कमजोर विषय",light:"एक-पानी उजळणी"};
+  const days=[];for(let d=from;d<=to;d++){const D=DAYS[d-1];const rows=dayRows(d),chk=store.get("day_"+d,[]);
+    days.push(`<div class="pd"><h3>दिवस ${d} · ${fmtD(dateOf(d))}${d===TOT?" · परीक्षा 🎯":D?" · "+(typ[D.t]||""):""}${d===cur?" · <span style='color:var(--pink)'>आज</span>":""}</h3>${rows.length?`<table>${rows.map((r,i)=>`<tr><td class="tm">${r[2]?"":chk.includes(i)?"☑":"☐"} ${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>`:d===TOT?`<p class="small">परीक्षा दिवस: हॉल तिकीट, ओळखपत्र, 2 काळी बॉलपेन.</p>`:""}</div>`)}
+  main.innerHTML=`<a class="back" href="#today">‹ आज</a><h1>📅 अभ्यास आराखडा${w?": आठवडा "+w:": सर्व "+TOT+" दिवस"}</h1>
+  <p class="small">${ME?"खाते: "+ME.name+" · ":""}दिवस ${from}–${to} (${fmtD(dateOf(from))} ते ${fmtD(dateOf(to))}). ☑ = पूर्ण केलेले काम.</p>
+  <div class="flt noprint"><a class="chip" href="#plan" style="${w?"":"border-color:var(--blue)"}">सर्व दिवस</a>${Array.from({length:W},(_,k)=>`<a class="chip" href="#plan-${k+1}" style="${w===k+1?"border-color:var(--blue)":""}">आ. ${k+1}</a>`).join("")}</div>
+  ${PB("हा आराखडा प्रिंट / PDF")}
+  <div class="plan">${days.join("")}</div>`}
+
 /* ---------- मॉक उजळणी ---------- */
 function vMockReview(id,f){
   const m=store.get("mockrev",[]).find(x=>String(x.id)===String(id));
@@ -3201,6 +3296,7 @@ function vMockReview(id,f){
   const cnt={r:w,sk:n-r-w,g:r,all:n},lab={r:"चुकलेले",sk:"सोडलेले",g:"बरोबर",all:"सर्व"};
   const list=qs.map((q,k)=>[q,k]).filter(([,k])=>f==="all"||st(k)===f);
   main.innerHTML=`<a class="back" href="#mock">‹ मॉक</a><h1>मॉक निकाल व उजळणी</h1><p class="small">${m.t?esc(m.t)+" · ":""}${m.d} · ${n} प्रश्न</p>
+  <div class="pbar"><button class="btn pri" type="button" id="mrpa">🖨 निकाल + सर्व ${n} उत्तरे प्रिंट / PDF</button>${f!=="all"?`<button class="btn" type="button" data-print>🖨 फक्त ${lab[f]} (${cnt[f]}) प्रिंट</button>`:""}</div>
   <div class="big">${fmt(sc)}<small>/${n}</small></div>
   <p class="lead">बरोबर ${r} · चूक ${w} (−${fmt(w*.25)}) · सोडले ${n-r-w}. ${n>=50?(()=>{const p=sc/n*100,c=CUTOFF[0].open;return p>=TARGET?"लक्ष्य 60+ गाठले! हीच पातळी टिकवा.":p>=c?`मागील कट-ऑफच्या (${c}, अंदाजे) वर आहात, पण फरक कमी आहे. 60+ चे लक्ष्य ठेवा.`:`मागील कट-ऑफपेक्षा (${c}, अंदाजे) ${fmt(+(c-p).toFixed(2))} गुण कमी. खालचा कमजोर धडे ड्रिल आजच करा.`})():""}</p>
   <h2>विषयनिहाय</h2><div class="bars">${Object.entries(by).map(([s,v])=>`<div class="br ${v[0]/v[1]<.6?"weak":""}"><span>${SN[s].name}</span><div><i style="width:${v[0]/v[1]*100}%"></i></div><b>${v[0]}/${v[1]}</b></div>`).join("")}</div>
@@ -3218,6 +3314,7 @@ function vMockReview(id,f){
   <a class="btn pri" href="#mock">मॉक मेनू</a>`;
   main.querySelectorAll(".flt button").forEach(b=>b.onclick=()=>{vMockReview(id,b.dataset.f);$(".flt").scrollIntoView()});
   const dr=$("#drl");if(dr)dr.onclick=()=>startDrill(m.id);
+  $("#mrpa").onclick=()=>{if(f!=="all")vMockReview(id,"all");setTimeout(doPrint,60)};
   const rd=$("#redo");if(rd)rd.onclick=()=>quiz(shuffle(qs.filter((_,k)=>st(k)!=="g")),"मॉकमधील चुका",true);
 }
 
@@ -3238,9 +3335,9 @@ function vRef(){
   main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>संदर्भ पाने</h1><p class="lead">परीक्षेआधी पटकन उजळणीसाठी: तक्ते, कालरेषा, आकृत्या व सूत्रे. धड्यांची जागा घेत नाहीत; धडे वाचल्यानंतर वापरा.</p>
   ${REFS.length?REFS.map(r=>`<a class="box" href="#rf-${r.id}" style="display:block;text-decoration:none;color:inherit"><b>${r.t}</b><div class="small">${r.d}</div></a>`).join(""):`<div class="exp r">संदर्भ पाने (ref.js) लोड झाली नाहीत. इंटरनेट चालू करून पान पुन्हा उघडा.</div>`}`}
 function vRefSec(id){const r=REFS.find(x=>x.id===id);if(!r){location.hash="ref";return}
-  main.innerHTML=`<a class="back" href="#ref">‹ संदर्भ</a><h1>${r.t}</h1><p class="lead">${r.d}</p>${r.h}`}
+  main.innerHTML=`<a class="back" href="#ref">‹ संदर्भ</a><h1>${r.t}</h1><p class="lead">${r.d}</p>${PB()}${r.h}`}
 function vStrategy(){
-  main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>परीक्षा पद्धत व रणनीती</h1>
+  main.innerHTML=`<a class="back" href="#learn">‹ अभ्यास</a><h1>परीक्षा पद्धत व रणनीती</h1>${PB("रणनीती प्रिंट / PDF")}
   <p class="lead">पेपर किती येतो यासोबत तो कसा सोडवता यावरही गुण ठरतात. हे पान परीक्षेपूर्वी दोनदा वाचा: मॉक सुरू करताना (दिवस 43) आणि परीक्षेच्या आदल्या दिवशी.</p>
   <h2>अधिकृत नियम</h2><p class="small">स्रोत: 11 जानेवारी 2026 च्या गट-क पूर्व परीक्षेच्या प्रश्नपुस्तिकेवरील सूचना.</p>
   <ul class="notes"><li><b>100 प्रश्न, 100 गुण, 1 तास.</b> सर्व प्रश्न अनिवार्य, सर्वांना समान गुण.</li>
@@ -3278,7 +3375,7 @@ function vStrategy(){
 /* ---------- प्रगती ---------- */
 function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=store.get("lstats",{});
   const weak=Object.entries(ls).filter(([id,v])=>v[1]>=4&&v[0]/v[1]<.6&&LX[id]).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1]).slice(0,6);
-  main.innerHTML=`<h1>प्रगती</h1>
+  main.innerHTML=`<h1>प्रगती</h1>${PB("प्रगती अहवाल प्रिंट / PDF")}
   <div class="stats"><div><b>${streak()}</b><small>दिवस सलग सराव</small></div><div><b>${nnStreak()}</b><small>दिवस तिन्ही कामे</small></div><div><b>${store.get("read",[]).length}/${L.length}</b><small>धडे वाचले</small></div><div><b>${Object.values(st).reduce((a,v)=>a+v[1],0)}</b><small>प्रश्न सोडवले</small></div></div>
   <h2>मॉक गुण (100 मध्ये)</h2>${h.length?`<div class="mk">${h.slice(-12).map(m=>{const p=m.sc/m.n*100;return `<div class="mc"><i style="height:${Math.max(2,p)}%" class="${p>=TARGET?"g":p>=CUTOFF[0].open?"m":""}"></i><small>${Math.round(p)}</small></div>`}).join("")}<span class="line" style="bottom:${TARGET}%">लक्ष्य ${TARGET}</span><span class="line cl" style="bottom:${CUTOFF[0].open}%">कट-ऑफ ${CUTOFF[0].open}*</span></div>`:`<p class="small">अजून मॉक दिली नाही. दिवस 43 पासून पूर्ण मॉक सुरू होतात; त्याआधी मिनी मॉक देऊ शकता.</p>`}
   ${cutCard()}
@@ -3320,9 +3417,9 @@ function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.p
   r.onerror=()=>{$("#bkm").innerHTML=`<div class="exp r">फाइल वाचता आली नाही.</div>`};r.readAsText(f)}
 
 function route(){clearInterval(timer);const h=location.hash.slice(1)||"today";
-  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="sh"||h.startsWith("sh-")||h==="strategy"||h==="ref"||h.startsWith("rf-")?"learn":h.startsWith("mr-")?"mock":h;
+  const tab=h.startsWith("l-")||h.startsWith("rv-")||h==="sh"||h.startsWith("sh-")||h==="strategy"||h==="ref"||h.startsWith("rf-")||h.startsWith("pq-l-")?"learn":h.startsWith("mr-")||h.startsWith("pq-")?"mock":h==="plan"||h.startsWith("plan-")?"today":h;
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+tab));
-  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));else if(h==="sh"||h.startsWith("sh-"))vSheet(h.slice(3));
+  if(h.startsWith("l-"))vLesson(h.slice(2));else if(h.startsWith("rv-"))vRevise(h.slice(3));else if(h.startsWith("mr-"))vMockReview(h.slice(3));else if(h.startsWith("rf-"))vRefSec(h.slice(3));else if(h==="sh"||h.startsWith("sh-"))vSheet(h.slice(3));else if(h.startsWith("pq-"))vPaper(h.slice(3));else if(h==="plan"||h.startsWith("plan-"))vPlan(h.slice(5));
   else({today:()=>vToday(),learn:vLearn,strategy:vStrategy,ref:vRef,practice:vPractice,mock:vMock,progress:vProgress}[h]||(()=>vToday()))();
   if(!h.startsWith("sec-"))window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);$("#dl").textContent=daysLeft();route();
