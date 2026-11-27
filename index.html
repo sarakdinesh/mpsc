@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#142a6e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -108,11 +110,13 @@ nav a svg{width:22px;height:22px}nav a.on{color:var(--pink)}
 .daynav small{color:var(--mut)}.btn.sm{min-height:44px;padding:0;width:48px}
 .slots li.done .tm+span{opacity:.55}
 .slots a{font-weight:600}
+.slots li.brk label{cursor:default;padding:8px 2px;min-height:0}.slots li.brk .tm{color:var(--mut);font-weight:400}
 .tabs{display:flex;gap:8px;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2;border-bottom:1px solid var(--line);margin:12px 0}
 .tabs a{flex:none;padding:8px 14px;border-radius:20px;background:var(--card);text-decoration:none;font-weight:600;font-size:15px}
 .lesson h3{font-size:19px;margin:22px 0 8px;color:var(--blue)}
 .lesson p{margin:8px 0}.lesson b{color:var(--blue)}
 .t{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}.t th,.t td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}.t th{background:var(--card)}.t .n{text-align:right;white-space:nowrap}
+.deep{border-top:2px dashed var(--line);margin-top:22px;padding-top:6px}.deep h2{font-size:1.1em}
 .sn{background:color-mix(in srgb,var(--blue) 8%,var(--bg));border-radius:12px;padding:4px 16px 8px;margin-top:22px}
 .trap{background:color-mix(in srgb,var(--pink) 8%,var(--bg));border-radius:12px;padding:4px 16px 8px;margin-top:16px}
 .src{font-size:13px;opacity:.85;margin-top:16px}.src h2{font-size:15px}.src li{margin:4px 0;overflow-wrap:anywhere}
@@ -136,9 +140,17 @@ header .hr{display:flex;align-items:center}
 </style>
 <script>
 /* लॉगिन स्थिती: "gc2auth" ही key "gc2_" ने सुरू होत नाही, त्यामुळे बॅकअप/"सर्व प्रगती पुसा" यांना ती लागत नाही आणि लॉगआउटने प्रगती पुसली जात नाही. */
+/* दोन खाती. प्रत्येक खात्याची प्रगती वेगळ्या localStorage prefix खाली राहते:
+   दिनेश = "gc2_" (जुनी प्रगती जशीच्या तशी, काहीही हलवले नाही), मित्र = "gc2u2_" ("gc2_" ने सुरू होत नाही, त्यामुळे एकाचा बॅकअप/रीसेट दुसऱ्याला लागत नाही).
+   कोडमध्ये फक्त SHA-256("gc2-login|user|pass") आहे, पासवर्ड नाही. हे फक्त नोंदी वेगळ्या ठेवण्यासाठी आहे, खरी सुरक्षा नाही (public repo, client-side). */
 const AUTH_HASH="c47d3b0bede0dc16675e06beb790b41e59869da93e0dad92a50540a6c28fdebb";
-function authOk(){try{return localStorage.getItem("gc2auth")===AUTH_HASH}catch(e){return false}}
-if(!authOk())document.documentElement.classList.add("locked");
+const USERS={
+  "c47d3b0bede0dc16675e06beb790b41e59869da93e0dad92a50540a6c28fdebb":{id:"d",pfx:"gc2_",name:"दिनेश",full:0},
+  "0bc2d428c12283e80dbe16d41b02aee8175c463e8332bd8dc5686f04bcef554d":{id:"u2",pfx:"gc2u2_",name:"मित्र",full:1}};
+function curUser(){try{return USERS[localStorage.getItem("gc2auth")]||null}catch(e){return null}}
+function authOk(){return !!curUser()}
+const ME=curUser();
+if(!ME)document.documentElement.classList.add("locked");
 </script>
 </head>
 <body>
@@ -165,8 +177,10 @@ if(!authOk())document.documentElement.classList.add("locked");
   f.onsubmit=async e=>{e.preventDefault();m.innerHTML="";
     const u=document.getElementById("lgu").value.trim(),p=document.getElementById("lgp").value;let h="";
     try{h=await sha("gc2-login|"+u+"|"+p)}catch(err){m.innerHTML='<div class="exp r">हा ब्राउझर लॉगिन तपासू शकत नाही. Chrome मध्ये उघडा.</div>';return}
-    if(h!==AUTH_HASH){m.innerHTML='<div class="exp r">वापरकर्ता नाव किंवा पासवर्ड चुकीचा आहे.</div>';document.getElementById("lgp").value="";return}
+    if(!USERS[h]){m.innerHTML='<div class="exp r">वापरकर्ता नाव किंवा पासवर्ड चुकीचा आहे.</div>';document.getElementById("lgp").value="";return}
     try{localStorage.setItem("gc2auth",h)}catch(err){}
+    /* पान ज्या खात्यासाठी सुरू झाले त्यापेक्षा वेगळे खाते असेल तर पान पुन्हा लोड करा, म्हणजे फक्त त्याच खात्याची प्रगती दिसेल */
+    if(!ME||ME!==USERS[h]){location.reload();return}
     document.getElementById("lgp").value="";document.documentElement.classList.remove("locked");window.scrollTo(0,0)};
   document.getElementById("lgout").onclick=()=>{try{localStorage.removeItem("gc2auth")}catch(err){}
     document.documentElement.classList.add("locked");document.getElementById("lgu").focus()};
@@ -176,6 +190,7 @@ if(!authOk())document.documentElement.classList.add("locked");
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
 <script src="sheets.js?v=1"></script>
+<script src="notes.js?v=1"></script>
 <script>
 const L=[];
 L.push(
@@ -2586,9 +2601,12 @@ q:[]}
 );
 
 {
-const EXAM=new Date(2027,0,24), START=new Date(2026,10,24);
+/* दिनेशचा आराखडा 24 नोव्हेंबरपासून (62 दिवस). मित्राचा पूर्ण-दिवस आराखडा 27 नोव्हेंबर 2026 पासून (59 दिवस). */
+const EXAM=new Date(2027,0,24), START=(typeof ME!=="undefined"&&ME&&ME.full)?new Date(2026,10,27):new Date(2026,10,24);
 const $=s=>document.querySelector(s), main=$("#main");
-const store={get(k,d){try{const v=localStorage.getItem("gc2_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("gc2_"+k,JSON.stringify(v))}catch(e){}}};
+/* PFX = लॉगिन केलेल्या खात्याचा prefix. लॉगिन नसताना काहीही वाचले/लिहिले जात नाही. */
+const PFX=ME?ME.pfx:null, FULL=!!(ME&&ME.full);
+const store={get(k,d){if(!PFX)return d;try{const v=localStorage.getItem(PFX+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){if(!PFX)return;try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(e){}}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
@@ -2618,23 +2636,31 @@ const bySub=id=>L.filter(l=>l.s===id);
 const GSORD=["pl1","pl2","pl3","pl4","pl9","pl10","pl11","hi1","hi2","hi3","hi4","hi5","hi6","hi7","hi8","hi9","hi10","hi11","ge3","ge4","ge5","ge6","ge7","ge8","ge9","ge10","ge1","ge2","ge11","pl5","pl6","pl7","pl8","ec1","ec2","ec3","ec4","ec5","ec6","ec7","gk1","ca1","ca2","ca5","ca3","ca6","ca4","ca7","ca8","ca9"].filter(id=>LX[id]);
 const SCORD=["sc1","sc2","sc3","sc4","sc5","sc6","sc7","sc8","sc9","sc10","sc11"];
 const MRORD=["ma4","re1","ma5","re3","ma6","re4","ma8","re5","ma9","re2","ma10","re6","ma7","re7","ma1","re8","ma2","ma3","ma11"];
+/* LD = नवीन धड्यांचे दिवस. पूर्ण-वेळ खात्यात रोज ~2 GS धडे, त्यामुळे 24 दिवसांत अभ्यासक्रम संपतो आणि मॉकसाठी जास्त दिवस मिळतात. */
+const LD=FULL?24:35, SCST=FULL?2:3;
 const DAYS=[];
-for(let d=1;d<=35;d++){
-  const gs=GSORD.filter((_,k)=>Math.floor(k*35/GSORD.length)+1===d);
-  const sc=(d-1)%3===0&&(d-1)/3<SCORD.length?[SCORD[(d-1)/3]]:[];
-  const scRev=sc.length?null:SCORD[Math.min(10,Math.floor((d-1)/3))];
-  const mr=[MRORD[Math.floor((d-1)*19/35)]];
+for(let d=1;d<=LD;d++){
+  const gs=GSORD.filter((_,k)=>Math.floor(k*LD/GSORD.length)+1===d);
+  const sc=(d-1)%SCST===0&&(d-1)/SCST<SCORD.length?[SCORD[(d-1)/SCST]]:[];
+  const scRev=sc.length?null:SCORD[Math.min(10,Math.floor((d-1)/SCST))];
+  const mr=[MRORD[Math.floor((d-1)*19/LD)]];
   DAYS.push({t:"learn",gs,sc,scRev,mr});
 }
 const REV=[["pol","राज्यघटना व पंचायत राज"],["his","इतिहास"],["geo","भूगोल"],["eco","अर्थव्यवस्था + महाराष्ट्र विशेष"],["sci","सामान्य विज्ञान"],["ca","चालू घडामोडी"],["mat","गणित व बुद्धिमत्ता + मिनी मॉक"]];
 REV.forEach(r=>DAYS.push({t:"rev",sub:r[0],title:r[1]}));
-/* शेवटचे 3 आठवडे (दिवस 41–61): दर आठवड्याला 2 पूर्ण उजळणी मॉक + वेळ लावून विभागीय चाचण्या; शेवटचे 5 दिवस (57–61) एक-पानी पत्रके */
+/* शेवटचे 3 आठवडे (दिवस 41–61): दर आठवड्याला 2 पूर्ण उजळणी मॉक + वेळ लावून विभागीय चाचण्या; शेवटचे 5 दिवस (57–61) एक-पानी पत्रके.
+   पूर्ण-वेळ खाते (दिवस 32–58): दर आठवड्याला 3 पूर्ण मॉक; शेवटचे 5 दिवस तसेच. */
 const SECR=[["pol","his","mat"],["geo","sci","rea"],["eco","ca","mat"],["his","geo","rea"],["pol","sci","gk"],["eco","mat","rea"]];let sk=0;
-[["mock",1],["sec"],["weak"],["mock",2],["sec"],
+(FULL?[["mock",0],["sec"],["weak"],["mock",0],["sec"],["sec"],["mock",0],
+  ["weak"],["sec"],["mock",0],["sec"],["weak"],["mock",0],["sec"],
+  ["sec"],["mock",0],["weak"],["sec"],["mock",0],["sec"],["weak"],["mock",0],
+  ["light",0,["pol","his"]],["mock",0,["ca"]],["light",0,["geo","gk","eco"]],["light",0,["sci","mat","rea"]],["light",0,["all"]]]
+:[["mock",1],["sec"],["weak"],["mock",2],["sec"],
  ["weak"],["mock",1],["sec"],["sec"],["mock",2],["weak"],["sec"],
- ["mock",1],["sec"],["light",0,["pol","his"]],["mock",2,["ca"]],["light",0,["geo","gk","eco"]],["light",0,["sci","mat","rea"]],["light",0,["all"]]]
- .forEach(([t,no,subs])=>DAYS.push(t==="sec"?{t,subs:SECR[sk++]}:t==="mock"?{t,no,sheets:subs}:t==="light"?{t,subs}:{t}));
+ ["mock",1],["sec"],["light",0,["pol","his"]],["mock",2,["ca"]],["light",0,["geo","gk","eco"]],["light",0,["sci","mat","rea"]],["light",0,["all"]]])
+ .forEach(([t,no,subs])=>DAYS.push(t==="sec"?{t,subs:SECR[sk++%SECR.length]}:t==="mock"?{t,no,sheets:subs}:t==="light"?{t,subs}:{t}));
 const dayNo=d=>Math.round((d-START)/864e5)+1;
+const TOT=dayNo(EXAM); /* परीक्षेचा दिवस: दिनेश 62, पूर्ण-वेळ 59 */
 const dateOf=n=>{const d=new Date(START);d.setDate(d.getDate()+n-1);return d};
 const fmtD=d=>d.getDate()+" "+["जाने","फेब्रु","मार्च","एप्रि","मे","जून","जुलै","ऑग","सप्टें","ऑक्टो","नोव्हें","डिसें"][d.getMonth()];
 
@@ -2802,11 +2828,10 @@ const stars=n=>"★".repeat(n)+"☆".repeat(3-n);
 /* ---------- आज ---------- */
 const nextSet=(p,c)=>{const ss=store.get("sets",{});for(let i=1;i<=c;i++)if(!ss[p+i])return p+i;return p+c};
 const shLink=s=>s==="all"?"<a href='#sh'>सर्व विषयांची पत्रके</a>":`<a href='#sh-${s}'>${SN[s].name}</a>`;
-function dayCard(n){
-  const D=DAYS[n-1];if(!D)return "";
-  const k="day_"+n, chk=store.get(k,[]);
-  const item=(i,html)=>`<li class="${chk.includes(i)?"done":""}"><label><input type="checkbox" data-d="${n}" data-i="${i}" ${chk.includes(i)?"checked":""}>${html}</label></li>`;
+function dayRows(n){
+  const D=DAYS[n-1];if(!D)return [];
   const ll=id=>`<a href="#l-${id}"><b>${LX[id].t}</b></a> <small>${SN[LX[id].s].name}${isRead(id)?" · ✓ वाचला":""}</small>`;
+  if(FULL)return fullRows(D,ll);
   let rows=[];
   if(D.t==="learn"){
     rows.push(["6:30–8:00","आजचा मुख्य धडा: "+D.gs.map(ll).join(" आणि ")+". आधी सविस्तर वाचा, मग छोट्या नोट्स वहीत लिहा, मग धड्याचा क्विझ सोडवा."]);
@@ -2842,25 +2867,132 @@ function dayCard(n){
     rows.push(["9:00–10:00","चालू घडामोडींचे शेवटचे 2 महिने"]);
     rows.push(["रात्री","11 पूर्वी झोप. नवीन काहीही वाचू नका."]);
   }
-  return `<ul class="slots">${rows.map((r,i)=>item(i,`<span class="tm">${r[0]}</span><span>${r[1]}</span>`)).join("")}</ul>`;
+  return rows;
+}
+/* पूर्ण-वेळ (full-day) खात्याचे रोजचे वेळापत्रक: सकाळी 6 ते रात्री 10:30, मधे जेवण/विश्रांती */
+function fullRows(D,ll){
+  const rows=[],sr=["6:00–6:30","आजची उजळणी: <a href='#today'>देय चुकलेले प्रश्न</a> (खालील 🔁 बटण) + कालच्या धड्यांच्या 'छोट्या नोट्स'"];
+  const brk=(t,x)=>rows.push([t,"<small>"+x+"</small>",1]);
+  if(D.t==="learn"){
+    const g=D.gs.length?D.gs:[D.scRev];
+    rows.push(sr);
+    rows.push(["6:30–8:30","मुख्य धडा 1: "+ll(g[0])+". सविस्तर वाचा, छोट्या नोट्स वहीत लिहा, धड्याचा क्विझ सोडवा."]);
+    brk("8:30–9:00","नाश्ता व विश्रांती");
+    rows.push(["9:00–11:00",g[1]?"मुख्य धडा 2: "+ll(g[1])+". वाचन + नोट्स + क्विझ.":"धडा 1 मधील 'परीक्षक कसा फसवतो' मुद्दे + त्या विषयाचे 40 सराव प्रश्न (<a href='#practice'>सराव</a>)"]);
+    rows.push(["11:00–12:30","गणित/बुद्धिमत्ता: "+D.mr.map(ll).join("")+". पद्धत वाचा, मग किमान 40 प्रश्न सोडवा."]);
+    rows.push(["12:30–13:30",D.sc.length?"विज्ञान: "+D.sc.map(ll).join("")+" (वाचन + क्विझ)":"विज्ञान उजळणी: "+ll(D.scRev)+" ('छोट्या नोट्स' + क्विझ)"]);
+    brk("13:30–14:30","जेवण व विश्रांती (20 मिनिटे झोप चालेल)");
+    rows.push(["14:30–15:30","चालू घडामोडी: पेपर वाचा, 5 मुद्दे नोंदवहीत; <a href='#rv-ca'>चालू घडामोडी उजळणी</a> मधील एक धडा"]);
+    rows.push(["15:30–16:30",g[2]?"मुख्य धडा 3: "+ll(g[2])+" (वाचन + क्विझ)":"बुद्धिमत्ता/गणित वेगाचा सराव: <a href='#practice'>सराव</a> मधून दुसऱ्या प्रकारचे 30 प्रश्न, वेळ लावून"]);
+    brk("16:30–17:00","चहा व विश्रांती");
+    rows.push(["17:00–17:30","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न, 15 मिनिटे)"]);
+    rows.push(["17:30–18:30","एक मूळ जुनी प्रश्नपत्रिका (<a href='#mock'>मॉक</a> पानावरील वर्षनिहाय PYQ): आजच्या विषयांचे प्रश्न"]);
+    brk("18:30–19:30","व्यायाम / चालणे");
+    rows.push(["19:30–20:30","आजच्या सर्व धड्यांच्या 'छोट्या नोट्स' पुन्हा वाचा; आठवणीतून 10 मुद्दे लिहा"]);
+    brk("20:30–21:15","रात्रीचे जेवण");
+    rows.push(["21:15–22:00","आजचा मिश्र क्विझ (20 प्रश्न, खालील बटण) + आजचे चुकलेले प्रश्न"]);
+    brk("22:30","झोप (7 तास झोप गरजेची)");
+  }else if(D.t==="rev"){
+    rows.push(sr);
+    rows.push(["6:30–9:00","उजळणी: <b>"+D.title+"</b>. सर्व धड्यांच्या 'छोट्या नोट्स' वाचा: <a href='#rv-"+D.sub+"'>उजळणी पान उघडा</a>"]);
+    brk("9:00–9:30","नाश्ता व विश्रांती");
+    rows.push(["9:30–11:00","या विषयाचा 60 प्रश्नांचा सराव (<a href='#practice'>सराव</a>)"]);
+    rows.push(["11:00–12:00","या विषयाची वेळ लावून विभागीय चाचणी (<a href='#mock'>मॉक पान</a>)"]);
+    rows.push(["12:00–13:30","दोन मूळ जुन्या प्रश्नपत्रिकांतील या विषयाचे प्रश्न"]);
+    brk("13:30–14:30","जेवण व विश्रांती");
+    rows.push(["14:30–16:00","गणित/बुद्धिमत्ता: <a href='#practice'>सराव</a> 50 प्रश्न, वेळ लावून"]);
+    rows.push(["16:00–17:00","चालू घडामोडी: पेपर + <a href='#rv-ca'>उजळणी</a>"]);
+    brk("17:00–17:30","चहा व विश्रांती");
+    rows.push(["17:30–18:30","एक-पानी पत्रक: "+shLink(D.sub==="mat"?"mat":D.sub)]);
+    brk("18:30–19:30","व्यायाम / चालणे");
+    rows.push(["19:30–20:30","सकाळी चुकलेल्या प्रश्नांचे धडे पुन्हा वाचा"]);
+    rows.push(["21:15–22:00","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न) + चुकलेले प्रश्न"]);
+  }else if(D.t==="mock"){
+    const fk=nextSet("fm",NFM);
+    rows.push(sr);
+    rows.push(["7:00–8:00",`<b>पूर्ण उजळणी मॉक</b> (100 प्रश्न, 60 मिनिटे, खऱ्या पेपरच्या क्रमाने) <button class="btn sm" data-run="${fk}">मॉक ${fk.slice(2)} सुरू करा</button>`]);
+    brk("8:00–8:30","नाश्ता");
+    rows.push(["8:30–10:30","निकालातील प्रत्येक चुकीचे स्पष्टीकरण वाचा; संबंधित धडा उघडा"]);
+    rows.push(["10:30–11:30","कमजोर धडे ड्रिल (25 प्रश्न, मॉकनंतर 'आज' पानावर येतो)"]);
+    rows.push(["11:30–13:30","मॉकमध्ये सर्वात कमी गुण आलेले 2 विषय: धडे पुन्हा वाचा"]);
+    brk("13:30–14:30","जेवण व विश्रांती");
+    rows.push(["14:30–15:30",D.sheets?"एक-पानी पत्रक: "+D.sheets.map(shLink).join(" + "):"सर्वात कमजोर विषयाच्या छोट्या नोट्स (<a href='#progress'>प्रगती</a> पाहा)"]);
+    rows.push(["15:30–17:00","गणित/बुद्धिमत्ता: 50 प्रश्न वेळ लावून"]);
+    brk("17:00–17:30","चहा व विश्रांती");
+    rows.push(["17:30–18:30","एक मूळ जुनी प्रश्नपत्रिका (60 मिनिटे)"]);
+    brk("18:30–19:30","व्यायाम / चालणे");
+    rows.push(["19:30–20:30","चालू घडामोडी उजळणी"]);
+    rows.push(["21:15–22:00","चुकलेले प्रश्न + उद्याचे नियोजन"]);
+  }else if(D.t==="sec"){
+    rows.push(sr);
+    rows.push(["6:30–7:30","<b>वेळ लावून विभागीय चाचण्या</b> (प्रत्येकी 25 प्रश्न, 20 मिनिटे, −0.25): "+D.subs.map(s=>{const k=nextSet("st-"+s+"-",TESTS[s]);return `<button class="btn sm" data-run="${k}">${SN[s].name} ${k.split("-").pop()}</button>`}).join(" ")]);
+    brk("7:30–8:00","नाश्ता");
+    rows.push(["8:00–10:00","तिन्ही चाचण्यांतील चुकीची स्पष्टीकरणे; त्या धड्यांचे सविस्तर वाचन"]);
+    rows.push(["10:00–11:00","एक मूळ जुनी प्रश्नपत्रिका, वेळ लावून (60 मिनिटे)"]);
+    rows.push(["11:00–13:30","त्या पेपरमध्ये चुकलेल्या प्रश्नांचे धडे वाचा + <a href='#practice'>सराव</a> 40 प्रश्न"]);
+    brk("13:30–14:30","जेवण व विश्रांती");
+    rows.push(["14:30–16:00","गणित/बुद्धिमत्ता: 50 प्रश्न वेळ लावून"]);
+    rows.push(["16:00–17:00","चालू घडामोडी उजळणी"]);
+    brk("17:00–17:30","चहा व विश्रांती");
+    rows.push(["17:30–18:30","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न, 15 मिनिटे)"]);
+    brk("18:30–19:30","व्यायाम / चालणे");
+    rows.push(["19:30–20:30","एक-पानी पत्रके: "+D.subs.map(shLink).join(" + ")]);
+    rows.push(["21:15–22:00","चुकलेले प्रश्न"]);
+  }else if(D.t==="weak"){
+    rows.push(sr);
+    rows.push(["6:30–9:00","<a href='#progress'>प्रगती</a> पानावरील सर्वात कमजोर 2 विषय: धडे पुन्हा सविस्तर वाचा"]);
+    brk("9:00–9:30","नाश्ता");
+    rows.push(["9:30–10:30","<a href='#practice'>कमजोर धडे ड्रिल</a> (25 प्रश्न)"]);
+    rows.push(["10:30–11:30","त्या विषयांची एक विभागीय चाचणी (<a href='#mock'>मॉक पान</a>)"]);
+    rows.push(["11:30–13:30","तिसरा कमजोर विषय: धडे + 40 सराव प्रश्न"]);
+    brk("13:30–14:30","जेवण व विश्रांती");
+    rows.push(["14:30–15:30","एक मूळ जुनी प्रश्नपत्रिका (60 मिनिटे)"]);
+    rows.push(["15:30–17:00","गणित/बुद्धिमत्ता: कमजोर प्रकार, 50 प्रश्न"]);
+    brk("17:00–17:30","चहा व विश्रांती");
+    rows.push(["17:30–18:30","चालू घडामोडी उजळणी"]);
+    brk("18:30–19:30","व्यायाम / चालणे");
+    rows.push(["19:30–21:00","आज वाचलेल्या धड्यांच्या छोट्या नोट्स"]);
+    rows.push(["21:15–22:00","चुकलेले प्रश्न"]);
+  }else{
+    rows.push(sr);
+    rows.push(["6:30–9:00","एक-पानी उजळणी पत्रके: "+D.subs.map(shLink).join(" + ")+" (नवीन काही वाचू नका)"]);
+    brk("9:00–9:30","नाश्ता");
+    rows.push(["9:30–10:00","<a href='#mock'>मिनी मॉक</a> (25 प्रश्न)"]);
+    rows.push(["10:00–12:00","त्या विषयांच्या 'छोट्या नोट्स' + 'परीक्षक कसा फसवतो' मुद्दे"]);
+    brk("12:00–14:00","जेवण व पूर्ण विश्रांती");
+    rows.push(["14:00–16:00","चालू घडामोडींचे शेवटचे 2 महिने"]);
+    rows.push(["16:00–17:00","गणित/बुद्धिमत्ता: 25 सोपे प्रश्न (आत्मविश्वासासाठी)"]);
+    brk("17:00–19:00","चालणे / विश्रांती");
+    rows.push(["19:00–20:30","चुकलेल्या प्रश्नांची यादी एकदा पाहा"]);
+    brk("22:00","झोप. नवीन काहीही वाचू नका.");
+  }
+  return rows;
+}
+/* जेवण/विश्रांतीच्या ओळींना checkbox नाही: ती [वेळ,मजकूर,1] अशी ठेवली जातात */
+function dayCard(n){
+  const rows=dayRows(n);if(!rows.length)return "";
+  const k="day_"+n, chk=store.get(k,[]);
+  const item=(i,html)=>`<li class="${chk.includes(i)?"done":""}"><label><input type="checkbox" data-d="${n}" data-i="${i}" ${chk.includes(i)?"checked":""}>${html}</label></li>`;
+  return `<ul class="slots">${rows.map((r,i)=>r[2]?`<li class="brk"><label><i></i><span class="tm">${r[0]}</span><span>${r[1]}</span></label></li>`:item(i,`<span class="tm">${r[0]}</span><span>${r[1]}</span>`)).join("")}</ul>`;
 }
 function vToday(n){
-  const t=today0();let cur=Math.min(62,Math.max(1,dayNo(t)));
+  const t=today0();let cur=Math.min(TOT,Math.max(1,dayNo(t)));
   if(!n)n=cur;
   const D=DAYS[n-1];
-  const chk=store.get("day_"+n,[]);const tot=D?(D.t==="learn"?6:4):0;
-  const behind=L.filter((l,i)=>{const di=GSORD.indexOf(l.id);const sd=di>=0?Math.floor(di*35/GSORD.length)+1:SCORD.indexOf(l.id)>=0?SCORD.indexOf(l.id)*3+1:MRORD.indexOf(l.id)>=0?Math.floor(MRORD.indexOf(l.id)*35/19)+1:99;return sd<cur&&!isRead(l.id)});
+  const rws=dayRows(n),chk=store.get("day_"+n,[]).filter(i=>rws[i]&&!rws[i][2]);const tot=rws.filter(r=>!r[2]).length;
+  const behind=L.filter((l,i)=>{const di=GSORD.indexOf(l.id);const sd=di>=0?Math.floor(di*LD/GSORD.length)+1:SCORD.indexOf(l.id)>=0?SCORD.indexOf(l.id)*SCST+1:MRORD.indexOf(l.id)>=0?Math.floor(MRORD.indexOf(l.id)*LD/19)+1:99;return sd<cur&&!isRead(l.id)});
   const typ={learn:"नवीन धडे",rev:"उजळणी आठवडा",mock:"पूर्ण उजळणी मॉक दिवस",sec:"वेळ लावून विभागीय सराव",weak:"कमजोर विषय दिवस",light:"शेवटचे 5 दिवस: एक-पानी उजळणी"};
   main.innerHTML=`
   <section class="hero">
    <div class="count"><b>${daysLeft()}</b><span>दिवस उरले<br>परीक्षा: 24 जानेवारी 2027</span></div>
    <div class="ring" style="--p:${tot?Math.round(chk.length/tot*100):0}"><span>${chk.length}/${tot}<small>आजचे काम</small></span></div>
   </section>
-  ${t<START&&n===1?`<p class="note">आराखडा 24 नोव्हेंबरपासून सुरू होतो. खाली दिवस 1 चे काम आहे.</p>`:""}
+  ${FULL&&n===cur?`<p class="small">👤 खाते: <b>${ME.name}</b> · पूर्ण-दिवस आराखडा (सकाळी 6 ते रात्री 10:30)</p>`:""}
+  ${t<START&&n===1?`<p class="note">आराखडा ${START.getDate()} नोव्हेंबरपासून सुरू होतो. खाली दिवस 1 चे काम आहे.</p>`:""}
   ${n===cur?nnCard():""}
   ${n===cur&&drillPending()?`<div class="note"><b>🎯 मॉकनंतरचा कमजोर धडे ड्रिल बाकी आहे (25 प्रश्न)</b><br><small>शेवटच्या मॉकमधील सर्वात कमजोर धड्यांतून नवे प्रश्न.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="tdrl">ड्रिल सुरू करा</button><a class="btn" href="#mr-${drillPending().mid}">मॉक निकाल</a></div></div>`:""}
-  <div class="daynav"><button class="btn sm" id="pv" ${n<=1?"disabled":""}>‹</button><div><b>दिवस ${n}</b> · ${fmtD(dateOf(n))}<br><small>${n===62?"परीक्षा 🎯":typ[D.t]}</small></div><button class="btn sm" id="nx" ${n>=62?"disabled":""}>›</button></div>
-  ${n===62?`<p class="lead">आज परीक्षा. हॉल तिकीट, हॉल तिकिटावर सांगितलेले ओळखपत्र, 2 काळी बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित व अडलेले प्रश्न. एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. <a href='#strategy'>परीक्षा रणनीती एकदा वाचा ›</a> शुभेच्छा!</p>`:dayCard(n)}
+  <div class="daynav"><button class="btn sm" id="pv" ${n<=1?"disabled":""}>‹</button><div><b>दिवस ${n}</b> · ${fmtD(dateOf(n))}<br><small>${n===TOT?"परीक्षा 🎯":typ[D.t]}</small></div><button class="btn sm" id="nx" ${n>=TOT?"disabled":""}>›</button></div>
+  ${n===TOT?`<p class="lead">आज परीक्षा. हॉल तिकीट, हॉल तिकिटावर सांगितलेले ओळखपत्र, 2 काळी बॉलपेन घ्या. पहिली फेरी खात्रीचे प्रश्न, दुसरी फेरी गणित व अडलेले प्रश्न. एक पर्याय तरी नक्की चूक दिसत असेल तर उत्तर द्या. <a href='#strategy'>परीक्षा रणनीती एकदा वाचा ›</a> शुभेच्छा!</p>`:dayCard(n)}
   ${D&&D.t==="learn"?`<div class="btns"><button class="btn pri" id="dq">आजचा मिश्र क्विझ (20)</button><a class="btn" href="#l-${D.gs[0]}">आजचा धडा उघडा</a></div>`:""}
   ${n===cur&&srDue().length?`<div class="note"><b>🔁 आज ${srDue().length} चुकलेले प्रश्न उजळणीला आले आहेत.</b><br><small>1, 3 व 7 दिवसांनी पुन्हा विचारले जातात; तिन्ही वेळा बरोबर आल्यावरच यादीतून जातात.</small><div class="btns" style="margin:10px 0 0"><button class="btn pri" id="srn">आत्ता उजळणी करा</button></div></div>`:""}
   ${n!==cur?`<p><a href="#today">आजच्या दिवसावर परत जा ›</a></p>`:""}
@@ -2895,7 +3027,7 @@ function vLesson(id){
   <h1>${l.t}</h1>
   <div class="pyq"><b>जुन्या पेपर्समध्ये:</b> ${l.pyq}</div>
   <div class="tabs"><a href="#sec-d">सविस्तर</a><a href="#sec-s">छोट्या नोट्स</a><a href="#sec-t">सापळे</a><a href="#sec-q">क्विझ</a></div>
-  <section id="sec-d" class="lesson">${md(l.d)}</section>
+  <section id="sec-d" class="lesson">${md(l.d)}${typeof NOTES==="object"&&NOTES[id]?`<div class="deep"><h2>📖 सखोल अभ्यास: परीक्षेत विचारले जाणारे तपशील</h2>${md(NOTES[id])}</div>`:""}</section>
   <section id="sec-s" class="sn"><h2>छोट्या नोट्स (उजळणीसाठी)</h2><ul>${l.sn.map(x=>`<li>${x}</li>`).join("")}</ul></section>
   <section id="sec-t" class="trap"><h2>परीक्षक कसा फसवतो</h2><ul>${l.tr.map(x=>`<li>${x}</li>`).join("")}</ul></section>
   ${l.src?`<section class="src"><h2>स्रोत (माहिती तपासण्यासाठी)</h2><ul>${l.src.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("")}</ul></section>`:""}
@@ -3160,22 +3292,25 @@ function vProgress(){const st=store.get("stats",{}),h=store.get("mocks",[]),ls=s
   <details class="box"><summary>सर्व प्रगती पुसा</summary><button class="btn" id="rst">हो, सर्व पुसा</button></details>`;
   nnBind(vProgress);const pd=$("#pdrl");if(pd)pd.onclick=()=>startDrill();
   $("#ca").oninput=e=>{store.set("ca",e.target.value);$("#sv").textContent="जतन झाले ✓"};
-  $("#rst").onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith("gc2_")).forEach(k=>localStorage.removeItem(k))}catch(e){}vProgress()};
+  $("#rst").onclick=()=>{gcKeys().forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});vProgress()};
   $("#bkx").onclick=exportBackup;
   $("#bkf").onchange=e=>{const f=e.target.files[0];e.target.value="";if(f)readBackup(f)}}
 
 /* ---------- बॅकअप ---------- */
-const gcKeys=()=>{try{return Object.keys(localStorage).filter(k=>k.startsWith("gc2_"))}catch(e){return[]}};
+const gcKeys=()=>{if(!PFX)return[];try{return Object.keys(localStorage).filter(k=>k.startsWith(PFX))}catch(e){return[]}};
 function bkAge(){const t=store.get("bk",0);if(!t)return "अजून एकदाही बॅकअप घेतला नाही. आठवड्यातून एकदा घ्या.";
   const d=Math.floor((Date.now()-t)/864e5);return d<1?"शेवटचा बॅकअप: आज ✓":"शेवटचा बॅकअप: "+d+" दिवसांपूर्वी"+(d>=7?" · नवीन बॅकअप घ्या":"")}
 async function exportBackup(){store.set("bk",Date.now());const data={};gcKeys().forEach(k=>data[k]=localStorage.getItem(k));
-  const txt=JSON.stringify({app:"gc2",v:1,at:new Date().toISOString(),data}),name="gat-k-backup-"+dkey(new Date())+".json";
+  const txt=JSON.stringify({app:"gc2",v:1,user:ME.id,at:new Date().toISOString(),data}),name="gat-k-backup-"+(ME.id==="d"?"":ME.id+"-")+dkey(new Date())+".json";
   const file=new File([txt],name,{type:"application/json"});let shared=false;
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"गट-क सराव बॅकअप"});shared=true}}catch(e){if(e&&e.name==="AbortError"){$("#bkinfo").textContent=bkAge();return}}
   if(!shared){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)}
   $("#bkinfo").textContent=bkAge();$("#bkm").innerHTML=`<div class="exp g">बॅकअप फाइल तयार: <b>${esc(name)}</b>. ती Google Drive / WhatsApp वर स्वतःला पाठवून ठेवा.</div>`}
 function readBackup(f){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.parse(r.result)}catch(e){o=null}
-  const data=o&&o.app==="gc2"&&o.data&&typeof o.data==="object"?o.data:null,keys=data?Object.keys(data).filter(k=>k.startsWith("gc2_")&&typeof data[k]==="string"):[];
+  const data=o&&o.app==="gc2"&&o.data&&typeof o.data==="object"?o.data:null,keys=data?Object.keys(data).filter(k=>k.startsWith(PFX)&&typeof data[k]==="string"):[];
+  /* दुसऱ्या खात्याचा बॅकअप या खात्यात उघडू देत नाही, म्हणजे दोघांच्या नोंदी मिसळत नाहीत. जुन्या बॅकअपला user नाही = दिनेशचा. */
+  const bu=o&&o.app==="gc2"?(o.user||"d"):null;
+  if(bu&&bu!==ME.id){$("#bkm").innerHTML=`<div class="exp r">ही फाइल दुसऱ्या खात्याची बॅकअप फाइल आहे. ती त्याच खात्यात लॉगिन करून उघडा.</div>`;return}
   if(!keys.length){$("#bkm").innerHTML=`<div class="exp r">ही फाइल या app ची बॅकअप फाइल नाही.</div>`;return}
   const when=o.at?new Date(o.at).toLocaleString("mr-IN"):"";
   $("#bkm").innerHTML=`<div class="exp r">या फाइलमधील प्रगती${when?" ("+esc(when)+")":""} उघडल्यास सध्याची प्रगती बदलली जाईल. पुढे जायचे?<div class="btns"><button class="btn pri" id="bky">हो, बॅकअप उघडा</button><button class="btn" id="bkn">नाही</button></div></div>`;
