@@ -172,7 +172,7 @@ if(!authOk())document.documentElement.classList.add("locked");
     document.documentElement.classList.add("locked");document.getElementById("lgu").focus()};
   if(!authOk())setTimeout(()=>document.getElementById("lgu").focus(),0)})();
 </script>
-<script src="questions.js?v=16"></script>
+<script src="questions.js?v=17"></script>
 <script src="current-affairs.js?v=3"></script>
 <script src="ref.js?v=1"></script>
 <script src="sheets.js?v=1"></script>
@@ -2934,7 +2934,7 @@ function vPractice(){
   <button class="tile" data-s="due" style="--c:#e2336b" ${due.length?"":"disabled"}><b>🔁 आजची उजळणी</b><small>${due.length?due.length+" प्रश्न आज देय":"आज काही देय नाही"}</small></button>
   <button class="tile" data-s="wrong" style="--c:#8a1c44" ${wr.length?"":"disabled"}><b>सर्व चुकलेले</b><small>${wr.length} रांगेत · फक्त सराव</small></button>
   <button class="tile" data-s="drill" style="--c:#b8560f" ${allWeak().length?"":"disabled"}><b>🎯 कमजोर धडे ड्रिल</b><small>${allWeak().length?"सर्वात कमजोर "+Math.min(5,allWeak().length)+" धड्यांतून 25 प्रश्न":"आधी थोडा सराव करा"}</small></button></div>
-  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">गट-क पूर्वपरीक्षा (2018, 2019, 2022, 2026) यांतील मूळ प्रश्न. हे ॲप फक्त पूर्वपरीक्षेसाठी आहे, म्हणून मुख्य परीक्षेचे प्रश्न काढले आहेत. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
+  <h2>मागील प्रश्नपत्रिकांतील प्रश्न (विषयवार)</h2><p class="small">MPSC गट-क व गट-ब पूर्वपरीक्षांच्या मूळ प्रश्नपत्रिकांतील प्रश्न. हे ॲप फक्त पूर्वपरीक्षेसाठी आहे, म्हणून मुख्य परीक्षेचे प्रश्न काढले आहेत. पूर्ण प्रश्नपत्रिका वेळेसह सोडवण्यासाठी <a href="#mock">मॉक › मागील वर्षांच्या प्रश्नपत्रिका</a>.</p>
   <div class="grid">${SUB.map(s=>[s,pyqAll().filter(q=>q.s===s.id&&!q.c).length]).filter(x=>x[1]).map(([s,c])=>`<button class="tile" data-s="py-${s.id}" style="--c:${s.c}"><b>PYQ: ${s.name}</b><small>${c} मूळ प्रश्न</small></button>`).join("")}</div>
   <h2>चुकलेल्या प्रश्नांची उजळणी</h2>
   <p class="small">चुकलेला प्रश्न 1 दिवसाने, मग 3 दिवसांनी, मग 7 दिवसांनी पुन्हा येतो. मध्ये कधीही चुकला तर पुन्हा पहिल्या टप्प्यापासून. मॉकमध्ये सोडलेले प्रश्नही यात जातात.</p>
@@ -2965,7 +2965,8 @@ function quiz(qs,title,noSr,onDone){
 }
 
 /* ---------- मॉक ---------- */
-const MIX={ca:12,his:14,geo:14,pol:14,eco:10,sci:14,gk:4,mat:9,rea:9};
+/* विषय वाटप: गट-क पूर्वपरीक्षा 2021, 2023 (गट-ब व क संयुक्त) व 2024 या पूर्ण प्रश्नपत्रिकांतील प्रत्यक्ष विषयवार सरासरीवरून (प्रत्येक प्रश्न 1 गुण). */
+const MIX={ca:15,his:13,geo:12,pol:13,eco:14,sci:14,gk:1,mat:10,rea:8};
 function buildMock(n){const f=n/100,out=[];
   for(const [s,c] of Object.entries(MIX)){const want=Math.max(1,Math.round(c*f));
     const ids=bySub(s).map(l=>l.id);const stat=shuffle(ids.flatMap(id=>LX[id].q.map(q=>toQ(LX[id],q)))).filter(q=>!q.c);const g=ids.filter(id=>GEN[id]);
@@ -2998,7 +2999,7 @@ const pyqAll=()=>L.flatMap(l=>l.q.map(q=>toQ(l,q))).filter(q=>/^20\d\d$/.test(q.
 /* प्रश्नपत्रिका की: वर्ष, आणि एकाच वर्षी दुसरी पत्रिका असल्यास "वर्ष-p" (उदा. 2023-ta) */
 const pkey=q=>q.y+(q.p?"-"+q.p:"");
 function yearPaper(y){const qs=pyqAll().filter(q=>pkey(q)===y&&!q.c);return qs.sort((a,b)=>(a.n||999)-(b.n||999))}
-const ptitle=(y,qs)=>{const src=(qs[0]&&qs[0].src)||"",mains=/मुख्य/.test(src);return y.slice(0,4)+(mains?" · मुख्य परीक्षा"+(/कर सहायक/.test(src)?" (कर सहायक)":/लिपिक/.test(src)?" (लिपिक-टंकलेखक)":/दुय्यम निरीक्षक/.test(src)?" (दुय्यम निरीक्षक)":/सामान्य अध्ययन/.test(src)?" (सामान्य अध्ययन)":""):" · पूर्वपरीक्षा")};
+const ptitle=(y,qs)=>{const src=(qs[0]&&qs[0].src)||"",mains=/मुख्य/.test(src);const pc=y.slice(5),pl={gb:" · गट-ब पूर्वपरीक्षा",bc:" · गट-ब व गट-क संयुक्त पूर्वपरीक्षा",es:" · दुय्यम निरीक्षक (उत्पादन शुल्क) पूर्वपरीक्षा",ct:" · लिपिक-टंकलेखक पूर्वपरीक्षा",ta:" · कर सहायक पूर्वपरीक्षा"}[pc];if(pl&&!mains)return y.slice(0,4)+pl;return y.slice(0,4)+(mains?" · मुख्य परीक्षा"+(/कर सहायक/.test(src)?" (कर सहायक)":/लिपिक/.test(src)?" (लिपिक-टंकलेखक)":/दुय्यम निरीक्षक/.test(src)?" (दुय्यम निरीक्षक)":/सामान्य अध्ययन/.test(src)?" (सामान्य अध्ययन)":""):" · गट-क पूर्वपरीक्षा")};
 const setBtns=(pre,N)=>{const ss=store.get("sets",{});return `<div class="og">${Array.from({length:N},(_,k)=>{const r=ss[pre+(k+1)];return `<button class="ob ${r?"f":""}" data-set="${pre+(k+1)}" title="${r?fmt(r.sc)+"/"+r.n+" · "+r.d:"अजून दिली नाही"}">${k+1}</button>`}).join("")}</div>`};
 function runSet(key){const ss=store.get("sets",{});let m;
   if(m=key.match(/^fm(\d+)$/)){const k=+m[1]-1;return runMock(100,60,fixedMock(k),{t:"मॉक "+(k+1),k:key})}
@@ -3008,7 +3009,7 @@ let timer=null;
 function vMock(){clearInterval(timer);const h=store.get("mocks",[]),mrv=store.get("mockrev",[]);
   main.innerHTML=`<h1>मॉक टेस्ट</h1><p class="lead">खऱ्या परीक्षेच्या नियमांप्रमाणे: वेळेची मर्यादा, चुकीच्या उत्तराला −0.25, सोडलेल्या प्रश्नाला 0. <b>OMR सारखे: एकदा 'OMR मध्ये भरा' केलेले उत्तर बदलता येत नाही.</b> अडलेला प्रश्न '⚑ सोडा' करून पुढे जा आणि शेवटी परत या. अंदाजाने उत्तर देताना 'अंदाज' खूण करा; निकालात तुमचे अंदाज फायद्याचे ठरतात की तोट्याचे ते दिसेल. <a href="#strategy">परीक्षा रणनीती ›</a></p>
   <div class="grid"><button class="tile" id="full" style="--c:#142a6e"><b>पूर्ण मॉक</b><small>100 प्रश्न · 60 मिनिटे</small></button><button class="tile" id="mini" style="--c:#e2336b"><b>मिनी मॉक</b><small>25 प्रश्न · 15 मिनिटे</small></button></div>
-  <p class="small">विषय वाटप: चालू घडामोडी 12, इतिहास 14, भूगोल 14, राज्यघटना 14, अर्थ 10, विज्ञान 14, महाराष्ट्र विशेष 4, गणित 9, बुद्धिमत्ता 9. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
+  <p class="small">विषय वाटप (मागील गट-क पूर्वपरीक्षांतील प्रत्यक्ष गुणभारानुसार): चालू घडामोडी 15, इतिहास 13, भूगोल 12, राज्यघटना 13, अर्थ 14, विज्ञान 14, महाराष्ट्र विशेष 1, गणित 10, बुद्धिमत्ता 8. GS चे प्रश्न मर्यादित असल्याने ते मॉकमध्ये पुन्हा येऊ शकतात; गणित व बुद्धिमत्तेचे अर्धे प्रश्न दरवेळी नवीन असतात. म्हणून मूळ जुन्या प्रश्नपत्रिकाही सोडवा.</p>
   ${h.length?`<h2>मागील मॉक</h2><ul class="hist">${h.slice(-10).reverse().map(m=>{const has=m.id&&mrv.some(x=>x.id===m.id);return `<li><span>${m.t?esc(m.t)+" · ":""}${m.d} · ${m.n} प्रश्न${has?` · <a href="#mr-${m.id}">उत्तरे पाहा ›</a>`:""}</span><b>${fmt(m.sc)}/${m.n}</b></li>`}).join("")}</ul><p class="small">शेवटच्या 5 मॉकची सर्व उत्तरे जतन राहतात.</p>`:""}`;
   const ss=store.get("sets",{}),done=p=>Object.keys(ss).filter(k=>k.startsWith(p)).length,yrs=[...new Set(pyqAll().map(pkey))].sort().reverse();
   main.insertAdjacentHTML("beforeend",`<h2>क्रमांकित पूर्ण मॉक (${done("fm")}/${NFM} दिले)</h2>
